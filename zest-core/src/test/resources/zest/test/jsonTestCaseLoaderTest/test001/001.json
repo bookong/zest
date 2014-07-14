@@ -1,0 +1,57 @@
+{
+	desc: "测试解析",
+	currDbTime: "2014-12-12 20:21:22",
+	init: {
+		mysql1: {
+			tab1: [
+				{id: {long:1}, name: {string:"abc"}},
+				{id: 2, name:"bbc", xx: {double:922337203685477580000}, yy: {number:30.5}}
+			],
+			tab2: [
+				{id: {long:1}, on_sell_time: {date: null}},
+				{id:2, on_sell_time: "2014-12-13"},
+				{id:3, on_sell_time: "2014-12-12"}
+			],
+			tab3: [
+				{id: {long:1}, xx: {date: null}}
+			]
+		},
+		mysql2: {
+			tab3: [
+				{id: {long:1}, name: {string:"abc"}},
+				{id: 2, name:"bbc"}
+			]
+		}
+	},
+	param: {
+		param1 : 123,
+		param2 : "aaaa",
+		param3 : 33,
+		param6 : null,
+		param7 : 3.4,
+		param8 : "2014-12-01",
+		param9 : 9,
+		param10 : 10.1,
+		param11 : 11.1,
+		part : {
+			param1 : 55
+		}
+	},
+	target: {
+		mysql1: {
+			tab1:[
+				{id: 1, name:"abc"},
+				{id: 2, name:"bbc"}
+			]
+		}
+	},
+	targetRule: {
+		mysql1: {
+			tab1: {
+				querySql: "select * from tab1 order by name"
+			},
+			tab2: {ignore: true}
+		},
+		mysql2: {ignore: true}
+	}
+}
