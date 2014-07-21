@@ -8,32 +8,32 @@ import com.github.bookong.zest.core.testcase.data.TestParam;
  * @author jiangxu
  *
  */
-public class Param001 implements TestParam {
+public class Param00 implements TestParam {
 	
-	public Long param1;
+	private Long param1;
 	
-	public String param2;
+	private String param2;
 	
-	public int param3;
+	private int param3;
 	
-	public Long param5;
+	private Long param5;
 	
-	public Double param6;
+	private Double param6;
 	
-	public Float param7;
+	private Float param7;
 	
-	public Date param8;
+	private Date param8;
 	
-	public long param9;
+	private long param9;
 	
-	public double param10;
+	private double param10;
 	
-	public float param11;
+	private float param11;
 	
-	public FooAssertParamPart part = new FooAssertParamPart();
+	private FooAssertParamPart part = new FooAssertParamPart();
 	
-	public class FooAssertParamPart {
-		public Long param1;
+	class FooAssertParamPart {
+		private Long param1;
 		
 		@Override
 		public String toString() {

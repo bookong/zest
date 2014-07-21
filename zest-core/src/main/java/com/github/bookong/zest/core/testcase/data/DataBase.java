@@ -67,6 +67,10 @@ public class DataBase {
 			
 			for (Entry<String, InitTable> entry : initTables.entrySet()) {
 				TargetTable targetTab = targetTables.get(entry.getKey());
+				if (targetTab == null) {
+					targetTab = new TargetTable(entry.getValue());
+					targetTables.put(entry.getKey(), targetTab);
+				}
 				targetTab.loadTargetData(entry.getKey(), entry.getValue(), jsonObject);
 			}
 		} catch (Exception e) {
@@ -138,6 +142,14 @@ public class DataBase {
 	
 	public Map<String, TargetTable> getTargetTables() {
 		return targetTables;
+	}
+
+	public Map<String, InitTable> getInitTables() {
+		return initTables;
+	}
+
+	public boolean isIgnoreTargetDbVerify() {
+		return ignoreTargetDbVerify;
 	}
 	
 }

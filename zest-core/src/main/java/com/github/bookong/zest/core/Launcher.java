@@ -1,5 +1,7 @@
 package com.github.bookong.zest.core;
 
+import java.sql.Connection;
+
 import com.github.bookong.zest.core.testcase.data.TestCaseData;
 import com.github.bookong.zest.core.testcase.data.TestParam;
 
@@ -17,4 +19,6 @@ public interface Launcher {
 	void initDb();
 	/** 检查目标DB中数据是否符合预期 */
 	void checkTargetDb();
+	/** 获得 JDBC 的连接对象 */
+	Connection getJdbcConn(String databaseName);
 }

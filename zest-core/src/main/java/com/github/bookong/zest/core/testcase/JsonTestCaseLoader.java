@@ -12,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import com.github.bookong.zest.core.testcase.data.TestCaseData;
 import com.github.bookong.zest.exceptions.ParseTestCaseException;
 import com.github.bookong.zest.util.LoadTestCaseUtils;
+import com.github.bookong.zest.util.ReflectHelper;
 
 /**
  * @author jiangxu
@@ -50,33 +51,40 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 
 	private void loadTestParam(Object parent, String fieldName, JSONObject paramValue) throws SecurityException,
 			NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-		Field field = parent.getClass().getField(fieldName);
+		Field field = ReflectHelper.getFieldByFieldName(parent, fieldName);
 		
 		if ((paramValue.get(fieldName) instanceof JSONObject) && paramValue.getJSONObject(fieldName).isNullObject()) {
-			field.set(parent, null);
+			ReflectHelper.setValueByFieldName(parent, fieldName, null);
 			return;
 		}
 		
 		Class<?> type = field.getType();
 		if (type.isAssignableFrom(Long.class) || "long".equals(type.getName())) {
-			field.set(parent, paramValue.getLong(fieldName));
+			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getLong(fieldName));
+			
 		} else if (type.isAssignableFrom(Integer.class) || "int".equals(type.getName())) {
-			field.set(parent, paramValue.getInt(fieldName));
+			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getInt(fieldName));
+			
 		} else if (type.isAssignableFrom(Double.class) || "double".equals(type.getName())) {
-			field.set(parent, paramValue.getDouble(fieldName));
+			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getDouble(fieldName));
+			
 		} else if (type.isAssignableFrom(Float.class) || "float".equals(type.getName())) {
-			field.set(parent, Double.valueOf(paramValue.getDouble(fieldName)).floatValue());
+			ReflectHelper.setValueByFieldName(parent, fieldName, Double.valueOf(paramValue.getDouble(fieldName)).floatValue());
+			
 		} else if (type.isAssignableFrom(String.class)) {
-			field.set(parent, paramValue.getString(fieldName));
+			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getString(fieldName));
+			
 		} else if (type.isAssignableFrom(Date.class)) {
-			field.set(parent, LoadTestCaseUtils.parseDate(paramValue.getString(fieldName)));
-		} else if (type.isMemberClass()) {
-			Object memberClass = field.get(parent);
+			ReflectHelper.setValueByFieldName(parent, fieldName, LoadTestCaseUtils.parseDate(paramValue.getString(fieldName)));
+			
+		} else if (!type.isPrimitive() && !type.isArray() && !type.isEnum()) {
+			Object memberClass = ReflectHelper.getValueByFieldName(parent, fieldName);
 			JSONObject memberClassJson = paramValue.getJSONObject(fieldName);
 			for (Object key : memberClassJson.keySet()) {
 				String memberClassFieldName = (String) key;
 				loadTestParam(memberClass, memberClassFieldName, memberClassJson);
 			}
+			
 		} else {
 			throw new ParseTestCaseException("Unsupported type : " + type.getName());
 		}

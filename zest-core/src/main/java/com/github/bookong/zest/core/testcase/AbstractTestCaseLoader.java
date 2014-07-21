@@ -14,10 +14,6 @@ import com.github.bookong.zest.core.testcase.data.TestCaseData;
 public abstract class AbstractTestCaseLoader {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	public void loadFromRelativePath(String relativePath, TestCaseData testCaseData) {
-		loadFromAbsolutePath(getClass().getClassLoader().getResource(relativePath).getPath(), testCaseData);
-	}
-
 	public void loadFromAbsolutePath(String filepath, TestCaseData testCaseData) {
 		load(new File(filepath), testCaseData);
 	}

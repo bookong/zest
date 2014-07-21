@@ -23,17 +23,26 @@ public class LoadTestCaseUtils {
 			Class<?> colClazz = colDataTypes.get(colName);
 			String colTypeDesc = "";
 			if (colClazz == null) {
-				if (!(jsonData instanceof JSONObject)) {
+				if (jsonData.getClass().isAssignableFrom(Integer.class)
+						|| jsonData.getClass().isAssignableFrom(Long.class)) {
+					colClazz = Long.class;
+				} else if (jsonData.getClass().isAssignableFrom(Double.class)
+						|| jsonData.getClass().isAssignableFrom(Float.class)
+						|| jsonData.getClass().isAssignableFrom(Number.class)) {
+					colClazz = Double.class;
+				} else if (jsonData.getClass().isAssignableFrom(String.class)) {
+					colClazz = String.class;
+				} else if (jsonData instanceof JSONObject) {
+					JSONObject colData = (JSONObject) jsonData;
+					if (colData.keySet().size() <= 0) {
+						throw new RuntimeException("You must specify the type of table fields.");
+					}
+
+					colTypeDesc = String.valueOf(colData.keys().next());
+					colClazz = parseColClazz(colTypeDesc, colData);
+				} else {
 					throw new RuntimeException("You must specify the type of table fields.");
 				}
-
-				JSONObject colData = (JSONObject) jsonData;
-				if (colData.keySet().size() <= 0) {
-					throw new RuntimeException("You must specify the type of table fields.");
-				}
-
-				colTypeDesc = String.valueOf(colData.keys().next());
-				colClazz = parseColClazz(colTypeDesc, colData);
 				colDataTypes.put(colName, colClazz);
 			}
 

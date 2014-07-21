@@ -25,7 +25,7 @@
     <modules>
 		<module>zest-core</module>
 		<!-- <module>zest-maven-plugin</module>  -->
-		<!-- <module>zest-spring</module>  -->
+		<module>zest-spring</module>
 	</modules>
 
     <properties>

@@ -7,11 +7,11 @@ import java.util.Map;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
+import com.github.bookong.zest.core.annotations.ZestJdbcConn;
 import com.github.bookong.zest.core.testcase.data.TestCaseData;
 import com.github.bookong.zest.core.testcase.data.TestParam;
 
 public class ZestStatement extends Statement {
-	private Map<String, Object> variableMap = new HashMap<String, Object>();
     private final FrameworkMethod testMethod;
     private Object target;
     private Launcher launcher;
@@ -40,23 +40,20 @@ public class ZestStatement extends Statement {
     }
     
 	private Object genParamObject(Class<?> paramClass, Annotation[] paramAnnotations, TestCaseData testCase) throws InstantiationException, IllegalAccessException {
-		Object obj = null;
-//		for (Annotation item : paramAnnotations) {
-//			if (item instanceof MinionVariable) {
-//				MinionVariable mv = (MinionVariable) item;
-//				obj = variableMap.get(mv.value());
-//				break;
-//			}
-//		}
+		for (Annotation item : paramAnnotations) {
+			if (item instanceof ZestJdbcConn) {
+				ZestJdbcConn zestJdbcConn = (ZestJdbcConn) item;
+				return launcher.getJdbcConn(zestJdbcConn.value());
+			}
+		}
 		
 		if (TestParam.class.isAssignableFrom(paramClass)) {
 			return testCase.getParam();
 		} else if (TestCaseData.class.isAssignableFrom(paramClass)) {
 			return testCase;
 		} else {
-			obj = paramClass.newInstance(); // TODO 初始化
+			throw new RuntimeException("Unknown test param class " + paramClass.getName());
 		}
-		return obj;
 	}
 	
 	private TestParam createTestParam(Class<?>[] paramClasses) throws Exception {

@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.internal.AssumptionViolatedException;
@@ -16,7 +17,10 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 import com.github.bookong.zest.core.annotations.ZTest;
+import com.github.bookong.zest.core.executer.AbstractExcuter;
+import com.github.bookong.zest.core.executer.AbstractJdbcExcuter;
 import com.github.bookong.zest.core.testcase.JsonTestCaseLoader;
+import com.github.bookong.zest.core.testcase.data.DataBase;
 import com.github.bookong.zest.core.testcase.data.TestCaseData;
 import com.github.bookong.zest.core.testcase.data.TestParam;
 import com.github.bookong.zest.exceptions.LoadTestCaseFileException;
@@ -29,8 +33,10 @@ public class ZestLauncher implements Launcher {
 	private String currTestCaseFilePath;
 	/** 从当前要处理的 json 中读取的测试用例 */
 	private TestCaseData currTestCaseData;
-	/** 支持多数据源 */
+	/** 要测试的数据库对应的 JDBC 连接对象 */
 	private Map<String, Connection> connectionMap = new HashMap<String, Connection>();
+	/** 要测试的数据库对应的执行器 */
+	private Map<String, AbstractExcuter> executerMap = new HashMap<String, AbstractExcuter>();
 
 	public void init(Class<?> clazz) {
 		this.testClass = clazz;
@@ -104,8 +110,8 @@ public class ZestLauncher implements Launcher {
 			}
 			return rightDir(url.getPath());
 		} else {
-			return rightDir(testClass.getResource("").getPath() + StringUtils.uncapitalize(testClass.getSimpleName())
-					+ File.separator + frameworkMethod.getName());
+			return rightDir(testClass.getResource("").getPath() + StringUtils.lowerCase(testClass.getSimpleName())
+					+ File.separator + StringUtils.lowerCase(frameworkMethod.getName()));
 		}
 	}
 
@@ -117,8 +123,12 @@ public class ZestLauncher implements Launcher {
 		}
 	}
 
-	public void setConnection(String id, Connection conn) {
-		connectionMap.put(id, conn);
+	public void setConnection(String databaseName, Connection conn) {
+		connectionMap.put(databaseName, conn);
+	}
+	
+	public void setExecuter(String databaseName, AbstractExcuter excuter) {
+		executerMap.put(databaseName, excuter);
 	}
 
 	/* (non-Javadoc)
@@ -147,7 +157,15 @@ public class ZestLauncher implements Launcher {
 	 * @see net.bookong.minion.core.TestCaseOperator#initDb()
 	 */
 	public void initDb() {
-		// TODO
+		for (Entry<String, DataBase> entry : currTestCaseData.getDataBases().entrySet()) {
+			String databaseName = entry.getKey();
+			AbstractExcuter executer = executerMap.get(databaseName);
+			if (executer instanceof AbstractJdbcExcuter) {
+				Connection connection = connectionMap.get(databaseName);
+				((AbstractJdbcExcuter) executer).initDatabase(connection, entry.getValue(), currTestCaseData.getCurrDbTimeDiff());
+			}
+			// FIXME 以后可能有 Mongo 的 Excuter
+		}
 	}
 
 	/*
@@ -156,8 +174,22 @@ public class ZestLauncher implements Launcher {
 	 * @see net.bookong.minion.core.TestCaseOperator#checkTargetDb()
 	 */
 	public void checkTargetDb() {
-		// TODO Auto-generated method stub
-
+		for (Entry<String, DataBase> entry : currTestCaseData.getDataBases().entrySet()) {
+			String databaseName = entry.getKey();
+			if (entry.getValue().isIgnoreTargetDbVerify()) {
+				System.out.println("Ignore target database verify. Database name:" + entry.getKey());
+			} else {
+				AbstractExcuter executer = executerMap.get(databaseName);
+				if (executer instanceof AbstractJdbcExcuter) {
+					Connection connection = connectionMap.get(databaseName);
+					((AbstractJdbcExcuter) executer).checkTargetDatabase(connection, entry.getValue(), currTestCaseData.getCurrDbTimeDiff());
+				}
+				// FIXME 以后可能有 Mongo 的 Excuter
+			}
+		}
 	}
 
+	public Connection getJdbcConn(String databaseName) {
+		return connectionMap.get(databaseName);
+	}
 }

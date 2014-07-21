@@ -1,11 +1,10 @@
 package zest.test;
 
-import org.junit.runner.RunWith;
+import org.junit.Before;
+import org.junit.Test;
 
-import zest.test.param.Param001;
+import zest.test.param.Param00;
 
-import com.github.bookong.zest.ZestJUnit4ClassRunner;
-import com.github.bookong.zest.core.annotations.ZTest;
 import com.github.bookong.zest.core.testcase.JsonTestCaseLoader;
 import com.github.bookong.zest.core.testcase.data.TestCaseData;
 
@@ -13,13 +12,26 @@ import com.github.bookong.zest.core.testcase.data.TestCaseData;
  * @author jiangxu
  *
  */
-@RunWith(ZestJUnit4ClassRunner.class)
 public class JsonTestCaseLoaderTest {
 	JsonTestCaseLoader testCaseLoader = new JsonTestCaseLoader();
-
-	@ZTest
-	public void test001(TestCaseData testCaseData, Param001 param) {
-		System.out.println("1>" + param);
-		System.out.println("2>" + testCaseData.toString());
+	TestCaseData testCaseData = null;
+	
+	@Before
+	public void setUp() throws Exception {
+		testCaseData = new TestCaseData();
 	}
+
+	@Test
+	public void test001() {
+		testCaseData.setParam(new Param00());
+		testCaseLoader.loadFromAbsolutePath(getClass().getResource("001.json").getPath(), testCaseData);
+	}
+	
+	@Test
+	public void test002() {
+		testCaseData.setParam(new Param00());
+		testCaseLoader.loadFromAbsolutePath(getClass().getResource("002.json").getPath(), testCaseData);
+		System.out.println(testCaseData);
+	}
+
 }
