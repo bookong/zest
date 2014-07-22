@@ -65,6 +65,9 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 			
 		} else if (type.isAssignableFrom(Integer.class) || "int".equals(type.getName())) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getInt(fieldName));
+		
+		} else if (type.isAssignableFrom(Boolean.class) || "boolean".equals(type.getName())) {
+			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getBoolean(fieldName));
 			
 		} else if (type.isAssignableFrom(Double.class) || "double".equals(type.getName())) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getDouble(fieldName));

@@ -18,6 +18,7 @@
 		}
 	},
 	param: {
+		param12 : true
 	},
 	target: {
 		mysql1: {

@@ -30,6 +30,8 @@ public class Param00 implements TestParam {
 	
 	private float param11;
 	
+	private boolean param12;
+	
 	private FooAssertParamPart part = new FooAssertParamPart();
 	
 	class FooAssertParamPart {
@@ -43,9 +45,9 @@ public class Param00 implements TestParam {
 
 	@Override
 	public String toString() {
-		return "Param001 [param1=" + param1 + ", param2=" + param2 + ", param3=" + param3 + ", param5=" + param5
+		return "Param00 [param1=" + param1 + ", param2=" + param2 + ", param3=" + param3 + ", param5=" + param5
 				+ ", param6=" + param6 + ", param7=" + param7 + ", param8=" + param8 + ", param9=" + param9
-				+ ", param10=" + param10 + ", param11=" + param11 + ", part=" + part + "]";
+				+ ", param10=" + param10 + ", param11=" + param11 + ", param12=" + param12 + ", part=" + part + "]";
 	}
 }
 
