@@ -3,6 +3,7 @@ package com.github.bookong.zest.core.testcase;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
 
 import net.sf.json.JSONObject;
@@ -93,6 +94,9 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 	private void loadCurrDbTimeDiff(JSONObject json, TestCaseData testCaseData) throws ParseException {
 		String currDbTimeStr = LoadTestCaseUtils.loadNotNullString(json, "currDbTime").trim();
 		Date currDbTime = LoadTestCaseUtils.parseDate(currDbTimeStr);
-		testCaseData.setCurrDbTimeDiff(testCaseData.getTestCaseRunningTime().getTime() - currDbTime.getTime());
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.MILLISECOND, 0);
+		testCaseData.setTestCaseRunningTime(cal.getTime());
+		testCaseData.setCurrDbTimeDiff(cal.getTimeInMillis() - currDbTime.getTime());
 	}
 }

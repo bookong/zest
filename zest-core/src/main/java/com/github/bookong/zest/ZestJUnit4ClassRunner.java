@@ -14,7 +14,7 @@ import org.junit.runners.model.Statement;
 
 import com.github.bookong.zest.core.ZestLauncher;
 import com.github.bookong.zest.core.ZestStatement;
-import com.github.bookong.zest.core.annotations.ZTest;
+import com.github.bookong.zest.core.annotations.ZestTest;
 
 /**
  * @author jiangxu
@@ -39,21 +39,21 @@ public class ZestJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 	}
 
 	/**
-	 * 让 JUnit 接受 MTest 注解的方法
+	 * 让 JUnit 接受 ZTest 注解的方法
 	 */
 	@Override
 	protected List<FrameworkMethod> getChildren() {
 		List<FrameworkMethod> list = computeTestMethods();
-		list.addAll(getTestClass().getAnnotatedMethods(ZTest.class));
+		list.addAll(getTestClass().getAnnotatedMethods(ZestTest.class));
 		return list;
 	}
 
 	/**
-	 * 如果是用 MTest 注解的方法，用 minonLauncher 来执行
+	 * 如果是用 ZTest 注解的方法，用 zestLauncher 来执行
 	 */
 	@Override
 	protected void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
-		ZTest mtest = frameworkMethod.getAnnotation(ZTest.class);
+		ZestTest mtest = frameworkMethod.getAnnotation(ZestTest.class);
 		if (mtest == null) {
 			super.runChild(frameworkMethod, notifier);
 		} else {
@@ -71,6 +71,11 @@ public class ZestJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 	 */
 	@Override
 	protected Statement methodInvoker(FrameworkMethod method, Object test) {
-		return new ZestStatement(method, test, zestLauncher);
+		ZestTest ztest = method.getAnnotation(ZestTest.class);
+		if (ztest == null) {
+			return super.methodInvoker(method, test);
+		} else {
+			return new ZestStatement(method, test, zestLauncher);
+		}
 	}
 }

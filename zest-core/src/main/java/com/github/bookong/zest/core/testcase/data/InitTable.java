@@ -33,7 +33,7 @@ public class InitTable {
 		}
 	}
 	
-	protected void loadRow(JSONObject json, Map<String, Class<?>> colDataTypes) {
+	private void loadRow(JSONObject json, Map<String, Class<?>> colDataTypes) {
 		LinkedHashMap<String, Object> rowDatas = new LinkedHashMap<String, Object>();
 		datas.add(rowDatas);
 		

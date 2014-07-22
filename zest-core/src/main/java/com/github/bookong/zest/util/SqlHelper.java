@@ -99,7 +99,7 @@ public class SqlHelper {
 					String colName = rs.getMetaData().getColumnName(i);
 					Object colValue = rs.getObject(i);
 					String colType = (colValue == null ? "UNKNOWN" : colValue.getClass().getName());
-					System.out.println(colName + "(" + colType + "):" + colValue + "\t");
+					System.out.println(colName.toLowerCase() + "(" + colType + "):" + colValue + "\t");
 				}
 			}
 			System.out.println("===========================================");

@@ -31,7 +31,12 @@ public class JsonTestCaseLoaderTest {
 	public void test002() {
 		testCaseData.setParam(new Param00());
 		testCaseLoader.loadFromAbsolutePath(getClass().getResource("002.json").getPath(), testCaseData);
-		System.out.println(testCaseData);
 	}
 
+	@Test
+	public void test003() {
+		testCaseData.setParam(new Param00());
+		testCaseLoader.loadFromAbsolutePath(getClass().getResource("003.json").getPath(), testCaseData);
+		System.out.println(testCaseData.toString());
+	}
 }

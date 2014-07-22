@@ -16,7 +16,7 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import com.github.bookong.zest.core.annotations.ZTest;
+import com.github.bookong.zest.core.annotations.ZestTest;
 import com.github.bookong.zest.core.executer.AbstractExcuter;
 import com.github.bookong.zest.core.executer.AbstractJdbcExcuter;
 import com.github.bookong.zest.core.testcase.JsonTestCaseLoader;
@@ -56,7 +56,7 @@ public class ZestLauncher implements Launcher {
 		eachNotifier.fireTestStarted();
 
 		try {
-			ZTest minionTest = frameworkMethod.getAnnotation(ZTest.class);
+			ZestTest minionTest = frameworkMethod.getAnnotation(ZestTest.class);
 			String dir = getDir(minionTest, frameworkMethod);
 
 			if (minionTest.filenames().length == 0) {
@@ -95,12 +95,14 @@ public class ZestLauncher implements Launcher {
 		try {
 			currTestCaseFilePath = filepath;
 			statement.evaluate();
+		} catch (AssertionError e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new RuntimeException("Fail to evaluate statement, test case in (" + filepath + ")", e);
 		}
 	}
 
-	private String getDir(ZTest zest, FrameworkMethod frameworkMethod) {
+	private String getDir(ZestTest zest, FrameworkMethod frameworkMethod) {
 		if (StringUtils.isNotBlank(zest.absoluteDir())) {
 			return rightDir(zest.absoluteDir());
 		} else if (StringUtils.isNotBlank(zest.relativePath())) {
@@ -126,13 +128,17 @@ public class ZestLauncher implements Launcher {
 	public void setConnection(String databaseName, Connection conn) {
 		connectionMap.put(databaseName, conn);
 	}
-	
+
 	public void setExecuter(String databaseName, AbstractExcuter excuter) {
 		executerMap.put(databaseName, excuter);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.github.bookong.zest.core.Launcher#loadCurrTestCaseFile(com.github.bookong.zest.core.testcase.data.TestParam)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.github.bookong.zest.core.Launcher#loadCurrTestCaseFile(com.github
+	 * .bookong.zest.core.testcase.data.TestParam)
 	 */
 	public TestCaseData loadCurrTestCaseFile(TestParam testParam) {
 		currTestCaseData = new TestCaseData();
@@ -162,7 +168,8 @@ public class ZestLauncher implements Launcher {
 			AbstractExcuter executer = executerMap.get(databaseName);
 			if (executer instanceof AbstractJdbcExcuter) {
 				Connection connection = connectionMap.get(databaseName);
-				((AbstractJdbcExcuter) executer).initDatabase(connection, entry.getValue(), currTestCaseData.getCurrDbTimeDiff());
+				((AbstractJdbcExcuter) executer).initDatabase(connection, entry.getValue(),
+						currTestCaseData.getCurrDbTimeDiff());
 			}
 			// FIXME 以后可能有 Mongo 的 Excuter
 		}
@@ -182,7 +189,8 @@ public class ZestLauncher implements Launcher {
 				AbstractExcuter executer = executerMap.get(databaseName);
 				if (executer instanceof AbstractJdbcExcuter) {
 					Connection connection = connectionMap.get(databaseName);
-					((AbstractJdbcExcuter) executer).checkTargetDatabase(connection, entry.getValue(), currTestCaseData.getCurrDbTimeDiff());
+					((AbstractJdbcExcuter) executer).checkTargetDatabase(connection, entry.getValue(),
+							currTestCaseData.getCurrDbTimeDiff());
 				}
 				// FIXME 以后可能有 Mongo 的 Excuter
 			}

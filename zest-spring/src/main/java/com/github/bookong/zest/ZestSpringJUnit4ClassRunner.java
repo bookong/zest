@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.FrameworkMethod;
@@ -18,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.bookong.zest.core.ZestLauncher;
 import com.github.bookong.zest.core.ZestStatement;
-import com.github.bookong.zest.core.annotations.ZTest;
+import com.github.bookong.zest.core.annotations.ZestTest;
 import com.github.bookong.zest.core.annotations.ZestDataSource;
 import com.github.bookong.zest.util.ReflectHelper;
 
@@ -50,7 +51,7 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner {
 	@Override
 	protected List<FrameworkMethod> getChildren() {
 		List<FrameworkMethod> list = computeTestMethods();
-		list.addAll(getTestClass().getAnnotatedMethods(ZTest.class));
+		list.addAll(getTestClass().getAnnotatedMethods(ZestTest.class));
 		return list;
 	}
 
@@ -59,8 +60,8 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner {
 	 */
 	@Override
 	protected void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
-		ZTest mtest = frameworkMethod.getAnnotation(ZTest.class);
-		if (mtest == null) {
+		ZestTest ztest = frameworkMethod.getAnnotation(ZestTest.class);
+		if (ztest == null) {
 			super.runChild(frameworkMethod, notifier);
 		} else {
 			Description description = describeChild(frameworkMethod);
@@ -77,22 +78,29 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner {
 	 */
 	@Override
 	protected Statement methodInvoker(FrameworkMethod method, Object test) {
-		for (Field f : test.getClass().getDeclaredFields()) {
-			ZestDataSource zestDataSource = f.getAnnotation(ZestDataSource.class);
-			if (zestDataSource != null) {
-				Object obj = ReflectHelper.getValueByFieldName(test, f.getName());
-				if (obj instanceof DataSource) {
-					zestLauncher.setConnection(zestDataSource.value(), DataSourceUtils.getConnection((DataSource) obj));
-					try {
-						zestLauncher.setExecuter(zestDataSource.value(), zestDataSource.executerClazz().newInstance());
-					} catch (Exception e) {
-						throw new RuntimeException("Fail to set executer. Executer class:"
-								+ zestDataSource.executerClazz().getName(), e);
+		ZestTest ztest = method.getAnnotation(ZestTest.class);
+		if (ztest == null) {
+			return super.methodInvoker(method, test);
+		} else {
+			for (Field f : test.getClass().getDeclaredFields()) {
+				ZestDataSource zestDataSource = f.getAnnotation(ZestDataSource.class);
+				if (zestDataSource != null) {
+					Object obj = ReflectHelper.getValueByFieldName(test, f.getName());
+					if (obj instanceof DataSource) {
+						zestLauncher.setConnection(zestDataSource.value(),
+								DataSourceUtils.getConnection((DataSource) obj));
+						try {
+							zestLauncher.setExecuter(zestDataSource.value(), zestDataSource.executerClazz()
+									.newInstance());
+						} catch (Exception e) {
+							throw new RuntimeException("Fail to set executer. Executer class:"
+									+ zestDataSource.executerClazz().getName(), e);
+						}
 					}
 				}
 			}
-		}
 
-		return new ZestStatement(method, test, zestLauncher);
+			return new ZestStatement(method, test, zestLauncher);
+		}
 	}
 }

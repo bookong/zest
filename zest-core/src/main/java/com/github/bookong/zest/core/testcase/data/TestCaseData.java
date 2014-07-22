@@ -17,7 +17,7 @@ import com.github.bookong.zest.exceptions.ParseTestCaseException;
  */
 public class TestCaseData {
 	private String desc;
-	private Date testCaseRunningTime = new Date();
+	private Date testCaseRunningTime;
 	private long currDbTimeDiff;
 	private Map<String, DataBase> dataBases = new HashMap<String, DataBase>();
 	private TestParam param;

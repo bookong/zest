@@ -2,6 +2,7 @@ package com.github.bookong.zest.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -35,13 +36,13 @@ public class LoadTestCaseUtils {
 				} else if (jsonData instanceof JSONObject) {
 					JSONObject colData = (JSONObject) jsonData;
 					if (colData.keySet().size() <= 0) {
-						throw new RuntimeException("You must specify the type of table fields.");
+						throw new RuntimeException("You must specify the type of table fields. column name:" + colName);
 					}
 
 					colTypeDesc = String.valueOf(colData.keys().next());
 					colClazz = parseColClazz(colTypeDesc, colData);
 				} else {
-					throw new RuntimeException("You must specify the type of table fields.");
+					throw new RuntimeException("You must specify the type of table fields. column name:" + colName);
 				}
 				colDataTypes.put(colName, colClazz);
 			}
@@ -59,7 +60,7 @@ public class LoadTestCaseUtils {
 			throw new ParseTestCaseException("Fail to load data. Column name:" + colName, e);
 		}
 	}
-
+	
 	public static Date parseDate(String value) {
 		try {
 			switch (value.length()) {

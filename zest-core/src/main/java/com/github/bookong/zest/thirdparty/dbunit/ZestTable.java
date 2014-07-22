@@ -14,6 +14,7 @@ import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.datatype.DataType;
 
 import com.github.bookong.zest.core.testcase.data.InitTable;
+import com.github.bookong.zest.util.DateUtils;
 
 /**
  * @author jiangxu
@@ -72,9 +73,7 @@ public class ZestTable extends AbstractTable {
 		assertValidRowIndex(row);
 		Object obj = initTable.getDatas().get(row).get(column);
 		if (obj != null && (obj instanceof Date)) {
-			Date newTime = new Date();
-			newTime.setTime(((Date)obj).getTime() + currDbTimeDiff);
-			return newTime;
+			return DateUtils.getDateInDB((Date)obj, currDbTimeDiff);
 		}
 		return obj;
 	}

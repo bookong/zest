@@ -1,8 +1,6 @@
 package com.github.bookong.zest.core;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;

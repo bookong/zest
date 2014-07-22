@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface ZTest {
+public @interface ZestTest {
 	/** 绝对目录*/
 	String absoluteDir() default "";
 	/** 相对路径 */
