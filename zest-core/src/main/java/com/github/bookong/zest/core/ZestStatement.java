@@ -4,17 +4,21 @@ import java.lang.annotation.Annotation;
 
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
+import org.junit.runners.model.TestClass;
 
+import com.github.bookong.zest.core.annotations.ZestBefore;
 import com.github.bookong.zest.core.annotations.ZestJdbcConn;
 import com.github.bookong.zest.core.testcase.data.TestCaseData;
 import com.github.bookong.zest.core.testcase.data.TestParam;
 
 public class ZestStatement extends Statement {
+	private final TestClass testCalss;
     private final FrameworkMethod testMethod;
     private Object target;
     private Launcher launcher;
 
-    public ZestStatement(FrameworkMethod testMethod, Object target, Launcher launcher) {
+    public ZestStatement(TestClass testCase, FrameworkMethod testMethod, Object target, Launcher launcher) {
+    	this.testCalss = testCase;
         this.testMethod = testMethod;
         this.target = target;
         this.launcher = launcher;
@@ -32,6 +36,11 @@ public class ZestStatement extends Statement {
 		for (int i=0; i<paramClasses.length; i++) {
 			paramArrayOfObject[i] = genParamObject(paramClasses[i], allParamAnnotations[i], testCase);
 		}
+		
+		for (FrameworkMethod zestBeforeMethod : testCalss.getAnnotatedMethods(ZestBefore.class)) {
+			zestBeforeMethod.invokeExplosively(target, paramArrayOfObject);
+		}
+		
 		testMethod.invokeExplosively(target, paramArrayOfObject);
 		
 		launcher.checkTargetDb();

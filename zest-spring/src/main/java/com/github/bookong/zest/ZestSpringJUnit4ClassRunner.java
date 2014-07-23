@@ -100,7 +100,7 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner {
 				}
 			}
 
-			return new ZestStatement(method, test, zestLauncher);
+			return new ZestStatement(getTestClass(), method, test, zestLauncher);
 		}
 	}
 }

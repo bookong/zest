@@ -75,7 +75,7 @@ public class ZestJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 		if (ztest == null) {
 			return super.methodInvoker(method, test);
 		} else {
-			return new ZestStatement(method, test, zestLauncher);
+			return new ZestStatement(getTestClass(), method, test, zestLauncher);
 		}
 	}
 }
