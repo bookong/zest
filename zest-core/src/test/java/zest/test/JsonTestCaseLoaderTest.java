@@ -50,7 +50,7 @@ public class JsonTestCaseLoaderTest {
 		System.out.println("=====> before");
 	}
 	
-	@ZestTest(relativePath="zest/test", filenames={"001.json","003.json"})
+	@ZestTest(relativePath="zest/test", filenames={"001.json","002.json","003.json"})
 	public void test003B(Param00 pram) {
 		System.out.println("here");
 	}

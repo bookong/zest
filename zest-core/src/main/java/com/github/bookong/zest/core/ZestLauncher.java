@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -43,62 +44,56 @@ public class ZestLauncher implements Launcher {
 	}
 
 	public static void ignoreNoRunnableMethodsError(List<Throwable> errors) {
-		for (int i = errors.size() - 1; i >= 0; i--) {
-			Throwable e = errors.get(i);
+		Iterator<Throwable> it = errors.iterator();
+		while (it.hasNext()) {
+			Throwable e = it.next();
 			if ("No runnable methods".equals(e.getMessage())) {
-				errors.remove(e);
+				it.remove();
 			}
 		}
 	}
 
 	public void run(FrameworkMethod frameworkMethod, Statement statement, Description description, RunNotifier notifier) {
-		EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
-		eachNotifier.fireTestStarted();
+		ZestTest minionTest = frameworkMethod.getAnnotation(ZestTest.class);
+		String dir = getDir(minionTest, frameworkMethod);
 
-		try {
-			ZestTest minionTest = frameworkMethod.getAnnotation(ZestTest.class);
-			String dir = getDir(minionTest, frameworkMethod);
-
-			if (minionTest.filenames().length == 0) {
-				// 查找 dir 路径下所有文件
-				boolean notFoundFile = true;
-				File searchDir = new File(dir);
-				File[] searchFiles = searchDir.listFiles();
-				if (searchFiles != null) {
-					for (File searchFile : searchFiles) {
-						if (searchFile.isFile()) {
-							notFoundFile = false;
-							runTestCase(searchFile.getAbsolutePath(), statement);
-						}
+		if (minionTest.filenames().length == 0) {
+			// 查找 dir 路径下所有文件
+			boolean notFoundFile = true;
+			File searchDir = new File(dir);
+			File[] searchFiles = searchDir.listFiles();
+			if (searchFiles != null) {
+				for (File searchFile : searchFiles) {
+					if (searchFile.isFile()) {
+						notFoundFile = false;
+						runTestCase(searchFile.getAbsolutePath(), statement, description, notifier);
 					}
-				}
-
-				if (notFoundFile) {
-					throw new LoadTestCaseFileException("Not specified test case file (" + description + ")");
-				}
-			} else {
-				for (String filename : minionTest.filenames()) {
-					runTestCase(dir + filename, statement);
 				}
 			}
 
-		} catch (AssumptionViolatedException e) {
-			eachNotifier.addFailedAssumption(e);
-		} catch (Throwable e) {
-			eachNotifier.addFailure(e);
-		} finally {
-			eachNotifier.fireTestFinished();
+			if (notFoundFile) {
+				throw new LoadTestCaseFileException("Not specified test case file (" + description + ")");
+			}
+		} else {
+			for (String filename : minionTest.filenames()) {
+				runTestCase(dir + filename, statement, description, notifier);
+			}
 		}
 	}
 
-	private void runTestCase(String filepath, Statement statement) {
+	private void runTestCase(String filepath, Statement statement, Description description, RunNotifier notifier) {
+		EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
+		eachNotifier.fireTestStarted();
 		try {
 			currTestCaseFilePath = filepath;
 			statement.evaluate();
-		} catch (AssertionError e) {
-			throw e;
+		} catch (AssumptionViolatedException e) {
+			eachNotifier.addFailedAssumption(e);
 		} catch (Throwable e) {
-			throw new RuntimeException("Fail to evaluate statement, test case in (" + filepath + ")", e);
+			eachNotifier.addFailure(new RuntimeException("Fail to evaluate statement, test case in (" + filepath + ")",
+					e));
+		} finally {
+			eachNotifier.fireTestFinished();
 		}
 	}
 
