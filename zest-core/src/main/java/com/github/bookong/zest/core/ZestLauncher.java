@@ -89,6 +89,8 @@ public class ZestLauncher implements Launcher {
 			statement.evaluate();
 		} catch (AssumptionViolatedException e) {
 			eachNotifier.addFailedAssumption(e);
+		} catch (AssertionError e) {
+			eachNotifier.addFailure(e);
 		} catch (Throwable e) {
 			eachNotifier.addFailure(new RuntimeException("Fail to evaluate statement, test case in (" + filepath + ")",
 					e));
