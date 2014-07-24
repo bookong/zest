@@ -37,13 +37,22 @@ public class ZestStatement extends Statement {
 			paramArrayOfObject[i] = genParamObject(paramClasses[i], allParamAnnotations[i], testCase);
 		}
 		
-		for (FrameworkMethod zestBeforeMethod : testCalss.getAnnotatedMethods(ZestBefore.class)) {
+		runZestBeforeMethod(testCase);
+		testMethod.invokeExplosively(target, paramArrayOfObject);
+
+		launcher.checkTargetDb();
+    }
+    
+    private void runZestBeforeMethod(TestCaseData testCase) throws Throwable {
+    	for (FrameworkMethod zestBeforeMethod : testCalss.getAnnotatedMethods(ZestBefore.class)) {
+    		Class<?>[] paramClasses = zestBeforeMethod.getMethod().getParameterTypes();
+    		Annotation[][] allParamAnnotations = zestBeforeMethod.getMethod().getParameterAnnotations();
+    		Object[] paramArrayOfObject = new Object[paramClasses.length];
+    		for (int i=0; i<paramClasses.length; i++) {
+    			paramArrayOfObject[i] = genParamObject(paramClasses[i], allParamAnnotations[i], testCase);
+    		}
 			zestBeforeMethod.invokeExplosively(target, paramArrayOfObject);
 		}
-		
-		testMethod.invokeExplosively(target, paramArrayOfObject);
-		
-		launcher.checkTargetDb();
     }
     
 	private Object genParamObject(Class<?> paramClass, Annotation[] paramAnnotations, TestCaseData testCase) throws InstantiationException, IllegalAccessException {
