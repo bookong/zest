@@ -35,12 +35,16 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 			testCaseData.loadTargetDataRule(root);
 			testCaseData.loadTargetData(root);
 		} catch (JSONException e) {
+			int posStart = e.getMessage().indexOf("at character") + "at character".length();
+			int posEnd = e.getMessage().indexOf("of");
+			if (posStart < 0 || posEnd < 0) {
+				throw new ParseTestCaseException("Fail to parse json.", e);
+			}
+			
 			try {
-				int posStart = e.getMessage().indexOf("Missing value. at character") + "Missing value. at character".length();
-				int posEnd = e.getMessage().indexOf("of");
 				int pos = Integer.parseInt(e.getMessage().substring(posStart, posEnd).trim());
-				posStart = pos - 15;
-				posEnd = pos + 15;
+				posStart = pos - 30;
+				posEnd = pos + 30;
 				if (posStart < 0) {
 					posStart = 0;
 				}
