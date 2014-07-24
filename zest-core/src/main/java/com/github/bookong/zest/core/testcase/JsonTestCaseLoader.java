@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FileUtils;
@@ -23,16 +24,38 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 
 	@Override
 	public TestCaseData load(File file, TestCaseData testCaseData) {
+		String jsonFileContent = "";
 		try {
-			JSONObject root = JSONObject.fromObject(FileUtils.readFileToString(file, "UTF-8"));
+			jsonFileContent = FileUtils.readFileToString(file, "UTF-8");
+			JSONObject root = JSONObject.fromObject(jsonFileContent);
 			testCaseData.setDesc(LoadTestCaseUtils.loadNotNullString(root, "desc"));
 			loadCurrDbTimeDiff(root, testCaseData);
 			testCaseData.loadInitData(root);
 			loadParam(root, testCaseData);
 			testCaseData.loadTargetDataRule(root);
 			testCaseData.loadTargetData(root);
+		} catch (JSONException e) {
+			try {
+				int posStart = e.getMessage().indexOf("Missing value. at character") + "Missing value. at character".length();
+				int posEnd = e.getMessage().indexOf("of");
+				int pos = Integer.parseInt(e.getMessage().substring(posStart, posEnd).trim());
+				posStart = pos - 15;
+				posEnd = pos + 15;
+				if (posStart < 0) {
+					posStart = 0;
+				}
+				if (posEnd >= jsonFileContent.length()) {
+					posEnd = jsonFileContent.length();
+				}
+				
+				throw new ParseTestCaseException("Fail to parse json in \"" + jsonFileContent.substring(posStart, posEnd) + "\"", e);
+			} catch (ParseTestCaseException e2) {
+				throw e2;
+			} catch (Exception e2) {
+				throw new ParseTestCaseException("Fail to parse json.", e);
+			}
 		} catch (Exception e) {
-			throw new ParseTestCaseException("Fail to parse json : " + e.getMessage(), e);
+			throw new ParseTestCaseException("Fail to parse json.", e);
 		}
 
 		return testCaseData;
@@ -44,7 +67,7 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 			for (Object key : paramJson.keySet()) {
 				loadTestParam(testCaseData.getParam(), (String) key, paramJson);
 			}
-			
+
 		} catch (Exception e) {
 			throw new ParseTestCaseException("Fail to parse part \"param\".", e);
 		}
@@ -53,34 +76,36 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 	private void loadTestParam(Object parent, String fieldName, JSONObject paramValue) throws SecurityException,
 			NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 		Field field = ReflectHelper.getFieldByFieldName(parent, fieldName);
-		
+
 		if ((paramValue.get(fieldName) instanceof JSONObject) && paramValue.getJSONObject(fieldName).isNullObject()) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, null);
 			return;
 		}
-		
+
 		Class<?> type = field.getType();
 		if (type.isAssignableFrom(Long.class) || "long".equals(type.getName())) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getLong(fieldName));
-			
+
 		} else if (type.isAssignableFrom(Integer.class) || "int".equals(type.getName())) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getInt(fieldName));
-		
+
 		} else if (type.isAssignableFrom(Boolean.class) || "boolean".equals(type.getName())) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getBoolean(fieldName));
-			
+
 		} else if (type.isAssignableFrom(Double.class) || "double".equals(type.getName())) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getDouble(fieldName));
-			
+
 		} else if (type.isAssignableFrom(Float.class) || "float".equals(type.getName())) {
-			ReflectHelper.setValueByFieldName(parent, fieldName, Double.valueOf(paramValue.getDouble(fieldName)).floatValue());
-			
+			ReflectHelper.setValueByFieldName(parent, fieldName, Double.valueOf(paramValue.getDouble(fieldName))
+					.floatValue());
+
 		} else if (type.isAssignableFrom(String.class)) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, paramValue.getString(fieldName));
-			
+
 		} else if (type.isAssignableFrom(Date.class)) {
-			ReflectHelper.setValueByFieldName(parent, fieldName, LoadTestCaseUtils.parseDate(paramValue.getString(fieldName)));
-			
+			ReflectHelper.setValueByFieldName(parent, fieldName,
+					LoadTestCaseUtils.parseDate(paramValue.getString(fieldName)));
+
 		} else if (!type.isPrimitive() && !type.isArray() && !type.isEnum()) {
 			Object memberClass = ReflectHelper.getValueByFieldName(parent, fieldName);
 			JSONObject memberClassJson = paramValue.getJSONObject(fieldName);
@@ -88,7 +113,7 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 				String memberClassFieldName = (String) key;
 				loadTestParam(memberClass, memberClassFieldName, memberClassJson);
 			}
-			
+
 		} else {
 			throw new ParseTestCaseException("Unsupported type : " + type.getName());
 		}

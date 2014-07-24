@@ -75,10 +75,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
 		}
 
 		List<Map<String, Object>> datasInDb = SqlHelper.findDataInDatabase(connection, sql);
-		if (datasInDb.size() != targetTab.getDatas().size()) {
-			throw new RuntimeException("Fail to verify target table \"" + tabName + "\", row count wrong.");
-
-		}
+		Assert.assertEquals("verify target table \"" + tabName + "\", row count.", targetTab.getDatas().size(), datasInDb.size());
 
 		for (int rowIdx = 0; rowIdx < datasInDb.size(); rowIdx++) {
 			Map<String, Object> rowDataInDb = datasInDb.get(rowIdx);
