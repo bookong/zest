@@ -75,57 +75,57 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
 		}
 
 		List<Map<String, Object>> datasInDb = SqlHelper.findDataInDatabase(connection, sql);
+		if (datasInDb.size() != targetTab.getDatas().size()) {
+			throw new RuntimeException("Fail to verify target table \"" + tabName + "\", row count wrong.");
+
+		}
+
 		for (int rowIdx = 0; rowIdx < datasInDb.size(); rowIdx++) {
-			if (datasInDb.size() != targetTab.getDatas().size()) {
-				throw new RuntimeException("Fail to verify target table \"" + tabName + "\", row count wrong.");
+			Map<String, Object> rowDataInDb = datasInDb.get(rowIdx);
+			Map<String, Object> rowDataInTargetTab = targetTab.getDatas().get(rowIdx);
+			for (Entry<String, Object> colDataInDb : rowDataInDb.entrySet()) {
+				String colDataInDbName = colDataInDb.getKey();
+				Object colDataInDbValue = colDataInDb.getValue();
+				String assertMsg = "Verify target table \"" + tabName + "\" col \"" + colDataInDbName + "\"";
+				if (rowDataInTargetTab.containsKey(colDataInDbName)) {
+					Object colDataInTargetTab = rowDataInTargetTab.get(colDataInDbName);
+					if (colDataInTargetTab == null) {
+						Assert.assertNull(assertMsg, colDataInDbValue);
+					} else if (colDataInTargetTab instanceof RuleColData) {
+						RuleColData ruleColData = (RuleColData) colDataInTargetTab;
+						if (!ruleColData.isNullable()) {
+							Assert.assertNotNull(assertMsg + ", must not null", colDataInDbValue);
+						}
 
-			} else {
-				Map<String, Object> rowDataInDb = datasInDb.get(rowIdx);
-				Map<String, Object> rowDataInTargetTab = targetTab.getDatas().get(rowIdx);
-				for (Entry<String, Object> colDataInDb : rowDataInDb.entrySet()) {
-					String colDataInDbName = colDataInDb.getKey();
-					Object colDataInDbValue = colDataInDb.getValue();
-					String assertMsg = "Verify target table \"" + tabName + "\" col \"" + colDataInDbName + "\"";
-					if (rowDataInTargetTab.containsKey(colDataInDbName)) {
-						Object colDataInTargetTab = rowDataInTargetTab.get(colDataInDbName);
-						if (colDataInTargetTab == null) {
-							Assert.assertNull(assertMsg, colDataInDbValue);
-						} else if (colDataInTargetTab instanceof RuleColData) {
-							RuleColData ruleColData = (RuleColData) colDataInTargetTab;
-							if (!ruleColData.isNullable()) {
-								Assert.assertNotNull(assertMsg + ", must not null", colDataInDbValue);
-							}
-
-							if (colDataInDbValue != null) {
-								if (ruleColData.getCurrentTime() != null && ruleColData.getCurrentTime().booleanValue()) {
-									Assert.assertTrue(assertMsg, (colDataInDbValue instanceof Date));
-									long tmp = ((Date) colDataInDbValue).getTime();
-									Assert.assertTrue(assertMsg + ", must be current time",
-											(tmp >= initDBTime && tmp <= checkTargetDBTime));
-								}
-
-								if (StringUtils.isNotBlank(ruleColData.getRegExp())) {
-									Assert.assertTrue(
-											assertMsg + ", mush match regExp:" + ruleColData.getRegExp(),
-											Pattern.matches(ruleColData.getRegExp().trim(),
-													String.valueOf(colDataInDbValue)));
-								}
-							}
-
-						} else {
-							if (colDataInTargetTab instanceof Date) {
+						if (colDataInDbValue != null) {
+							if (ruleColData.getCurrentTime() != null && ruleColData.getCurrentTime().booleanValue()) {
 								Assert.assertTrue(assertMsg, (colDataInDbValue instanceof Date));
-								String colDataInDbValueFixed = DateUtils.getStringFromDBDate((Date) colDataInDbValue,
-										currDbTimeDiff);
-								Assert.assertEquals(assertMsg, DateUtils.formatDateNormal((Date) colDataInTargetTab),
-										colDataInDbValueFixed);
-							} else {
-								Assert.assertEquals(assertMsg, colDataInTargetTab, colDataInDbValue);
+								long tmp = ((Date) colDataInDbValue).getTime();
+								Assert.assertTrue(assertMsg + ", must be current time",
+										(tmp >= initDBTime && tmp <= checkTargetDBTime));
+							}
+
+							if (StringUtils.isNotBlank(ruleColData.getRegExp())) {
+								Assert.assertTrue(
+										assertMsg + ", mush match regExp:" + ruleColData.getRegExp(),
+										Pattern.matches(ruleColData.getRegExp().trim(),
+												String.valueOf(colDataInDbValue)));
 							}
 						}
+
 					} else {
-						// FIXME 目前暂时先忽略对未定义列的验证，以后增加目标库正则等验证规则
+						if (colDataInTargetTab instanceof Date) {
+							Assert.assertTrue(assertMsg, (colDataInDbValue instanceof Date));
+							String colDataInDbValueFixed = DateUtils.getStringFromDBDate((Date) colDataInDbValue,
+									currDbTimeDiff);
+							Assert.assertEquals(assertMsg, DateUtils.formatDateNormal((Date) colDataInTargetTab),
+									colDataInDbValueFixed);
+						} else {
+							Assert.assertEquals(assertMsg, colDataInTargetTab, colDataInDbValue);
+						}
 					}
+				} else {
+					// FIXME 目前暂时先忽略对未定义列的验证，以后增加目标库正则等验证规则
 				}
 			}
 		}
