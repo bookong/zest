@@ -126,5 +126,13 @@
 			</build>
 		</profile>
 	</profiles>
+	
+	<distributionManagement>
+		<repository>
+			<id>zest-releases</id>
+			<name>Zest Repository</name>
+			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
 </project>
