@@ -29,7 +29,7 @@ public class ZestStatement extends Statement {
     	Class<?>[] paramClasses = testMethod.getMethod().getParameterTypes(); // 方法所有的参数定义
     	TestCaseData testCase = launcher.loadCurrTestCaseFile(createTestParam(paramClasses));
     	launcher.showTestCaseDesc();
-    	launcher.initDb();
+    	
     	
 		Annotation[][] allParamAnnotations = testMethod.getMethod().getParameterAnnotations();
 		Object[] paramArrayOfObject = new Object[paramClasses.length];
@@ -38,6 +38,8 @@ public class ZestStatement extends Statement {
 		}
 		
 		runZestBeforeMethod(testCase);
+		
+		launcher.initDb();
 		testMethod.invokeExplosively(target, paramArrayOfObject);
 
 		launcher.checkTargetDb();
