@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.github.bookong</groupId>
 		<artifactId>zest</artifactId>
-		<version>0.1.4-SNAPSHOT</version>
+		<version>0.1.5-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>zest-core</artifactId>
@@ -13,10 +13,6 @@
 	<properties>
 		<dbunit-version>2.5.0</dbunit-version>
 	</properties>
-
-	<build>
-		<finalName>${project.artifactId}</finalName>
-	</build>
 
 	<dependencies>
 		<!-- 
