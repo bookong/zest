@@ -5,7 +5,7 @@
     <artifactId>zest</artifactId>
     <packaging>pom</packaging>
     <name>DB Unit Testing toolkit - ZEST!</name>
-    <version>0.1.5-SNAPSHOT</version>
+    <version>0.1.6-SNAPSHOT</version>
     
     <description>An easy-to-use database unit testing toolkit, support for Spring.</description>
     <url>https://github.com/bookong/zest</url>
@@ -113,7 +113,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.1</version>
+						<version>1.5</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
