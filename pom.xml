@@ -18,12 +18,11 @@
         </license>
     </licenses>
 
-    <scm>
-        <url>https://github.com/bookong/zest</url>
-		<connection>scm:git:git://github.com/bookong/zest.git</connection>
-		<developerConnection>scm:git:https://bookong@github.com/bookong/zest.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+	<scm>
+		<connection>scm:git:git@github.com:bookong/zest.git</connection>
+		<developerConnection>scm:git:git@github.com:bookong/zest.git</developerConnection>
+		<url>git@github.com:bookong/zest.git</url>
+	</scm>
     
     <modules>
 		<module>zest-core</module>
