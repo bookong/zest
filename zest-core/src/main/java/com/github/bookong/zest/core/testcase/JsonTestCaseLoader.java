@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import net.sf.json.JSONException;
+import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.FileUtils;
@@ -81,7 +82,7 @@ public class JsonTestCaseLoader extends AbstractTestCaseLoader {
 			NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 		Field field = ReflectHelper.getFieldByFieldName(parent, fieldName);
 
-		if ((paramValue.get(fieldName) instanceof JSONObject) && paramValue.getJSONObject(fieldName).isNullObject()) {
+		if (paramValue.get(fieldName) instanceof JSONNull) {
 			ReflectHelper.setValueByFieldName(parent, fieldName, null);
 			return;
 		}

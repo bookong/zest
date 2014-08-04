@@ -2,10 +2,10 @@ package com.github.bookong.zest.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -111,7 +111,7 @@ public class LoadTestCaseUtils {
 
 	private static Object parseColData(String colTypeDesc, JSONObject colData, Class<?> colClazz) {
 		Object value = colData.get(colTypeDesc);
-		if (value instanceof JSONObject && ((JSONObject) value).isNullObject()) {
+		if (value instanceof JSONNull) {
 			return null;
 		}
 
