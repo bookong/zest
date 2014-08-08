@@ -131,7 +131,6 @@ public class ZestLauncher implements Launcher {
 		EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
 		eachNotifier.fireTestStarted();
 		try {
-			currTestCaseFilePath = frameworkMethod.getTestCaseFilePath();
 			Statement statement = methodBlock(frameworkMethod);
 			statement.evaluate();
 		} catch (AssumptionViolatedException e) {
@@ -159,8 +158,8 @@ public class ZestLauncher implements Launcher {
 		} catch (Throwable e) {
 			return new Fail(e);
 		}
-
-		loadTestCaseData(method.getMethod().getParameterTypes());
+		
+		loadTestCaseData(method);
 		showTestCaseDesc();
 		
 		ZestStatement zestStatement = new ZestStatement(this, test, method);
@@ -172,8 +171,9 @@ public class ZestLauncher implements Launcher {
 		return statement;
 	}
 	
-	private void loadTestCaseData(Class<?>[] paramClasses) {
+	private void loadTestCaseData(ZestFrameworkMethod method) {
 		try {
+			Class<?>[] paramClasses = method.getMethod().getParameterTypes();
 			TestParam testParam = null;
 			int testParamCount = 0;
 			for (Class<?> paramClass : paramClasses) {
@@ -187,6 +187,7 @@ public class ZestLauncher implements Launcher {
 				throw new RuntimeException("Parameters of the method must have only one type of value TestParam.");
 			}
 			
+			currTestCaseFilePath = method.getTestCaseFilePath();
 			loadCurrTestCaseFile(testParam);
 		} catch (RuntimeException e) {
 			throw e;

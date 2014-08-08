@@ -57,7 +57,7 @@ public class JsonTestCaseLoaderTest {
 //	
 	@ZestBefore
 	public void zestBefore(Param00 param) {
-		System.out.println("=====> zest before");
+		System.out.println("=====> zest before" + param);
 	}
 	
 	@ZestAfter
@@ -68,7 +68,7 @@ public class JsonTestCaseLoaderTest {
 	@ZestTest(relativePath="zest/test", filenames={"001.json","002.json","003.json"})
 	public void test003B(Param00 pram) {
 //		Assert.assertEquals("xx", "ab", "ac");
-		System.out.println(" zest test");
+		System.out.println(" zest test" + pram);
 	}
 	
 	@Test
