@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.bookong.zest.core.testcase.data.TestCaseData;
+
 /**
  * @author jiangxu
  *
@@ -29,20 +31,28 @@ public class DateUtils {
 	}
 	
 	/** 计算要录入到数据库中的日期值（经过 currDbTimeDiff 修正过） */
-	public static Date getDateInDB(Date date, long currDbTimeDiff) {
+	public static Date getDateInDB(Date date, TestCaseData testCaseData) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.set(Calendar.MILLISECOND, 0);
-		cal.setTimeInMillis(cal.getTimeInMillis() + currDbTimeDiff);
+		
+		if (testCaseData.isTransferTime()) {
+			cal.setTimeInMillis(cal.getTimeInMillis() + testCaseData.getCurrDbTimeDiff());
+		}
+		
 		return cal.getTime();
 	}
 	
 	/** 得到数据库中 Date 类型字段在通过 currDbTimeDiff 修正以后的字符串表示 */
-	public static String getStringFromDBDate(Date date, long currDbTimeDiff) {
+	public static String getStringFromDBDate(Date date, TestCaseData testCaseData) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		cal.set(Calendar.MILLISECOND, 0);
-		cal.setTimeInMillis(cal.getTimeInMillis() - currDbTimeDiff);
+		
+		if (testCaseData.isTransferTime()) {
+			cal.setTimeInMillis(cal.getTimeInMillis() - testCaseData.getCurrDbTimeDiff());
+		}
+		
 		return DateUtils.formatDateNormal(cal.getTime());
 	}
 

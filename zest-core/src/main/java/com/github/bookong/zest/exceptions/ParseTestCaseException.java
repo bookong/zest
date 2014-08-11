@@ -1,5 +1,6 @@
 package com.github.bookong.zest.exceptions;
 
+
 /**
  * @author jiangxu
  *
@@ -14,4 +15,5 @@ public class ParseTestCaseException extends RuntimeException {
 	public ParseTestCaseException(String message, Throwable cause) {
         super(message, cause);
     }
+	
 }

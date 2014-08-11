@@ -62,10 +62,13 @@ public class LoadTestCaseUtils {
 	}
 	
 	public static Date parseDate(String value) {
+		if (StringUtils.isBlank(value)) {
+			return null;
+		}
+		value = value.trim();
+		
 		try {
 			switch (value.length()) {
-			case 23:
-				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(value);
 			case 19:
 				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value);
 			case 16:
@@ -75,18 +78,10 @@ public class LoadTestCaseUtils {
 			case 10:
 				return new SimpleDateFormat("yyyy-MM-dd").parse(value);
 			default:
-				throw new ParseTestCaseException("The date format \"" + value + "\" is not supported.");
+				throw new RuntimeException("The date format \"" + value + "\" is not supported.");
 			}
 		} catch (ParseException e) {
-			throw new ParseTestCaseException("Fail to parse date filed.", e);
-		}
-	}
-
-	public static String loadNotNullString(JSONObject json, String key) {
-		if (json.containsKey(key)) {
-			return json.getString(key);
-		} else {
-			throw new ParseTestCaseException("\"" + key + "\" must be set.");
+			throw new RuntimeException("Fail to parse date filed. value: \"" + value + "\"", e);
 		}
 	}
 

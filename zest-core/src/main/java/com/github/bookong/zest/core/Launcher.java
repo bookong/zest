@@ -13,15 +13,14 @@ import com.github.bookong.zest.core.testcase.data.TestParam;
  *
  */
 public interface Launcher {
+	
+	/** 得到被测试类 */
 	TestClass getTestObject();
 	
 	/** 读取当前指定的 test case 文件，并返回读取后的对象 */
 	void loadCurrTestCaseFile(TestParam testParam);
 	
 	TestCaseData getCurrTestCaseData();
-	
-	/** 显示 test case 的描述信息 */
-	void showTestCaseDesc();
 	
 	/** 初始化DB中数据 */
 	void initDb();
@@ -31,4 +30,5 @@ public interface Launcher {
 	
 	/** 获得 JDBC 的连接对象 */
 	Connection getJdbcConn(String databaseName);
+	
 }

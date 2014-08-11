@@ -12,8 +12,9 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableIterator;
 import org.dbunit.dataset.OrderedTableNameMap;
 
-import com.github.bookong.zest.core.testcase.data.DataBase;
+import com.github.bookong.zest.core.testcase.data.Database;
 import com.github.bookong.zest.core.testcase.data.InitTable;
+import com.github.bookong.zest.core.testcase.data.TestCaseData;
 
 /**
  * @author jiangxu
@@ -23,10 +24,10 @@ public class ZestDataSet extends AbstractDataSet {
 	protected static final Log logger = LogFactory.getLog(ZestDataSet.class);
 	private final OrderedTableNameMap _tables;
 
-	public ZestDataSet(DataBase database, long currDbTimeDiff) throws AmbiguousTableNameException {
+	public ZestDataSet(TestCaseData testCaseData, Database database) throws AmbiguousTableNameException {
 		_tables = super.createTableNameMap();
 		for (Entry<String, InitTable> entry : database.getInitTables().entrySet()) {
-			_tables.add(entry.getKey(), new ZestTable(entry.getKey(), entry.getValue(), currDbTimeDiff));
+			_tables.add(entry.getKey(), new ZestTable(testCaseData, entry.getKey(), entry.getValue()));
 		}
 	}
 

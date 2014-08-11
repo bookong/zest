@@ -1,28 +1,30 @@
 package com.github.bookong.zest.core.testcase.data;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
+
+import com.github.bookong.zest.core.testcase.data.rule.ColumnRule;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.github.bookong.zest.exceptions.ParseTestCaseException;
-import com.github.bookong.zest.util.LoadTestCaseUtils;
-
 /**
+ * 目标库相关数据
+ * 
  * @author jiangxu
  *
  */
-public class TargetTable extends InitTable {
+public class TargetTable extends AbstractTable {
 	/** 验证目标表时为了和测试用例中的顺序一直，这里记录查询用的sql */
 	private String targetTableQuerySql;
 	/** 忽略对目标表的验证 */
 	private boolean ignoreTargetTableVerify = false;
 
 	public TargetTable(InitTable initTab) {
-		getColDataTypes().putAll(initTab.getColDataTypes());
+		super(initTab.getTableName());
+		this.getColumnMetaDatas().putAll(initTab.getColumnMetaDatas());
 	}
 
+	/** 加载目标库规则 */
 	public void loadTargetDataRule(JSONObject jsonObject) {
 		if (jsonObject.containsKey("ignore")) {
 			ignoreTargetTableVerify = jsonObject.getBoolean("ignore");
@@ -31,6 +33,7 @@ public class TargetTable extends InitTable {
 		}
 	}
 
+	/** 加载目标表数据 */
 	public void loadTargetData(String tabName, InitTable initTab, JSONObject jsonObject) {
 		try {
 			if (ignoreTargetTableVerify) {
@@ -41,8 +44,7 @@ public class TargetTable extends InitTable {
 				// 指定了要验证什么
 				JSONArray tabJson = jsonObject.getJSONArray(tabName);
 				for (int i = 0; i < tabJson.size(); i++) {
-					JSONObject obj = tabJson.getJSONObject(i);
-					loadRow(obj, getColDataTypes());
+					loadRow(tabJson.getJSONObject(i));
 				}
 			} else {
 				// 未指定，且没设置忽略这个表的验证，则目标与初始内容一致
@@ -51,46 +53,45 @@ public class TargetTable extends InitTable {
 				}
 			}
 		} catch (Exception e) {
-			throw new ParseTestCaseException("Fail to load target data. table name:" + tabName, e);
+			throw new RuntimeException("Fail to load target table \"" + tabName + "\"", e);
 		}
 	}
 
-	private void loadRow(JSONObject json, Map<String, Class<?>> colDataTypes) {
-		LinkedHashMap<String, Object> rowDatas = new LinkedHashMap<String, Object>();
-		getDatas().add(rowDatas);
+	/** 加载每行数据 */
+	private void loadRow(JSONObject json) {
+		try {
+			LinkedHashMap<String, Object> rowDatas = new LinkedHashMap<String, Object>();
+			getDatas().add(rowDatas);
 
-		for (Object colName : json.keySet()) {
-			Object jsonData = json.get(colName);
-			Object colData = loadColData(colName.toString(), jsonData, colDataTypes);
-			rowDatas.put(colName.toString(), colData);
-		}
-	}
-
-	private Object loadColData(String colName, Object data, Map<String, Class<?>> colDataTypes) {
-		if (data != null && (data instanceof JSONObject)) {
-			JSONObject json = (JSONObject) data;
-			if (json.containsKey("regExp") || json.containsKey("nullable") || json.containsKey("currentTime")) {
-				RuleColData colData = new RuleColData();
-				
-				if (json.containsKey("nullable")) {
-					colData.setNullable(json.getBoolean("nullable"));
-				}
-				
-				if (json.containsKey("regExp")) {
-					colData.setRegExp(json.getString("regExp"));
-				} 
-				
-				if (json.containsKey("currentTime")) {
-					colData.setCurrentTime(json.getBoolean("currentTime"));
-				}
-
-				return colData;
+			for (Object key : json.keySet()) {
+				String colName = (String)key;
+				Object jsonData = json.get(colName);
+				Object colData = loadColData(colName.toString(), jsonData);
+				rowDatas.put(colName.toString(), colData);
 			}
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Fail to load table row \"" + json + "\"", e);
 		}
-
-		return LoadTestCaseUtils.loadColData(colName.toString(), data, colDataTypes);
 	}
 
+	@Override
+	protected Object loadColData(String colName, Object data) {
+		try {
+			if (data != null && (data instanceof JSONObject)) {
+				ColumnRule cr = ColumnRule.parseColumnRule((JSONObject) data);
+				if (cr != null) {
+					return cr;
+				}
+			}
+
+			return super.loadColData(colName, data);
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Fail to load column \"" + colName + "\", data:\"" + data + "\"", e);
+		}
+	}
+	
 	public String getTargetTableQuerySql() {
 		return targetTableQuerySql;
 	}

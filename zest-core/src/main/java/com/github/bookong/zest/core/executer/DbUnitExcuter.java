@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.dbunit.database.DatabaseConnection;
@@ -13,122 +12,123 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Assert;
 
-import com.github.bookong.zest.core.testcase.data.DataBase;
-import com.github.bookong.zest.core.testcase.data.RuleColData;
+import com.github.bookong.zest.core.testcase.data.Database;
 import com.github.bookong.zest.core.testcase.data.TargetTable;
+import com.github.bookong.zest.core.testcase.data.TestCaseData;
+import com.github.bookong.zest.core.testcase.data.rule.ColumnRule;
 import com.github.bookong.zest.thirdparty.dbunit.ZestDataSet;
 import com.github.bookong.zest.util.DateUtils;
 import com.github.bookong.zest.util.SqlHelper;
 
 /**
+ * 使用 DBUnit 的执行器
+ * 
  * @author jiangxu
  *
  */
 public class DbUnitExcuter extends AbstractJdbcExcuter {
 
-	private IDatabaseConnection dbUnitConn;
-	private ZestDataSet zestDataSet;
-	private long initDBTime;
-	private long checkTargetDBTime;
-
 	@Override
-	public void initDatabase(Connection connection, DataBase database, long currDbTimeDiff) {
+	public void initDatabase(Connection connection, TestCaseData testCaseData, Database db) {
 		try {
-			initDBTime = System.currentTimeMillis();
-			dbUnitConn = new DatabaseConnection(connection);
-			zestDataSet = new ZestDataSet(database, currDbTimeDiff);
+			testCaseData.setInitDBTime(System.currentTimeMillis());
+			IDatabaseConnection dbUnitConn = new DatabaseConnection(connection);
+			ZestDataSet zestDataSet = new ZestDataSet(testCaseData, db);
 
 			DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
 			DatabaseOperation.INSERT.execute(dbUnitConn, zestDataSet);
 		} catch (Exception e) {
-			throw new RuntimeException("Fail to init database", e);
+			throw new RuntimeException("Fail to init database with DBUnit, DB:\"" + db.getDatabaseName() + "\"", e);
 		}
 	}
 
 	@Override
-	public void checkTargetDatabase(Connection connection, DataBase database, long currDbTimeDiff) {
+	public void checkTargetDatabase(Connection connection, TestCaseData testCaseData, Database db) {
 		try {
-			checkTargetDBTime = System.currentTimeMillis();
-			for (Entry<String, TargetTable> entry : database.getTargetTables().entrySet()) {
+			testCaseData.setCheckTargetDBTime(System.currentTimeMillis());
+			for (Entry<String, TargetTable> entry : db.getTargetTables().entrySet()) {
 				if (entry.getValue().isIgnoreTargetTableVerify()) {
-					System.out.println("Ignore target table \"" + entry.getKey() + "\" verify.");
+					System.out.println("DB: \"" + db.getDatabaseName() + "\", table \"" + entry.getKey()
+							+ "\" ignore verify.");
 				} else {
-					verifyTable(connection, entry.getKey(), entry.getValue(), currDbTimeDiff);
+					verifyTable(connection, db, testCaseData, entry.getValue());
 				}
 			}
-
-			DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
+			
+		} catch (AssertionError e) {
+			throw e;
 		} catch (Exception e) {
-			throw new RuntimeException("Fail to check target database", e);
+			throw new RuntimeException("Fail to check target database: \"" + db.getDatabaseName() + "\"", e);
 		}
 	}
 
-	private void verifyTable(Connection connection, String tabName, TargetTable targetTab, long currDbTimeDiff)
-			throws Exception {
-		System.out.println("Verify target table:\"" + tabName + "\"");
+	/** 验证表数据 */
+	private void verifyTable(Connection conn, Database db, TestCaseData testCaseData, TargetTable targetTab) {
+		String baseMessage = "DB: \"" + db.getDatabaseName() + "\", Table:\"" + targetTab.getTableName() + "\"";
+		System.out.println(baseMessage + " verifying...");
+		
+		try {
+			List<Map<String, Object>> datasInDb = getDatasInDb(conn, targetTab);
+			Assert.assertEquals(baseMessage + " row count.", targetTab.getDatas().size(), datasInDb.size());
 
+			for (int rowIdx = 0; rowIdx < datasInDb.size(); rowIdx++) {
+				Map<String, Object> actualRowDatas = datasInDb.get(rowIdx);
+				Map<String, Object> expectedRowDatas = targetTab.getDatas().get(rowIdx);
+				verifyRowData((baseMessage + ", Row:" + rowIdx), testCaseData, expectedRowDatas, actualRowDatas);
+			}
+		} catch (AssertionError e) {
+			throw e;
+		} catch (Exception e) {
+			throw new RuntimeException("Fail to check target table: \"" + targetTab.getTableName() + "\"", e);
+		}
+	}
+	
+	/** 验证每行的数据 */
+	private void verifyRowData(String baseMessage, TestCaseData testCaseData, Map<String, Object> expectedRowDatas,
+			Map<String, Object> actualRowDatas) {
+		
+		for (Entry<String, Object> item : expectedRowDatas.entrySet()) {
+			String expectedColName =  item.getKey();
+			Object expectedColData = item.getValue();
+			baseMessage += ", Column:\"" + expectedColName + "\" - ";
+			
+			// 只验证 expected 中指定的列
+			Assert.assertTrue(baseMessage + "must has column \"" + expectedColName + "\"",
+					actualRowDatas.containsKey(expectedColName));
+			
+			Object actualColData = actualRowDatas.get(expectedColName);
+			
+			if (expectedColData == null) {
+				Assert.assertTrue(baseMessage + "must be NULL", (actualColData == null));
+				
+			} else if (expectedColData instanceof ColumnRule) {
+				// 通过规则来验证
+				((ColumnRule)expectedColData).verify(baseMessage, testCaseData, actualColData);
+				
+			} else if (expectedColData instanceof Date){
+				// 具体值验证 - 日期
+				Assert.assertTrue(baseMessage + "must be Date", (actualColData instanceof Date));
+				Assert.assertEquals(baseMessage, 
+						DateUtils.formatDateNormal((Date) expectedColData),
+						DateUtils.getStringFromDBDate((Date)actualColData, testCaseData));
+			} else {
+				// 具体值验证 - 非日期的其他类型
+				Assert.assertTrue(baseMessage + "must be NOT NULL", (actualColData != null));
+				Assert.assertEquals(baseMessage, String.valueOf(expectedColData), String.valueOf(actualColData));
+			}
+		}
+	}
+	
+	/** 从数据库读取指定表数据 */
+	private List<Map<String, Object>> getDatasInDb(Connection conn, TargetTable targetTab) {
 		String sql = "";
 		if (StringUtils.isNotBlank(targetTab.getTargetTableQuerySql())) {
 			sql = targetTab.getTargetTableQuerySql();
 		} else {
-			sql = "select * from " + tabName;
+			sql = "select * from " + targetTab.getTableName();
 		}
 
-		List<Map<String, Object>> datasInDb = SqlHelper.findDataInDatabase(connection, sql);
-		Assert.assertEquals("verify target table \"" + tabName + "\", row count.", targetTab.getDatas().size(), datasInDb.size());
-
-		for (int rowIdx = 0; rowIdx < datasInDb.size(); rowIdx++) {
-			Map<String, Object> rowDataInDb = datasInDb.get(rowIdx);
-			Map<String, Object> rowDataInTargetTab = targetTab.getDatas().get(rowIdx);
-			for (Entry<String, Object> colDataInDb : rowDataInDb.entrySet()) {
-				String colDataInDbName = colDataInDb.getKey();
-				Object colDataInDbValue = colDataInDb.getValue();
-				String assertMsg = "Verify target table \"" + tabName + "\" col \"" + colDataInDbName + "\"";
-				if (rowDataInTargetTab.containsKey(colDataInDbName)) {
-					Object colDataInTargetTab = rowDataInTargetTab.get(colDataInDbName);
-					if (colDataInTargetTab == null) {
-						Assert.assertNull(assertMsg, colDataInDbValue);
-					} else if (colDataInTargetTab instanceof RuleColData) {
-						RuleColData ruleColData = (RuleColData) colDataInTargetTab;
-						if (!ruleColData.isNullable()) {
-							Assert.assertNotNull(assertMsg + ", must not null", colDataInDbValue);
-						}
-
-						if (colDataInDbValue != null) {
-							if (ruleColData.getCurrentTime() != null && ruleColData.getCurrentTime().booleanValue()) {
-								Assert.assertTrue(assertMsg, (colDataInDbValue instanceof Date));
-								long tmp = ((Date) colDataInDbValue).getTime();
-								Assert.assertTrue(assertMsg + ", must be current time",
-										(tmp >= initDBTime && tmp <= checkTargetDBTime));
-							}
-
-							if (StringUtils.isNotBlank(ruleColData.getRegExp())) {
-								Assert.assertTrue(
-										assertMsg + ", mush match regExp:" + ruleColData.getRegExp(),
-										Pattern.matches(ruleColData.getRegExp().trim(),
-												String.valueOf(colDataInDbValue)));
-							}
-						}
-
-					} else {
-						if (colDataInTargetTab instanceof Date) {
-							Assert.assertTrue(assertMsg, (colDataInDbValue instanceof Date));
-							String colDataInDbValueFixed = DateUtils.getStringFromDBDate((Date) colDataInDbValue,
-									currDbTimeDiff);
-							Assert.assertEquals(assertMsg, DateUtils.formatDateNormal((Date) colDataInTargetTab),
-									colDataInDbValueFixed);
-						} else {
-							Assert.assertEquals(assertMsg, colDataInTargetTab, colDataInDbValue);
-						}
-					}
-				} else {
-					// FIXME 目前暂时先忽略对未定义列的验证，以后增加目标库正则等验证规则
-				}
-			}
-		}
+		return SqlHelper.findDataInDatabase(conn, sql);
 	}
 
-	public IDatabaseConnection getDbUnitConn() {
-		return dbUnitConn;
-	}
 }

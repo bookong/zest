@@ -1,94 +1,101 @@
 package com.github.bookong.zest.core.testcase.data;
 
-import java.util.Date;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
-import com.github.bookong.zest.exceptions.ParseTestCaseException;
+import com.github.bookong.zest.core.Launcher;
 
 /**
- * 测试数据
+ * 测试用的所有数据
  * 
  * @author jiangxu
  *
  */
 public class TestCaseData {
+	private static final String JSON_KEY_INIT = "init";
+	private static final String JSON_KEY_TARGET = "target";
+	private static final String JSON_KEY_TARGET_RULE = "targetRule";
+	
+	/** 测试数据的描述 */
 	private String desc;
-	private Date testCaseRunningTime;
+	/** 对于日期类型，在插入数据库时是否需要做偏移处理 */
+	private boolean transferTime = false;
+	/** 如果日期需要偏移处理，当前时间与测试用例上描述的时间相差多少毫秒 */
 	private long currDbTimeDiff;
-	private Map<String, DataBase> dataBases = new HashMap<String, DataBase>();
+	/** 各个数据库的具体内容 */
+	private Map<String, Database> dataBases = new HashMap<String, Database>();
+	/** 测试参数 */
 	private TestParam param;
+	/** 开始初始化数据库的时间 */
+	private long initDBTime;
+	/** 开始进行目标库检查的时间 */
+	private long checkTargetDBTime;
+	
+	/** 加载 json 文件中 init, target, targetRule 部分内容 */
+	public void load(Launcher zestLauncher, JSONObject root) {
+		loadInitData(zestLauncher, root);
+		loadTargetDataRule(root);
+		loadTargetData(root);
+	}
 
 	/** 加载初始化数据库用的数据 */
-	public void loadInitData(JSONObject root) {
+	private void loadInitData(Launcher zestLauncher, JSONObject root) {
 		try {
-			JSONObject initJson = root.getJSONObject("init");
+			JSONObject initJson = root.getJSONObject(JSON_KEY_INIT);
 			for (Object key : initJson.keySet()) {
 				String dbName = (String) key;
-				DataBase db = new DataBase();
-				db.loadInitData(dbName, initJson.getJSONObject(dbName));
+				
+				Connection conn = zestLauncher.getJdbcConn(dbName);
+				Database db = new Database();
+				db.loadInitData(conn, dbName, initJson.getJSONObject(dbName));
 				dataBases.put(dbName, db);
 			}
 		} catch (Exception e) {
-			throw new ParseTestCaseException("Fail to parse part \"init\".", e);
+			throw new RuntimeException("Fail to parse part \"" + JSON_KEY_INIT + "\".", e);
 		}
 	}
 	
 	/** 加载测试结果的验证规则 */
-	public void loadTargetDataRule(JSONObject root) {
+	private void loadTargetDataRule(JSONObject root) {
 		try {
-			JSONObject targetRuleJson = root.getJSONObject("targetRule");
+			JSONObject targetRuleJson = root.getJSONObject(JSON_KEY_TARGET_RULE);
 			if (targetRuleJson != null) {
 				for (Object key : targetRuleJson.keySet()) {
 					String dbName = (String) key;
-					DataBase db = dataBases.get(dbName);
+					Database db = dataBases.get(dbName);
 					if (db == null) {
-						throw new ParseTestCaseException("Unknown database name:" + dbName);
+						throw new RuntimeException("Unknown database name:" + dbName);
 					}
 					db.loadTargetDataRule(dbName, targetRuleJson.getJSONObject(dbName));
 				}
 			}
 		} catch (Exception e) {
-			throw new ParseTestCaseException("Fail to parse part \"targetRule\".", e);
+			throw new RuntimeException("Fail to parse part \"" + JSON_KEY_TARGET_RULE + "\".", e);
 		}
 	}
 	
 	/** 加载测试后目标库 */
-	public void loadTargetData(JSONObject root) {
+	private void loadTargetData(JSONObject root) {
 		try {
-			JSONObject targetJson = root.getJSONObject("target");
+			JSONObject targetJson = root.getJSONObject(JSON_KEY_TARGET);
 			if (targetJson != null) {
 				for (Object key : targetJson.keySet()) {
 					String dbName = (String) key;
-					DataBase db = dataBases.get(dbName);
+					Database db = dataBases.get(dbName);
 					if (db == null) {
-						throw new ParseTestCaseException("Unknown database name:" + dbName);
+						throw new RuntimeException("Unknown database name:" + dbName);
 					}
 					db.loadTarget(dbName, targetJson.getJSONObject(dbName));
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Fail to parse part \"target\".", e);
+			throw new RuntimeException("Fail to parse part \"" + JSON_KEY_TARGET + "\".", e);
 		}
 	}
 	
-	@Override
-	public String toString() {
-		StringBuilder buff = new StringBuilder();
-		buff.append("desc:").append(desc).append("\n");
-		buff.append("currDbTimeDiff:").append(currDbTimeDiff).append("\n");
-		buff.append("dataBases:\n");
-		for (Entry<String, DataBase> entry : dataBases.entrySet()) {
-			buff.append("\tdata base:").append(entry.getKey()).append("\n");
-			buff.append(entry.getValue().toString()).append("\n");
-		}
-		buff.append("param:").append(param);
-		return buff.toString();
-	}
-
 	public String getDesc() {
 		return desc;
 	}
@@ -113,15 +120,32 @@ public class TestCaseData {
 		this.currDbTimeDiff = currDbTimeDiff;
 	}
 
-	public Map<String, DataBase> getDataBases() {
+	public Map<String, Database> getDataBases() {
 		return dataBases;
 	}
 
-	public Date getTestCaseRunningTime() {
-		return testCaseRunningTime;
+	public boolean isTransferTime() {
+		return transferTime;
 	}
 
-	public void setTestCaseRunningTime(Date testCaseRunningTime) {
-		this.testCaseRunningTime = testCaseRunningTime;
+	public void setTransferTime(boolean transferTime) {
+		this.transferTime = transferTime;
 	}
+
+	public long getInitDBTime() {
+		return initDBTime;
+	}
+
+	public void setInitDBTime(long initDBTime) {
+		this.initDBTime = initDBTime;
+	}
+
+	public long getCheckTargetDBTime() {
+		return checkTargetDBTime;
+	}
+
+	public void setCheckTargetDBTime(long checkTargetDBTime) {
+		this.checkTargetDBTime = checkTargetDBTime;
+	}
+
 }

@@ -36,12 +36,16 @@ import com.github.bookong.zest.core.annotations.ZestTest;
 import com.github.bookong.zest.core.executer.AbstractExcuter;
 import com.github.bookong.zest.core.executer.AbstractJdbcExcuter;
 import com.github.bookong.zest.core.testcase.JsonTestCaseLoader;
-import com.github.bookong.zest.core.testcase.data.DataBase;
+import com.github.bookong.zest.core.testcase.data.Database;
 import com.github.bookong.zest.core.testcase.data.TestCaseData;
 import com.github.bookong.zest.core.testcase.data.TestParam;
 import com.github.bookong.zest.exceptions.LoadTestCaseFileException;
 import com.github.bookong.zest.util.ReflectHelper;
 
+/**
+ * @author jiangxu
+ *
+ */
 public class ZestLauncher implements Launcher {
 	private JsonTestCaseLoader testCaseLoader = new JsonTestCaseLoader();
 	/** 被测试的对象 */
@@ -127,6 +131,7 @@ public class ZestLauncher implements Launcher {
 		}
 	}
 	
+	/** 运行单元测试 */
 	private void runTestCase(ZestFrameworkMethod frameworkMethod, Description description, RunNotifier notifier) {
 		EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
 		eachNotifier.fireTestStarted();
@@ -146,7 +151,7 @@ public class ZestLauncher implements Launcher {
 		}
 	}
 
-	private Statement methodBlock(ZestFrameworkMethod method) {
+	private Statement methodBlock(ZestFrameworkMethod method) throws Exception {
 		Object test;
 		try {
 			test = new ReflectiveCallable() {
@@ -160,7 +165,6 @@ public class ZestLauncher implements Launcher {
 		}
 		
 		loadTestCaseData(method);
-		showTestCaseDesc();
 		
 		ZestStatement zestStatement = new ZestStatement(this, test, method);
 		Statement statement = withZestBefores(this, test, zestStatement);
@@ -171,29 +175,26 @@ public class ZestLauncher implements Launcher {
 		return statement;
 	}
 	
-	private void loadTestCaseData(ZestFrameworkMethod method) {
-		try {
-			Class<?>[] paramClasses = method.getMethod().getParameterTypes();
-			TestParam testParam = null;
-			int testParamCount = 0;
-			for (Class<?> paramClass : paramClasses) {
-				if (TestParam.class.isAssignableFrom(paramClass)) {
-					testParamCount++;
-					testParam = (TestParam)paramClass.newInstance();
-				}
+	private void loadTestCaseData(ZestFrameworkMethod method) throws Exception {
+		Class<?>[] paramClasses = method.getMethod().getParameterTypes();
+		TestParam testParam = null;
+		int testParamCount = 0;
+		for (Class<?> paramClass : paramClasses) {
+			if (TestParam.class.isAssignableFrom(paramClass)) {
+				testParamCount++;
+				testParam = (TestParam)paramClass.newInstance();
 			}
-			
-			if (testParamCount != 1) {
-				throw new RuntimeException("Parameters of the method must have only one type of value TestParam.");
-			}
-			
-			currTestCaseFilePath = method.getTestCaseFilePath();
-			loadCurrTestCaseFile(testParam);
-		} catch (RuntimeException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
+		
+		if (testParamCount != 1) {
+			throw new RuntimeException("Parameters of the method must have only one type of value TestParam.");
+		}
+		
+		currTestCaseFilePath = method.getTestCaseFilePath();
+		loadCurrTestCaseFile(testParam);
+		
+		System.out.println("[Zest] Test Case \"" + currTestCaseData.getDesc() + "\"");
+		System.out.println(currTestCaseFilePath);
 	}
 
 	private Statement withBefores(Object target, Statement statement) {
@@ -252,24 +253,17 @@ public class ZestLauncher implements Launcher {
 	public void loadCurrTestCaseFile(TestParam testParam) {
 		currTestCaseData = new TestCaseData();
 		currTestCaseData.setParam(testParam);
-		testCaseLoader.loadFromAbsolutePath(currTestCaseFilePath, currTestCaseData);
-	}
-
-	@Override
-	public void showTestCaseDesc() {
-		System.out.println("[Zest] Test Case \"" + currTestCaseData.getDesc() + "\"");
-		System.out.println(currTestCaseFilePath);
+		testCaseLoader.loadFromAbsolutePath(currTestCaseFilePath, currTestCaseData, this);
 	}
 
 	@Override
 	public void initDb() {
-		for (Entry<String, DataBase> entry : currTestCaseData.getDataBases().entrySet()) {
+		for (Entry<String, Database> entry : currTestCaseData.getDataBases().entrySet()) {
 			String databaseName = entry.getKey();
 			AbstractExcuter executer = executerMap.get(databaseName);
 			if (executer instanceof AbstractJdbcExcuter) {
 				Connection connection = connectionMap.get(databaseName);
-				((AbstractJdbcExcuter) executer).initDatabase(connection, entry.getValue(),
-						currTestCaseData.getCurrDbTimeDiff());
+				((AbstractJdbcExcuter) executer).initDatabase(connection, currTestCaseData, entry.getValue());
 			}
 			// FIXME 以后可能有 Mongo 的 Excuter
 		}
@@ -281,16 +275,15 @@ public class ZestLauncher implements Launcher {
 	 * @see net.bookong.minion.core.TestCaseOperator#checkTargetDb()
 	 */
 	public void checkTargetDb() {
-		for (Entry<String, DataBase> entry : currTestCaseData.getDataBases().entrySet()) {
+		for (Entry<String, Database> entry : currTestCaseData.getDataBases().entrySet()) {
 			String databaseName = entry.getKey();
 			if (entry.getValue().isIgnoreTargetDbVerify()) {
-				System.out.println("Ignore target database verify. Database name:" + entry.getKey());
+				System.out.println("DB: \"" + entry.getKey() + "\" ignore verify.");
 			} else {
 				AbstractExcuter executer = executerMap.get(databaseName);
 				if (executer instanceof AbstractJdbcExcuter) {
 					Connection connection = connectionMap.get(databaseName);
-					((AbstractJdbcExcuter) executer).checkTargetDatabase(connection, entry.getValue(),
-							currTestCaseData.getCurrDbTimeDiff());
+					((AbstractJdbcExcuter) executer).checkTargetDatabase(connection, currTestCaseData, entry.getValue());
 				}
 				// FIXME 以后可能有 Mongo 的 Excuter
 			}
