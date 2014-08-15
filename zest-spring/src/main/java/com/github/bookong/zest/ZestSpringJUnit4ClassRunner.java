@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.Statement;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -54,5 +53,10 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner impleme
 	@Override
 	public Connection getConnection(DataSource dataSource) {
 		return DataSourceUtils.getConnection(dataSource);
+	}
+	
+	@Override
+	public Object createTest() throws Exception {
+		return super.createTest();
 	}
 }

@@ -58,27 +58,13 @@ public class ZestLauncher implements Launcher {
 	private Map<String, Connection> connectionMap = new HashMap<String, Connection>();
 	/** 要测试的数据库对应的执行器 */
 	private Map<String, AbstractExcuter> executerMap = new HashMap<String, AbstractExcuter>();
+	
+	private ZestClassRunner zestClassRunner;
 
 	/** 在 BlockJUnit4ClassRunner 子类的构造函数中调用 */
 	public void junit4ClassRunnerConstructor(TestClass testObject, ZestClassRunner zestClassRunner) {
 		this.testObject = testObject;
-
-		for (Field f : testObject.getClass().getDeclaredFields()) {
-			ZestDataSource zestDataSource = f.getAnnotation(ZestDataSource.class);
-			if (zestDataSource != null) {
-				Object obj = ReflectHelper.getValueByFieldName(testObject.getClass(), f.getName());
-				if (obj instanceof DataSource) {
-					setConnection(zestDataSource.value(), zestClassRunner.getConnection((DataSource) obj));
-				}
-
-				try {
-					setExecuter(zestDataSource.value(), zestDataSource.executerClazz().newInstance());
-				} catch (Exception e) {
-					throw new RuntimeException("Fail to set executer. Executer class:"
-							+ zestDataSource.executerClazz().getName(), e);
-				}
-			}
-		}
+		this.zestClassRunner = zestClassRunner;
 	}
 
 	/** 在 BlockJUnit4ClassRunner 子类的 collectInitializationErrors 方法中调用 */
@@ -157,13 +143,14 @@ public class ZestLauncher implements Launcher {
 			test = new ReflectiveCallable() {
 				@Override
 				protected Object runReflectiveCall() throws Throwable {
-					return testObject.getOnlyConstructor().newInstance();
+					return zestClassRunner.createTest();
 				}
 			}.run();
 		} catch (Throwable e) {
 			return new Fail(e);
 		}
 		
+		loadAutowiredFieldFromTest(test);
 		loadTestCaseData(method);
 		
 		ZestStatement zestStatement = new ZestStatement(this, test, method);
@@ -173,6 +160,29 @@ public class ZestLauncher implements Launcher {
 		statement = withAfters(test, statement);
 		
 		return statement;
+	}
+	
+	/** 加载自动注入的内容 */
+	private void loadAutowiredFieldFromTest(Object test) {
+		connectionMap.clear();
+		executerMap.clear();
+
+		for (Field f : test.getClass().getDeclaredFields()) {
+			ZestDataSource zestDataSource = f.getAnnotation(ZestDataSource.class);
+			if (zestDataSource != null) {
+				Object obj = ReflectHelper.getValueByFieldName(test, f.getName());
+				if (obj instanceof DataSource) {
+					setConnection(zestDataSource.value(), zestClassRunner.getConnection((DataSource) obj));
+				}
+
+				try {
+					setExecuter(zestDataSource.value(), zestDataSource.executerClazz().newInstance());
+				} catch (Exception e) {
+					throw new RuntimeException("Fail to set executer. Executer class:"
+							+ zestDataSource.executerClazz().getName(), e);
+				}
+			}
+		}
 	}
 	
 	private void loadTestCaseData(ZestFrameworkMethod method) throws Exception {
@@ -221,14 +231,14 @@ public class ZestLauncher implements Launcher {
 		if (StringUtils.isNotBlank(zest.absoluteDir())) {
 			return rightDir(zest.absoluteDir());
 		} else if (StringUtils.isNotBlank(zest.relativePath())) {
-			URL url = getClass().getClassLoader().getResource(zest.relativePath());
+			URL url = testObject.getJavaClass().getClassLoader().getResource(zest.relativePath());
 			if (url == null) {
 				throw new LoadTestCaseFileException("Wrong relative path (" + zest.relativePath() + ")");
 			}
 			return rightDir(url.getPath());
 		} else {
-			return rightDir(testObject.getClass().getResource("").getPath()
-					+ StringUtils.lowerCase(testObject.getClass().getSimpleName()) + File.separator
+			return rightDir(testObject.getJavaClass().getResource("").getPath()
+					+ StringUtils.lowerCase(testObject.getJavaClass().getSimpleName()) + File.separator
 					+ StringUtils.lowerCase(frameworkMethod.getName()));
 		}
 	}

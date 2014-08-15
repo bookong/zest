@@ -53,4 +53,9 @@ public class ZestJUnit4ClassRunner extends BlockJUnit4ClassRunner implements Zes
 	public Connection getConnection(DataSource dataSource) {
 		return null;
 	}
+	
+	@Override
+	public Object createTest() throws Exception {
+		return super.createTest();
+	}
 }

@@ -1,12 +1,14 @@
 package com.github.bookong.zest.core.executer;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.operation.DatabaseOperation;
@@ -27,13 +29,16 @@ import com.github.bookong.zest.util.SqlHelper;
  *
  */
 public class DbUnitExcuter extends AbstractJdbcExcuter {
+	
+	private IDatabaseConnection dbUnitConn;
+	private ZestDataSet zestDataSet;
 
 	@Override
 	public void initDatabase(Connection connection, TestCaseData testCaseData, Database db) {
 		try {
 			testCaseData.setInitDBTime(System.currentTimeMillis());
-			IDatabaseConnection dbUnitConn = new DatabaseConnection(connection);
-			ZestDataSet zestDataSet = new ZestDataSet(testCaseData, db);
+			dbUnitConn = new DatabaseConnection(connection);
+			zestDataSet = new ZestDataSet(testCaseData, db);
 
 			DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
 			DatabaseOperation.INSERT.execute(dbUnitConn, zestDataSet);
@@ -59,6 +64,11 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
 			throw e;
 		} catch (Exception e) {
 			throw new RuntimeException("Fail to check target database: \"" + db.getDatabaseName() + "\"", e);
+		} finally {
+			try {
+				DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
+			} catch (Exception e) {
+			}
 		}
 	}
 
