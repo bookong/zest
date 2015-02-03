@@ -5,7 +5,7 @@
     <artifactId>zest</artifactId>
     <packaging>pom</packaging>
     <name>DB Unit Testing toolkit - ZEST!</name>
-    <version>0.1.11</version>
+    <version>0.1.12</version>
     
     <description>An easy-to-use database unit testing toolkit, support for Spring.</description>
     <url>https://github.com/bookong/zest</url>

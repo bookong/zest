@@ -7,6 +7,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.runner.manipulation.Filter;
+import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -48,6 +50,11 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner impleme
 		} else {
 			zestLauncher.junit4ClassRunnerRunChild(frameworkMethod, notifier);
 		}
+	}
+	
+	@Override
+	public void filter(Filter filter) throws NoTestsRemainException {
+		super.filter(new ZestFilter(filter));
 	}
 
 	@Override
