@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.github.bookong</groupId>
 		<artifactId>zest</artifactId>
-		<version>0.1.12</version>
+		<version>0.2.0</version>
 	</parent>
 
 	<artifactId>zest-core</artifactId>
@@ -12,6 +12,7 @@
 	
 	<properties>
 		<dbunit-version>2.5.0</dbunit-version>
+		<springframework-version>3.2.2.RELEASE</springframework-version>
 	</properties>
 
 	<dependencies>
@@ -35,6 +36,18 @@
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
 			<version>${dbunit-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${springframework-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${springframework-version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	

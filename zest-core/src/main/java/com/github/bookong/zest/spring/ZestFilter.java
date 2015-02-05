@@ -1,4 +1,4 @@
-package com.github.bookong.zest;
+package com.github.bookong.zest.spring;
 
 import org.junit.runner.Description;
 import org.junit.runner.manipulation.Filter;

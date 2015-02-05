@@ -5,7 +5,7 @@
     <artifactId>zest</artifactId>
     <packaging>pom</packaging>
     <name>DB Unit Testing toolkit - ZEST!</name>
-    <version>0.1.12</version>
+    <version>0.2.0</version>
     
     <description>An easy-to-use database unit testing toolkit, support for Spring.</description>
     <url>https://github.com/bookong/zest</url>
@@ -28,7 +28,6 @@
     <modules>
 		<module>zest-core</module>
 		<!-- <module>zest-maven-plugin</module>  -->
-		<module>zest-spring</module>
 	</modules>
 
     <properties>
@@ -119,14 +118,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-    <dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-    </dependencies>
 
     <developers>
         <developer>

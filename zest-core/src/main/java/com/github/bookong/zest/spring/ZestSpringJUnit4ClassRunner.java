@@ -1,4 +1,5 @@
-package com.github.bookong.zest;
+package com.github.bookong.zest.spring;
+
 
 import java.sql.Connection;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.junit.runners.model.InitializationError;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.github.bookong.zest.ZestClassRunner;
 import com.github.bookong.zest.core.ZestLauncher;
 import com.github.bookong.zest.core.annotations.ZestTest;
 
