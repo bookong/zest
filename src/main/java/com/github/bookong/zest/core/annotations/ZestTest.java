@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * 		<li>如果 absoluteDir 参数没有设置，则在 relativePath 参数指定的相对路径上查找参数 filenames 指定的文件</li>
  * 		<li>如果 absoluteDir 参数与 relativePath 参数都没有设置，则自动匹配和测试类相似的目录结构下查找参数 filenames 指定的文件。
  * 			例如：测试类为 zest.servicetest.TicketSreviceTest 测试方法为 testApplyTicket，
- * 			那么自动匹配路径为 $SOURCE/target/test-classes/zest/servicetest/ticketservicetest/testapplyticket</li>
+ * 			那么自动匹配路径为 $SOURCE/target/test-classes/zest/servicetest/TicketSreviceTest/testApplyTicket</li>
  * </ul>
  * 从找到的这些文件中（json 格式）解析测试用例需要的数据，循环执行被测试方法。<br>
  * 

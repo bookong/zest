@@ -242,8 +242,8 @@ public class Launcher {
 			return rightDir(url.getPath());
 		} else {
 			return rightDir(testObject.getJavaClass().getResource("").getPath()
-					+ StringUtils.lowerCase(testObject.getJavaClass().getSimpleName()) + File.separator
-					+ StringUtils.lowerCase(frameworkMethod.getName()));
+					+ testObject.getJavaClass().getSimpleName() + File.separator
+					+ frameworkMethod.getName());
 		}
 	}
 
