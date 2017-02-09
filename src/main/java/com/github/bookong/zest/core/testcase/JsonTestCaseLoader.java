@@ -49,6 +49,7 @@ public class JsonTestCaseLoader  {
 			jsonFileContent = FileUtils.readFileToString(file, "UTF-8");
 			JSONObject root = JSONObject.fromObject(jsonFileContent);
 			
+			testCaseData.setJsonFileName(file.getName());
 			loadDesc(testCaseData, root);
 			loadCurrDbTime(testCaseData, root);
 			testCaseData.load(zestLauncher, root);
