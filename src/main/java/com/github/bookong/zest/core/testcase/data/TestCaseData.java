@@ -21,6 +21,8 @@ public class TestCaseData {
 	
 	private ZestMetaData zestMetaData;
 	
+	/** JSON 文件名 */
+	private String jsonFileName;
 	/** 测试数据的描述 */
 	@Deprecated
 	private String desc;
@@ -163,5 +165,15 @@ public class TestCaseData {
 	public void setZestMetaData(ZestMetaData zestMetaData) {
 		this.zestMetaData = zestMetaData;
 	}
+
+    
+    public String getJsonFileName() {
+        return jsonFileName;
+    }
+
+    
+    public void setJsonFileName(String jsonFileName) {
+        this.jsonFileName = jsonFileName;
+    }
 
 }
