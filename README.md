@@ -4,3 +4,4 @@ If your version is a release version (does not end in -SNAPSHOT) and with this s
 ```
 mvn clean deploy
 ```
+
