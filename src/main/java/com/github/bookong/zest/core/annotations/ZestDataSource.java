@@ -1,6 +1,7 @@
 package com.github.bookong.zest.core.annotations;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -16,6 +17,7 @@ import com.github.bookong.zest.core.executer.DbUnitExcuter;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
+@Inherited
 public @interface ZestDataSource {
 	/** json 中定义的数据库名称 */
 	String value() default "";
