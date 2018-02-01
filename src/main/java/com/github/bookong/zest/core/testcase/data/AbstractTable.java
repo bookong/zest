@@ -57,7 +57,8 @@ public abstract class AbstractTable {
 				} else if ("tinyint".equalsIgnoreCase(md.getDbTypeName())
 						|| "byte".equalsIgnoreCase(md.getDbTypeName())
 						|| "integer".equalsIgnoreCase(md.getDbTypeName())
-						|| "int".equalsIgnoreCase(md.getDbTypeName())) {
+						|| "int".equalsIgnoreCase(md.getDbTypeName())
+						|| "bigint".equalsIgnoreCase(md.getDbTypeName())) {
 					md.setColumnClass(ColumnMetaData.TYPE_LONG);
 					
 				} else if ("datetime".equalsIgnoreCase(md.getDbTypeName())
