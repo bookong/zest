@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -85,6 +86,8 @@ public class Launcher {
 
     /** 在 BlockJUnit4ClassRunner 子类的 getChildren 方法中调用 */
     public List<FrameworkMethod> junit4ClassRunnerGetChildren(List<FrameworkMethod> list) {
+        List<FrameworkMethod> results = new ArrayList<>(list.size() + 1);
+        results.addAll(list);
         // 让 JUnit 接受 ZestTest 注解的方法
         for (FrameworkMethod method : testObject.getAnnotatedMethods(ZestTest.class)) {
             ZestTest ztest = method.getAnnotation(ZestTest.class);
@@ -96,24 +99,22 @@ public class Launcher {
                 if (searchFiles != null) {
                     for (File searchFile : searchFiles) {
                         if (searchFile.isFile()) {
-                            list.add(new ZestFrameworkMethod(method, searchFile.getAbsolutePath()));
+                            results.add(new ZestFrameworkMethod(method, searchFile.getAbsolutePath()));
                         }
                     }
                 }
             } else {
                 for (String filename : ztest.filenames()) {
-                    list.add(new ZestFrameworkMethod(method, dir + filename));
+                    results.add(new ZestFrameworkMethod(method, dir + filename));
                 }
             }
         }
-        return list;
+        return results;
     }
 
     /** 在 BlockJUnit4ClassRunner 子类的 runChild 方法中调用 */
     public void junit4ClassRunnerRunChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
-        Description description = Description.createTestDescription(testObject.getJavaClass(),
-                                                                    frameworkMethod.getName(),
-                                                                    frameworkMethod.getAnnotations());
+        Description description = Description.createTestDescription(testObject.getJavaClass(), frameworkMethod.getName(), frameworkMethod.getAnnotations());
 
         if (frameworkMethod.getAnnotation(Ignore.class) != null) {
             notifier.fireTestIgnored(description);
@@ -135,8 +136,7 @@ public class Launcher {
             eachNotifier.addFailure(e);
         } catch (Throwable e) {
             e.printStackTrace();
-            eachNotifier.addFailure(new RuntimeException("Fail to evaluate statement, test case in ("
-                                                         + frameworkMethod.getTestCaseFilePath() + ")", e));
+            eachNotifier.addFailure(new RuntimeException("Fail to evaluate statement, test case in (" + frameworkMethod.getTestCaseFilePath() + ")", e));
         } finally {
             eachNotifier.fireTestFinished();
         }
@@ -184,8 +184,7 @@ public class Launcher {
                 try {
                     setExecuter(zestDataSource.value(), zestDataSource.executerClazz().newInstance());
                 } catch (Exception e) {
-                    throw new RuntimeException("Fail to set executer. Executer class:"
-                                               + zestDataSource.executerClazz().getName(), e);
+                    throw new RuntimeException("Fail to set executer. Executer class:" + zestDataSource.executerClazz().getName(), e);
                 }
             }
         }
@@ -243,8 +242,8 @@ public class Launcher {
             }
             return rightDir(url.getPath());
         } else {
-            return rightDir(testObject.getJavaClass().getResource("").getPath() + "datas" + File.separator
-                            + testObject.getJavaClass().getSimpleName() + File.separator + frameworkMethod.getName());
+            return rightDir(testObject.getJavaClass().getResource("").getPath() + "datas" + File.separator + testObject.getJavaClass().getSimpleName() + File.separator
+                            + frameworkMethod.getName());
         }
     }
 
