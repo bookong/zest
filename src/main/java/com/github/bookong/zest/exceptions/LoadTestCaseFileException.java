@@ -4,7 +4,7 @@ package com.github.bookong.zest.exceptions;
  * @author jiangxu
  *
  */
-public class LoadTestCaseFileException extends RuntimeException {
+public class LoadTestCaseFileException extends Exception {
 	private static final long serialVersionUID = 7794859278880687306L;
 
 	public LoadTestCaseFileException(String message, Throwable cause) {

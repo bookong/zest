@@ -1,22 +1,23 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
-	<modelVersion>4.0.0</modelVersion>
-    
-    <groupId>com.github.bookong</groupId>
-    <artifactId>zest</artifactId>
-    <name>DB Unit Testing toolkit - ZEST!</name>
-    <version>0.2.7</version>
-    
-    <description>An easy-to-use database unit testing toolkit, support for Spring.</description>
-    <url>https://github.com/bookong/zest</url>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.github.bookong</groupId>
+	<artifactId>zest</artifactId>
+	<name>DB Unit Testing toolkit - ZEST!</name>
+	<version>0.2.8</version>
+
+	<description>An easy-to-use database unit testing toolkit, support for Spring.</description>
+	<url>https://github.com/bookong/zest</url>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<scm>
 		<url>https://github.com/bookong/zest</url>
@@ -25,19 +26,57 @@
 		<tag>HEAD</tag>
 	</scm>
 
-    <properties>
-    	<java-version>1.7</java-version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	<properties>
+		<java-version>1.8</java-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<slf4j-version>1.7.9</slf4j-version>
+		<log4j-version>2.1</log4j-version>
 		<springframework-version>4.3.14.RELEASE</springframework-version>
-    </properties>
-    
-    <dependencies>
+	</properties>
+
+	<dependencies>
+		<!-- Logging -->
 		<dependency>
-		    <groupId>net.sf.json-lib</groupId>
-		    <artifactId>json-lib</artifactId>
-		    <version>2.4</version>
-		    <classifier>jdk15</classifier>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j-version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j-version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j-version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j-version}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -45,14 +84,9 @@
 			<version>4.12</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
-		<dependency>
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
-			<version>2.5.0</version>
+			<version>2.5.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -66,10 +100,16 @@
 			<version>${springframework-version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- XML -->
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-xjc</artifactId>
+			<version>2.2.1.1</version>
+		</dependency>
 	</dependencies>
 
-    <build>
-        <plugins>
+	<build>
+		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
@@ -85,6 +125,9 @@
 				<configuration>
 					<forkMode>once</forkMode>
 					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<excludes>
+						<exclude>manual/**</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -100,7 +143,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
@@ -112,7 +155,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -127,7 +170,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
+				<version>1.6</version>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>
@@ -144,21 +187,21 @@
 				<version>2.5</version>
 				<configuration>
 					<excludes>
-						<exclude>**/log4j.xml</exclude>
+						<exclude>**/log4j2.xml</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
-    <developers>
-        <developer>
-            <id>jiangxu</id>
-            <name>Xu Jiang</name>
-            <email>bookong@gmail.com</email>
-        </developer>
-    </developers>
-	
+	<developers>
+		<developer>
+			<id>jiangxu</id>
+			<name>Xu Jiang</name>
+			<email>bookong@gmail.com</email>
+		</developer>
+	</developers>
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>

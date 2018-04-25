@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+
+	<appenders>
+
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%t %-5level - %msg%n" />
+			<!-- <PatternLayout pattern="%d{HH:mm:ss.SSS} %t %-5level %c - %msg%n" /> -->
+		</Console>
+
+	</appenders>
+
+	<loggers>
+		<Logger name="cn.opg.epg.spi6.servlet.EpgSpi6SpringDispatcherServlet" level="info" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="cn.opg.epg" level="debug" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<logger name="RefreshRedis" level="info" additivity="false">
+			<appender-ref ref="Console" />
+		</logger>
+		<Root level="info">
+			<appender-ref ref="Console" />
+		</Root>
+	</loggers>
+
+</configuration>

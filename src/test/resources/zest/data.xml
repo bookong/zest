@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Data xmlns="https://www.bookong.net/schema/zest/data">
+	<Description>可选描述信息</Description>
+	<DataSources>
+		<DataSource currDbTime="2014-01-12 20:21:22">
+			<Init>
+				<Table Name="tab1">
+					<Row id="1" name="tab1 name">
+						<Field FromCurrentTime="true">{min:30, max:31, unit:"day"}</Field>
+					</Row>
+				</Table>
+			</Init>
+			<Target OrderBy="name dsc, id asc">
+				<Table Name="tab1">
+				</Table>
+			</Target>
+		</DataSource>
+	</DataSources>
+	<TestParam>
+		<ParamField Path="aa/bb">取值1</ParamField>
+		<ParamField Path="aa/cc">取值2</ParamField>
+		<ParamField Path="expected"><![CDATA[
+{
+    "Header": {
+        "RC": 0,
+        "RM": ""
+    },
+    "Body": {
+        "Categorys": [
+            {
+                "Name": "栏目名称_02",
+                "Code": "ZZ_02#CC_02#",
+                "ParentCode": "ZZ_02#",
+                "Desc": "描述02",
+                "Icon1": "osi_02.jpg",
+                "Icon2": "i2_02.jpg",
+                "Icon3": "i3_02.jpg",
+                "BGImage1": "bi1_02.jpg",
+                "BGImage2": "bi2_02.jpg",
+                "BGImage3": "bi3_02.jpg",
+                "HasChild": 1,
+                "TemplateCode": "NBA",
+                "UpdateTime": "20170214202102",
+                "Sequence": 1,
+                "ShowWay": 1,
+                "MarkPosition": "1",
+                "MarkImageUrl": "mu_02.jpg",
+                "NavRecommend": "CR_01|CR_02",
+                "ShowFilter": 1,
+                "Count": "1",
+                "Type": 2
+            },
+            {
+                "Name": "名称_01",
+                "Code": "BB_01#CC_01#",
+                "ParentCode": "BB_01#",
+                "Desc": "描述01",
+                "Icon1": "ugc_i_1.jpg",
+                "Icon2": "i2_01.jpg",
+                "Icon3": "i3_01.jpg",
+                "BGImage1": "bi1_01.jpg",
+                "BGImage2": "bi2_01.jpg",
+                "BGImage3": "bi3_01.jpg",
+                "HasChild": 0,
+                "TemplateCode": "NEWS",
+                "UpdateTime": "20170214202101",
+                "Sequence": 10,
+                "ShowWay": 1,
+                "MarkPosition": "0",
+                "MarkImageUrl": "mu_01.jpg",
+                "NavRecommend": "",
+                "ShowFilter": 0,
+                "Count": "0",
+                "Type": 1
+            }
+        ],
+        "Positions": [
+            {
+                "Title": "推荐位_01",
+                "Code": "CR_01",
+                "Desc": "推荐位描述_01",
+                "Count": 10,
+                "Icon": "hs_01.jpg",
+                "LinkType": 4,
+                "LinkValueCode": "CR_01",
+                "LinkCategoryCode": "PC_01#CCR_01#",
+                "Uri": "bestv.ott.action.online.main:CR_01|4||CR_01|PC_01#CCR_01#",
+                "Mode": 2,
+                "PackageName": "com.bestv.mainActivity",
+                "UpdateTime": "20170214200101"
+            },
+            {
+                "Title": "推荐位_02",
+                "Code": "CR_02",
+                "Desc": "推荐位描述_02",
+                "Count": 10,
+                "Icon": "hs_02.jpg",
+                "LinkType": 4,
+                "LinkValueCode": "",
+                "LinkCategoryCode": "",
+                "Uri": "bestv.ott.action.online.main:CR_02|4|||",
+                "Mode": 2,
+                "PackageName": "com.bestv.mainActivity",
+                "UpdateTime": "20170214200102"
+            }
+        ],
+        "GuideVideos": [
+            {
+                "Title": "导视标题_01",
+                "Code": "GV_01",
+                "GuideVideoMode": 1,
+                "Desc": "导视描述_01",
+                "Count": 5,
+                "UpdateTime": "20170214200201"
+            },
+            {
+                "Title": "导视标题_02",
+                "Code": "GV_02",
+                "GuideVideoMode": 1,
+                "Desc": "导视描述_02",
+                "Count": 5,
+                "UpdateTime": "20170214200202"
+            },
+            {
+                "Title": "导视标题_03",
+                "Code": "GV_03",
+                "GuideVideoMode": 1,
+                "Desc": "导视描述_03",
+                "Count": 5,
+                "UpdateTime": "20170214200203"
+            },
+            {
+                "Title": "导视标题_04",
+                "Code": "GV_04",
+                "GuideVideoMode": 0,
+                "Desc": "导视描述_04",
+                "Count": 5,
+                "UpdateTime": "20170214200204"
+            },
+            {
+                "Title": "导视标题_05",
+                "Code": "GV_05",
+                "GuideVideoMode": 0,
+                "Desc": "导视描述_05",
+                "Count": 5,
+                "UpdateTime": "20170214200205"
+            }
+        ]
+    }
+}
+		]]></ParamField>
+	</TestParam>
+</Data>
