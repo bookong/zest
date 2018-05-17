@@ -10,6 +10,8 @@ import java.util.Map;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 
 /**
+ * 日期处理
+ * 
  * @author jiangxu
  */
 public class ZestDateUtils {
@@ -17,10 +19,10 @@ public class ZestDateUtils {
     private static final ThreadLocal<Map<String, SimpleDateFormat>> DATE_FORMAT_CACHE = new ThreadLocal<Map<String, SimpleDateFormat>>();
 
     /**
-     * 以格式(yyyy-MM-dd HH:mm:ss)解析时间
+     * 以格式 (yyyy-MM-dd HH:mm:ss) 解析时间
      * 
-     * @param time
-     * @return
+     * @param time 待处理的时间字符串
+     * @return 解析后的日期对象
      */
     public static Date parseNormalDate(String time) {
         try {
@@ -31,21 +33,21 @@ public class ZestDateUtils {
     }
 
     /**
-     * 以格式(yyyy-MM-dd HH:mm:ss)格式化日期
+     * 以格式 (yyyy-MM-dd HH:mm:ss) 格式化日期
      * 
-     * @param date
-     * @return
+     * @param time 待处理的时间对象
+     * @return 格式化后的字符串
      */
-    public static String formatDateNormal(Date date) {
-        return getDateFormat(DateFormatType.NORMAL_DATE).format(date);
+    public static String formatDateNormal(Date time) {
+        return getDateFormat(DateFormatType.NORMAL_DATE).format(time);
     }
 
     /**
      * 计算要录入到数据库中的日期值（经过 currDbTimeDiff 修正过）
      * 
-     * @param date
-     * @param testCaseData
-     * @return
+     * @param date 待转换的日期对象
+     * @param testCaseData 测试用例数据
+     * @return 转换后的日期对象
      */
     public static Date getDateInDB(Date date, TestCaseData testCaseData) {
         Calendar cal = Calendar.getInstance();
@@ -62,17 +64,20 @@ public class ZestDateUtils {
     /**
      * 得到数据库中 Date 类型字段在通过 currDbTimeDiff 修正以后的字符串表示
      * 
-     * @param date
-     * @param testCaseData
-     * @return
+     * @param date 待转换的日期对象
+     * @param testCaseData 测试用例数据
+     * @return 转换后字符串表达的日期
+     * @see #getDateInDB(Date, TestCaseData)
      */
     public static String getStringFromDBDate(Date date, TestCaseData testCaseData) {
         return ZestDateUtils.formatDateNormal(getDateInDB(date, testCaseData));
     }
 
     /**
-     * @param formatType
-     * @return
+     * 得到指定的格式化对象
+     * 
+     * @param formatType 格式化类型
+     * @return 返回格式化对象
      */
     public static SimpleDateFormat getDateFormat(DateFormatType formatType) {
         Map<String, SimpleDateFormat> map = DATE_FORMAT_CACHE.get();
@@ -82,7 +87,7 @@ public class ZestDateUtils {
 
         SimpleDateFormat dateFormat = map.get(formatType.getFormatType());
         if (dateFormat == null) {
-            dateFormat = formatType.genDateFormat();
+            dateFormat = new SimpleDateFormat(formatType.getFormatType());
             map.put(formatType.getFormatType(), dateFormat);
         }
 
@@ -90,6 +95,8 @@ public class ZestDateUtils {
     }
 
     /**
+     * 格式化对象枚举值
+     * 
      * @author jiangxu
      */
     public static enum DateFormatType {
@@ -106,12 +113,14 @@ public class ZestDateUtils {
             this.formatType = dateFormatType;
         }
 
+        /**
+         * 获得指定枚举值对应的格式化字符串
+         * 
+         * @return 返回格式化字符串
+         */
         public String getFormatType() {
             return formatType;
         }
 
-        public SimpleDateFormat genDateFormat() {
-            return new SimpleDateFormat(formatType);
-        }
     }
 }

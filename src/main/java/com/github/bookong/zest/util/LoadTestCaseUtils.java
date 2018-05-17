@@ -89,7 +89,8 @@ public class LoadTestCaseUtils {
      * <li>yyyy-MM-dd</li>
      * </ul>
      * 
-     * @param value
+     * @param value 待解析的字符串
+     * @return 解析后的日期对象
      */
     public static Date parseDate(String value) {
         if (StringUtils.isBlank(value)) {

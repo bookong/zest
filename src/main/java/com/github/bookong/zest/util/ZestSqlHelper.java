@@ -12,12 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 辅助操作 SQL
+ * 
  * @author jiangxu
  */
 public class ZestSqlHelper {
 
     /**
-     * @param stat
+     * 安全的关闭 Statement
+     * 
+     * @param stat 待关闭的 Statement
      */
     public static void safeClose(Statement stat) {
         if (stat != null) {
@@ -30,7 +34,9 @@ public class ZestSqlHelper {
     }
 
     /**
-     * @param rs
+     * 安全的关闭 ResultSet
+     * 
+     * @param rs 待关闭的 ResultSet
      */
     public static void safeClose(ResultSet rs) {
         if (rs != null) {
@@ -45,16 +51,16 @@ public class ZestSqlHelper {
     /**
      * 从数据库中捞取数据并做适当的转换后返回
      * 
-     * @param connection
-     * @param sql
-     * @return
+     * @param conn 数据库连接
+     * @param sql 查询 SQL
+     * @return 返回列表中，Map 的 key 为字段名，value 为字段值
      */
-    public static List<Map<String, Object>> findDataInDatabase(Connection connection, String sql) {
+    public static List<Map<String, Object>> findDataInDatabase(Connection conn, String sql) {
         List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
         Statement stat = null;
         ResultSet rs = null;
         try {
-            stat = connection.createStatement();
+            stat = conn.createStatement();
             rs = stat.executeQuery(sql);
 
             while (rs.next()) {
@@ -93,16 +99,16 @@ public class ZestSqlHelper {
     }
 
     /**
-     * 显示查询到的结果内容
+     * 在控制台显示查询到的结果内容
      * 
-     * @param connection
-     * @param sql
+     * @param conn 数据库连接
+     * @param sql 待查询 SQL
      */
-    public static void showResultSetContent(Connection connection, String sql) {
+    public static void showResultSetContent(Connection conn, String sql) {
         Statement stat = null;
         ResultSet rs = null;
         try {
-            stat = connection.createStatement();
+            stat = conn.createStatement();
             rs = stat.executeQuery(sql);
 
             while (rs.next()) {

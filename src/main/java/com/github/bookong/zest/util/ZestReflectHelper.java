@@ -10,11 +10,11 @@ import java.lang.reflect.Field;
 public class ZestReflectHelper {
 
     /**
-     * 获取obj 对象 fieldName 的 Field
+     * 获取 obj 对象 fieldName 的 Field
      * 
-     * @param obj
-     * @param fieldName
-     * @return
+     * @param obj 待操作对象
+     * @param fieldName 方法名
+     * @return 返回指定方法名的 Field 对象
      */
     public static Field getFieldByFieldName(Object obj, String fieldName) {
         Class<?> superClass = obj.getClass();
@@ -32,9 +32,9 @@ public class ZestReflectHelper {
     /**
      * 获取 obj 对象 fieldName 的属性值
      * 
-     * @param obj
-     * @param fieldName
-     * @return
+     * @param obj 待操作对象
+     * @param fieldName 方法名
+     * @return 返回指定方法的值
      */
     public static Object getValueByFieldName(Object obj, String fieldName) {
         try {
@@ -58,9 +58,9 @@ public class ZestReflectHelper {
     /**
      * 设置 obj 对象 fieldName 的属性值
      * 
-     * @param obj
-     * @param fieldName
-     * @param value
+     * @param obj 待操作对象
+     * @param fieldName 方法名
+     * @param value 欲设置的值
      */
     public static void setValueByFieldName(Object obj, String fieldName, Object value) {
         try {
