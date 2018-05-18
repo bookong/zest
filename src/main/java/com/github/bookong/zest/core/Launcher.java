@@ -56,7 +56,7 @@ public class Launcher {
     /** 当前要处理的 test case 文件路径 */
     private String                       currTestCaseFilePath;
     /** 从当前要处理的 xml 中读取的测试用例 */
-    private TestCaseData                 testCaseData   = new TestCaseData();
+    private TestCaseData                 testCaseData;
 
     /** 要测试的数据库对应的 JDBC 连接对象 */
     private Map<String, Connection>      connectionMap  = new HashMap<String, Connection>();
@@ -97,7 +97,7 @@ public class Launcher {
                 File[] searchFiles = searchDir.listFiles();
                 if (searchFiles != null) {
                     for (File searchFile : searchFiles) {
-                        if (searchFile.isFile()) {
+                        if (searchFile.isFile() && searchFile.getName().endsWith(".xml")) {
                             results.add(new ZestFrameworkMethod(method, searchFile.getAbsolutePath()));
                         }
                     }
@@ -153,6 +153,7 @@ public class Launcher {
             return new Fail(e);
         }
 
+        testCaseData = new TestCaseData();
         loadAutowiredFieldFromTest(test);
         loadTestCaseData(method);
 
