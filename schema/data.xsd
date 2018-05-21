@@ -20,7 +20,7 @@
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="currDbTime" type="xsd:string">
+			<xsd:attribute name="CurrDbTime" type="xsd:string">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
 						可选的当前数据库时间，如果设置这个值，所有时间类型内容在计算与当前时间的偏移量后使用，时间格式为 
