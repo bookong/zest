@@ -71,7 +71,7 @@ public class TestCaseData {
     }
 
     /** 比较时间（考虑数据偏移情况) */
-    protected void assertDateEquals(String dateFormat, String expect, String actual) {
+    public void assertDateEquals(String dateFormat, String expect, String actual) {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         try {
             if (StringUtils.isBlank(expect) && StringUtils.isBlank(actual)) {
@@ -84,7 +84,7 @@ public class TestCaseData {
     }
 
     /** 比较时间（考虑数据偏移情况) */
-    protected void assertDateEquals(Date expect, Date actual) {
+    public void assertDateEquals(Date expect, Date actual) {
 
         long expectMillisecond = expect.getTime();
         if (isTransferTime()) {
