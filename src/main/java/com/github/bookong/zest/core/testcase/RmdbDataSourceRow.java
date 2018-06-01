@@ -23,7 +23,7 @@ public class RmdbDataSourceRow extends AbstractDataSourceRow {
     public RmdbDataSourceRow(String tableName, Map<String, Integer> colSqlTypes, com.github.bookong.zest.core.xml.data.Row xmlRow, boolean isTargetData){
         for (Entry<QName, String> entry : xmlRow.getOtherAttributes().entrySet()) {
             String fieldName = entry.getKey().toString().toLowerCase();
-            fields.put(fieldName, parseValue(tableName, fieldName, StringUtils.trimToEmpty(entry.getValue()), colSqlTypes));
+            fields.put(fieldName, parseValue(tableName, fieldName, entry.getValue(), colSqlTypes));
         }
 
         if (isTargetData) {
