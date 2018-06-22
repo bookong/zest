@@ -33,4 +33,13 @@ public abstract class AbstractJdbcExcuter extends AbstractExcuter {
      */
     public abstract void checkTargetDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource);
 
+    /**
+     * 清空初始化的数据
+     * 
+     * @param conn
+     * @param testCaseData
+     * @param testCaseDataSource
+     */
+    public abstract void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource);
+
 }

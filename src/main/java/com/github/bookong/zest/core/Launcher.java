@@ -302,8 +302,8 @@ public class Launcher {
         for (TestCaseDataSource testCaseDataSource : testCaseData.getDataSources()) {
             AbstractExcuter executer = executerMap.get(testCaseDataSource.getId());
             if (executer instanceof AbstractJdbcExcuter) {
-                Connection connection = connectionMap.get(testCaseDataSource.getId());
-                ((AbstractJdbcExcuter) executer).initDatabase(connection, testCaseData, testCaseDataSource);
+                Connection conn = connectionMap.get(testCaseDataSource.getId());
+                ((AbstractJdbcExcuter) executer).initDatabase(conn, testCaseData, testCaseDataSource);
             }
             // FIXME 以后可能有 Mongo 的 Excuter
         }
@@ -312,16 +312,20 @@ public class Launcher {
 
     public void checkTargetDataSource() {
         for (TestCaseDataSource testCaseDataSource : testCaseData.getDataSources()) {
-            if (testCaseDataSource.isIgnoreTargetData()) {
-                logger.info(String.format("DataSource (Id : %1$s) ignore verify", testCaseDataSource.getId()));
-            } else {
-                AbstractExcuter executer = executerMap.get(testCaseDataSource.getId());
-                if (executer instanceof AbstractJdbcExcuter) {
-                    Connection connection = connectionMap.get(testCaseDataSource.getId());
-                    ((AbstractJdbcExcuter) executer).checkTargetDatabase(connection, testCaseData, testCaseDataSource);
+            AbstractExcuter executer = executerMap.get(testCaseDataSource.getId());
+
+            if (executer instanceof AbstractJdbcExcuter) {
+                Connection conn = connectionMap.get(testCaseDataSource.getId());
+                AbstractJdbcExcuter jdbcExcuter = (AbstractJdbcExcuter) executer;
+
+                if (testCaseDataSource.isIgnoreTargetData()) {
+                    logger.info(String.format("DataSource (Id : %1$s) ignore verify", testCaseDataSource.getId()));
+                } else {
+                    jdbcExcuter.checkTargetDatabase(conn, testCaseData, testCaseDataSource);
                 }
-                // FIXME 以后可能有 Mongo 的 Excuter
+                jdbcExcuter.clearDatabase(conn, testCaseData, testCaseDataSource);
             }
+            // FIXME 以后可能有 Mongo 的 Excuter
         }
     }
 

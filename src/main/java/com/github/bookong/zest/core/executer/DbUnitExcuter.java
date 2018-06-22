@@ -71,14 +71,16 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Fail to check target dataSource with DBUnit, ID:\"" + testCaseDataSource.getId() + "\"", e);
-        } finally {
-            try {
-                DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
-            } catch (Exception e2) {
-                logger.error("", e2);
-            }
         }
+    }
 
+    @Override
+    public void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) {
+        try {
+            DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
+        } catch (Exception e2) {
+            logger.error("", e2);
+        }
     }
 
     /** 验证表数据 */
