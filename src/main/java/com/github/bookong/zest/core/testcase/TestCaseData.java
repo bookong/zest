@@ -71,27 +71,27 @@ public class TestCaseData {
     }
 
     /** 比较时间（考虑数据偏移情况) */
-    public void assertDateEquals(String dateFormat, String expect, String actual) {
+    public void assertDateEquals(String msg, String dateFormat, String expect, String actual) {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         try {
             if (StringUtils.isBlank(expect) && StringUtils.isBlank(actual)) {
                 return;
             }
-            assertDateEquals(sdf.parse(expect), sdf.parse(actual));
+            assertDateEquals(msg, sdf.parse(expect), sdf.parse(actual));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
     /** 比较时间（考虑数据偏移情况) */
-    public void assertDateEquals(Date expect, Date actual) {
+    public void assertDateEquals(String msg, Date expect, Date actual) {
 
         long expectMillisecond = expect.getTime();
         if (isTransferTime()) {
             expectMillisecond += getCurrDbTimeDiff();
         }
 
-        Assert.assertEquals(expectMillisecond, actual.getTime());
+        Assert.assertEquals(msg, expectMillisecond, actual.getTime());
     }
 
     @SuppressWarnings({ "unchecked" })
