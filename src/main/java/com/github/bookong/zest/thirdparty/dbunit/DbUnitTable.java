@@ -14,7 +14,8 @@ import org.dbunit.dataset.datatype.StringDataType;
 
 import com.github.bookong.zest.core.testcase.RmdbDataSourceTable;
 import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.util.ZestDateUtils;
+import com.github.bookong.zest.core.testcase.TestCaseDataSource;
+import com.github.bookong.zest.util.ZestDateUtil;
 
 /**
  * @author jiangxu
@@ -25,12 +26,12 @@ public class DbUnitTable extends AbstractTable {
     private TestCaseData        testCaseData;
     private RmdbDataSourceTable initDataSourceTable;
 
-    public DbUnitTable(TestCaseData testCaseData, RmdbDataSourceTable initDataSourceTable){
+    public DbUnitTable(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, RmdbDataSourceTable initDataSourceTable){
         this.testCaseData = testCaseData;
         this.initDataSourceTable = initDataSourceTable;
         List<Column> columnList = new ArrayList<>();
 
-        for (Entry<String, Integer> entry : testCaseData.getRmdbColSqlTypes().get(initDataSourceTable.getName()).entrySet()) {
+        for (Entry<String, Integer> entry : testCaseData.getRmdbTableColSqlTypes(testCaseDataSource.getId(), initDataSourceTable.getName()).entrySet()) {
             Column column = new Column(entry.getKey(), new StringDataType(entry.getKey(), entry.getValue()));
             columnList.add(column);
         }
@@ -53,7 +54,7 @@ public class DbUnitTable extends AbstractTable {
         assertValidRowIndex(row);
         Object obj = initDataSourceTable.getRowDatas().get(row).getFields().get(column);
         if (obj != null && (obj instanceof Date)) {
-            return ZestDateUtils.getDateInDB((Date) obj, testCaseData);
+            return ZestDateUtil.getDateInDB((Date) obj, testCaseData);
         }
         return obj;
     }

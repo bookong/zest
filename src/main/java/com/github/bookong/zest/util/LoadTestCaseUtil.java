@@ -15,7 +15,7 @@ import com.github.bookong.zest.core.testcase.TestCaseData.TestParamInfo;
 /**
  * @author jiangxu
  */
-public class LoadTestCaseUtils {
+public class LoadTestCaseUtil {
 
     /**
      * 从 XML 文件加载的内容转换为合适的值
@@ -26,15 +26,15 @@ public class LoadTestCaseUtils {
      */
     public static Object loadXmlFieldValue(TestParamInfo info, String value) {
         Class<?> fieldClass = info.getFieldClass();
-        if (Integer.class.isAssignableFrom(fieldClass) || "int".equals(fieldClass.getName())) {
+        if (Integer.class.isAssignableFrom(fieldClass) || "int".equals(fieldClass.getName())) { //$NON-NLS-1$
             return Integer.valueOf(value.trim());
-        } else if (Long.class.isAssignableFrom(fieldClass) || "long".equals(fieldClass.getName())) {
+        } else if (Long.class.isAssignableFrom(fieldClass) || "long".equals(fieldClass.getName())) { //$NON-NLS-1$
             return Long.valueOf(value.trim());
-        } else if (Boolean.class.isAssignableFrom(fieldClass) || "boolean".equals(fieldClass.getName())) {
+        } else if (Boolean.class.isAssignableFrom(fieldClass) || "boolean".equals(fieldClass.getName())) { //$NON-NLS-1$
             return Boolean.valueOf(value.trim());
-        } else if (Double.class.isAssignableFrom(fieldClass) || "double".equals(fieldClass.getName())) {
+        } else if (Double.class.isAssignableFrom(fieldClass) || "double".equals(fieldClass.getName())) { //$NON-NLS-1$
             return Double.valueOf(value.trim());
-        } else if (Float.class.isAssignableFrom(fieldClass) || "float".equals(fieldClass.getName())) {
+        } else if (Float.class.isAssignableFrom(fieldClass) || "float".equals(fieldClass.getName())) { //$NON-NLS-1$
             return Float.valueOf(value.trim());
         } else if (String.class.isAssignableFrom(fieldClass)) {
             return value;
@@ -43,19 +43,19 @@ public class LoadTestCaseUtils {
             if (fc != null && fc instanceof ParameterizedType) {
                 return loadXmlFieldValueWithGenericClass(fc, value, 0);
             } else {
-                throw new RuntimeException(Messages.getString("loadTestCase.mapAndListMustUseGenericType"));
+                throw new RuntimeException(Messages.getString("loadTestCase.mapAndListMustUseGenericType", info.getField().getName()));
             }
         } else if (Map.class.isAssignableFrom(fieldClass)) {
             Type fc = info.getField().getGenericType();
             if (fc != null && fc instanceof ParameterizedType) {
                 return loadXmlFieldValueWithGenericClass(fc, value, 1);
             } else {
-                throw new RuntimeException(String.format(Messages.getString("loadTestCase.mapAndListMustUseGenericType"), info.getField().getName()));
+                throw new RuntimeException(Messages.getString("loadTestCase.mapAndListMustUseGenericType", info.getField().getName()));
             }
         } else if (Date.class.isAssignableFrom(fieldClass)) {
             return parseDate(value);
         } else {
-            throw new RuntimeException(String.format(Messages.getString("loadTestCase.notSupportedTypes"), fieldClass.getName()));
+            throw new RuntimeException(Messages.getString("loadTestCase.notSupportedTypes", fieldClass.getName()));
         }
     }
 
@@ -101,19 +101,18 @@ public class LoadTestCaseUtils {
         try {
             switch (value.length()) {
                 case 19:
-                    return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value);
+                    return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value); //$NON-NLS-1$
                 case 16:
-                    return new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(value);
+                    return new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(value); //$NON-NLS-1$
                 case 13:
-                    return new SimpleDateFormat("yyyy-MM-dd HH").parse(value);
+                    return new SimpleDateFormat("yyyy-MM-dd HH").parse(value); //$NON-NLS-1$
                 case 10:
-                    return new SimpleDateFormat("yyyy-MM-dd").parse(value);
+                    return new SimpleDateFormat("yyyy-MM-dd").parse(value); //$NON-NLS-1$
                 default:
-                    throw new RuntimeException(String.format(Messages.getString("loadTestCase.notSupportedDateFormat"), value));
+                    throw new RuntimeException(Messages.getString("loadTestCase.notSupportedDateFormat", value));
             }
         } catch (ParseException e) {
-            throw new RuntimeException(String.format(Messages.getString("loadTestCase.notSupportedDateFormat"), value), e);
+            throw new RuntimeException(Messages.getString("loadTestCase.notSupportedDateFormat", value), e);
         }
     }
-
 }

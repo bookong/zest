@@ -14,7 +14,7 @@ import com.github.bookong.zest.core.testcase.TestCaseData;
  * 
  * @author jiangxu
  */
-public class ZestDateUtils {
+public class ZestDateUtil {
 
     private static final ThreadLocal<Map<String, SimpleDateFormat>> DATE_FORMAT_CACHE = new ThreadLocal<Map<String, SimpleDateFormat>>();
 
@@ -70,7 +70,7 @@ public class ZestDateUtils {
      * @see #getDateInDB(Date, TestCaseData)
      */
     public static String getStringFromDBDate(Date date, TestCaseData testCaseData) {
-        return ZestDateUtils.formatDateNormal(getDateInDB(date, testCaseData));
+        return ZestDateUtil.formatDateNormal(getDateInDB(date, testCaseData));
     }
 
     /**

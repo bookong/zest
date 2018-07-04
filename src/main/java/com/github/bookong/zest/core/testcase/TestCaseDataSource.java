@@ -29,7 +29,7 @@ public class TestCaseDataSource {
 
             if (isRmdb(type)) {
                 for (com.github.bookong.zest.core.xml.data.Table xmlTable : xmlDataSource.getInit().getTable()) {
-                    initDatas.add(new RmdbDataSourceTable(testCaseData, xmlTable, false));
+                    initDatas.add(new RmdbDataSourceTable(testCaseData, this, xmlTable, false));
                 }
             }
 
@@ -37,7 +37,7 @@ public class TestCaseDataSource {
             if (!ignoreTargetData) {
                 if (isRmdb(type)) {
                     for (com.github.bookong.zest.core.xml.data.Table xmlTable : xmlDataSource.getTarget().getTable()) {
-                        targetDatas.put(xmlTable.getName(), new RmdbDataSourceTable(testCaseData, xmlTable, true));
+                        targetDatas.put(xmlTable.getName(), new RmdbDataSourceTable(testCaseData, this, xmlTable, true));
                     }
                 }
 
@@ -55,7 +55,7 @@ public class TestCaseDataSource {
 
     /** 数据源是否是关系型数据库（MySQL, Oracle） */
     private boolean isRmdb(String type) {
-        return ZestGlobalConstant.DataSourceType.MySQL.equals(type);
+        return ZestGlobalConstant.DataSourceType.MySQL.equals(type) || ZestGlobalConstant.DataSourceType.Oracle.equals(type);
     }
 
     public boolean isIgnoreTargetData() {
@@ -77,4 +77,5 @@ public class TestCaseDataSource {
     public String getType() {
         return type;
     }
+
 }

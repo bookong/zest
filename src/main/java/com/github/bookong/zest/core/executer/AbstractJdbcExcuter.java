@@ -10,9 +10,6 @@ import com.github.bookong.zest.core.testcase.TestCaseDataSource;
  * 
  * @author jiangxu
  */
-/**
- * @author jiangxu
- */
 public abstract class AbstractJdbcExcuter extends AbstractExcuter {
 
     /**

@@ -41,6 +41,7 @@ import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
 import com.github.bookong.zest.runner.ZestClassRunner;
+import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 
 /**
@@ -77,7 +78,7 @@ public class Launcher {
         Iterator<Throwable> it = errors.iterator();
         while (it.hasNext()) {
             Throwable e = it.next();
-            if ("No runnable methods".equals(e.getMessage())) {
+            if ("No runnable methods".equals(e.getMessage())) { // $NON-NLS-1$
                 it.remove();
             }
         }
@@ -133,7 +134,7 @@ public class Launcher {
             eachNotifier.addFailure(e);
         } catch (Throwable e) {
             e.printStackTrace();
-            eachNotifier.addFailure(new RuntimeException("Fail to evaluate statement, test case in (" + frameworkMethod.getTestCaseFilePath() + ")", e));
+            eachNotifier.addFailure(new RuntimeException(Messages.getString("launcher.failToEvaluateStatement", frameworkMethod.getTestCaseFilePath()), e));
         } finally {
             eachNotifier.fireTestFinished();
         }
@@ -180,7 +181,7 @@ public class Launcher {
                     if (obj instanceof DataSource) {
                         Connection conn = zestClassRunner.getConnection((DataSource) obj);
                         setConnection(zestDataSource.id(), conn);
-                        loadAllTableColSqlTypes(conn);
+                        loadAllTableColSqlTypes(zestDataSource.id(), conn);
                     }
 
                     try {
@@ -196,7 +197,7 @@ public class Launcher {
     }
 
     /** 从数据库里获取所有表的列的类型 */
-    private void loadAllTableColSqlTypes(Connection conn) {
+    private void loadAllTableColSqlTypes(String testDataSourceId, Connection conn) {
         DatabaseMetaData dbMetaData = null;
         ResultSet rs = null;
         try {
@@ -204,17 +205,15 @@ public class Launcher {
             List<String> tableNames = new ArrayList<>();
             rs = dbMetaData.getTables(null, null, null, new String[] { "TABLE" });
             while (rs.next()) {
-                tableNames.add(rs.getString("TABLE_NAME").toLowerCase());
+                tableNames.add(rs.getString("TABLE_NAME"));
             }
             rs.close();
             rs = null;
 
             for (String tableName : tableNames) {
-                Map<String, Integer> map = new HashMap<>();
-                testCaseData.getRmdbColSqlTypes().put(tableName, map);
                 rs = conn.getMetaData().getColumns(null, "%", tableName, "%");
                 while (rs.next()) {
-                    map.put(rs.getString("column_name"), rs.getInt("data_type"));
+                    testCaseData.putRmdbTableColSqlTypes(testDataSourceId, tableName, rs.getString("column_name"), rs.getInt("data_type"));
                 }
                 rs.close();
                 rs = null;

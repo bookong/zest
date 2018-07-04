@@ -24,7 +24,8 @@ import com.github.bookong.zest.core.testcase.RmdbDataSourceTable;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 import com.github.bookong.zest.thirdparty.dbunit.DbUnitDataSet;
-import com.github.bookong.zest.util.ZestDateUtils;
+import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestSqlHelper;
 
 /**
@@ -48,8 +49,9 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
 
             DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
             DatabaseOperation.INSERT.execute(dbUnitConn, zestDataSet);
+            //dbUnitConn.getConnection().commit();
         } catch (Exception e) {
-            throw new RuntimeException("Fail to init Zest dataSource with DBUnit, ID:\"" + testCaseDataSource.getId() + "\"", e);
+            throw new RuntimeException(Messages.getString("dbUnitExcuter.failToInit", testCaseDataSource.getId()), e);
         }
     }
 
@@ -57,11 +59,11 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
     public void checkTargetDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) {
         try {
             if (testCaseDataSource.isIgnoreTargetData()) {
-                logger.info(String.format("DB: %1$s ignore verify.", testCaseDataSource.getId()));
+                logger.info(Messages.getString("dbUnitExcuter.ignoreTargetDataSource", testCaseDataSource.getId()));
             } else {
                 for (AbstractDataSourceTable<?> table : testCaseDataSource.getTargetDatas().values()) {
                     if (table.isIgnoreCheckTarget()) {
-                        logger.info(String.format("DB: %1$s table: %2$s ignore verify.", testCaseDataSource.getId(), table.getName()));
+                        logger.info(Messages.getString("dbUnitExcuter.ignoreTargetTable", testCaseDataSource.getId(), table.getName()));
                     } else {
                         verifyTable(conn, testCaseData, testCaseDataSource, (RmdbDataSourceTable) table);
                     }
@@ -70,7 +72,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
         } catch (AssertionError e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Fail to check target dataSource with DBUnit, ID:\"" + testCaseDataSource.getId() + "\"", e);
+            throw new RuntimeException(Messages.getString("dbUnitExcuter.failToCheckTargetDataSource", testCaseDataSource.getId()), e);
         }
     }
 
@@ -85,11 +87,12 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
 
     /** 验证表数据 */
     private void verifyTable(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, RmdbDataSourceTable table) {
-        logger.info(String.format("DB: %1$s table: %2$s verifying...", testCaseDataSource.getId(), table.getName()));
+        logger.info(Messages.getString("dbUnitExcuter.startCheckTargetTable", testCaseDataSource.getId(), table.getName()));
 
         try {
             List<Map<String, Object>> datasInDb = getDatasInDb(conn, table);
-            Assert.assertEquals(String.format("check DB: %1$s table: %2$s row count. ", testCaseDataSource.getId(), table.getName()), table.getRowDatas().size(), datasInDb.size());
+            Assert.assertEquals(Messages.getString("dbUnitExcuter.checkTargetTableCount", testCaseDataSource.getId(), table.getName()), table.getRowDatas().size(),
+                                datasInDb.size());
 
             for (int rowIdx = 0; rowIdx < datasInDb.size(); rowIdx++) {
                 Map<String, Object> actualRowDatas = datasInDb.get(rowIdx);
@@ -99,7 +102,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
         } catch (AssertionError e) {
             throw e;
         } catch (Exception e) {
-            throw new RuntimeException(String.format("Fail to check target DB: %1$s table: %2$s", testCaseDataSource.getId(), table.getName()), e);
+            throw new RuntimeException(Messages.getString("dbUnitExcuter.failCheckTargetTable", testCaseDataSource.getId(), table.getName()), e);
         }
     }
 
@@ -122,7 +125,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
             String expectedColName = entry.getKey();
             Object expectedColData = entry.getValue();
             // 只验证 expected 中指定的列
-            Assert.assertTrue(String.format("DB: %1$s table: %2$s must has column %3$s", testCaseDataSource.getId(), table.getName(), expectedColName),
+            Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableMustHashCol", testCaseDataSource.getId(), table.getName(), expectedColName),
                               actualRowDatas.containsKey(expectedColName));
 
             Object actualColData = actualRowDatas.get(expectedColName);
@@ -132,11 +135,11 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
                     if (expectedField.isNullable()) {
                         return;
                     } else {
-                        Assert.fail(String.format("DB: %1$s, table: %2$s, column: %3$s must be NOT NULL", testCaseDataSource.getId(), table.getName(), expectedColName));
+                        Assert.fail(Messages.getString("dbUnitExcuter.checkTableColMustNotNull", testCaseDataSource.getId(), table.getName(), expectedColName));
                     }
                 } else {
                     if (expectedField.isMustNull()) {
-                        Assert.assertNull(String.format("DB: %1$s, table: %2$s, column: %3$s must be NULL", testCaseDataSource.getId(), table.getName(), expectedColName),
+                        Assert.assertNull(Messages.getString("dbUnitExcuter.checkTableColMustNotNull", testCaseDataSource.getId(), table.getName(), expectedColName),
                                           actualColData);
 
                     } else if (expectedField.getCurrentTimeRule() != null) {
@@ -146,25 +149,24 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
                         verifyFromCurrentTimeRule(testCaseData, testCaseDataSource, table, expectedColName, expectedColData, expectedField, actualColData);
 
                     } else if (StringUtils.isNotBlank(expectedField.getRegExpRule())) {
-                        Assert.assertTrue(String.format("DB: %1$s, table: %2$s, column: %3$s mush match regExp: %4$s", testCaseDataSource.getId(), table.getName(), expectedColName,
-                                                        expectedField.getRegExpRule()),
+                        Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableColMustMatchRegExp", testCaseDataSource.getId(), table.getName(), expectedColName,
+                                                             expectedField.getRegExpRule()),
                                           Pattern.matches(expectedField.getRegExpRule().trim(), String.valueOf(actualColData)));
 
                     } else {
-                        Assert.fail("Undefined!");
+                        Assert.fail(Messages.getString("dbUnitExcuter.undefinedTableCol", testCaseDataSource.getId(), table.getName(), expectedColName));
                     }
                 }
 
             } else if (expectedColData instanceof Date) {
-                Assert.assertTrue(String.format("DB: %1$s, table: %2$s, column: %3$s must be Date", testCaseDataSource.getId(), table.getName(), expectedColName),
+                Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableColMustDate", testCaseDataSource.getId(), table.getName(), expectedColName),
                                   (actualColData instanceof Date));
-                Assert.assertEquals(String.format("DB: %1$s, table: %2$s, column: %3$s check value", testCaseDataSource.getId(), table.getName(), expectedColName),
-                                    ZestDateUtils.formatDateNormal((Date) expectedColData), ZestDateUtils.getStringFromDBDate((Date) actualColData, testCaseData));
+                Assert.assertEquals(Messages.getString("dbUnitExcuter.checkTableColValue", testCaseDataSource.getId(), table.getName(), expectedColName),
+                                    ZestDateUtil.formatDateNormal((Date) expectedColData), ZestDateUtil.getStringFromDBDate((Date) actualColData, testCaseData));
             } else {
                 // 具体值验证 - 非日期的其他类型
-                Assert.assertNotNull(String.format("DB: %1$s, table: %2$s, column: %3$s must be NOT NULL", testCaseDataSource.getId(), table.getName(), expectedColName),
-                                     actualColData);
-                Assert.assertEquals(String.format("DB: %1$s, table: %2$s, column: %3$s check value", testCaseDataSource.getId(), table.getName(), expectedColName),
+                Assert.assertNotNull(Messages.getString("dbUnitExcuter.checkTableColMustNotNull", testCaseDataSource.getId(), table.getName(), expectedColName), actualColData);
+                Assert.assertEquals(Messages.getString("dbUnitExcuter.checkTableColValue", testCaseDataSource.getId(), table.getName(), expectedColName),
                                     String.valueOf(expectedColData), String.valueOf(actualColData));
             }
         }
@@ -173,7 +175,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
     private void verifyCurrentTimeRule(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, RmdbDataSourceTable table, String expectedColName, Object expectedColData,
                                        com.github.bookong.zest.core.xml.data.Field expectedField, Object actualColData) {
         long tmp = getActualColDataTime(testCaseDataSource, table, expectedColName, actualColData);
-        Assert.assertTrue(String.format("DB: %1$s, table: %2$s, column: %3$s must be current time", testCaseDataSource.getId(), table.getName(), expectedColName),
+        Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableColMustCurrentTime", testCaseDataSource.getId(), table.getName(), expectedColName),
                           (tmp >= testCaseData.getStartTime() && tmp <= testCaseData.getEndTime() + expectedField.getCurrentTimeRule().getOffset()));
     }
 
@@ -194,8 +196,8 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
                 unit = Calendar.SECOND;
                 break;
             default:
-                Assert.fail(String.format("DB: %1$s, table: %2$s, column: %3$s unknown Unit value %4$s", testCaseDataSource.getId(), table.getName(), expectedColName,
-                                          expectedField.getFromCurrentTimeRule().getUnit()));
+                Assert.fail(Messages.getString("dbUnitExcuter.checkTableColUnknownUnit", testCaseDataSource.getId(), table.getName(), expectedColName,
+                                               expectedField.getFromCurrentTimeRule().getUnit()));
         }
 
         int min = Math.min(expectedField.getFromCurrentTimeRule().getMin(), expectedField.getFromCurrentTimeRule().getMax());
@@ -211,7 +213,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
         long expectedMax = cal.getTimeInMillis();
 
         long tmp = getActualColDataTime(testCaseDataSource, table, expectedColName, actualColData);
-        Assert.assertTrue(String.format("DB: %1$s, table: %2$s, column: %3$s must be from current time value", testCaseDataSource.getId(), table.getName(), expectedColName),
+        Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableColMustCurrentTime", testCaseDataSource.getId(), table.getName(), expectedColName),
                           (tmp >= expectedMin && tmp <= expectedMax));
     }
 
@@ -222,7 +224,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
         } else if (actualColData instanceof Long) {
             tmp = ((Long) actualColData).longValue();
         } else {
-            Assert.fail(String.format("DB: %1$s, table: %2$s, column: %3$s must be Date or Long", testCaseDataSource.getId(), table.getName(), expectedColName));
+            Assert.fail(Messages.getString("dbUnitExcuter.checkTableColMustDateOrLong", testCaseDataSource.getId(), table.getName(), expectedColName));
         }
         return tmp;
     }

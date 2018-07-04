@@ -34,7 +34,7 @@ public class XmlTestCaseDataLoader {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                throw new ParseTestCaseException(String.format(Messages.getString("loadTestCase.fileNotFound"), filePath));
+                throw new ParseTestCaseException(Messages.getString("xmlTestCaseDataLoader.fileNotFound", filePath));
             }
 
             zestData.setFileName(file.getName());
@@ -45,7 +45,7 @@ public class XmlTestCaseDataLoader {
         } catch (ParseTestCaseException e) {
             throw e;
         } catch (Exception e) {
-            throw new ParseTestCaseException(String.format(Messages.getString("loadTestCase.failToParseFile"), filePath), e);
+            throw new ParseTestCaseException(Messages.getString("xmlTestCaseDataLoader.failToParseFile", filePath), e);
         } finally {
             if (fis != null) {
                 try {

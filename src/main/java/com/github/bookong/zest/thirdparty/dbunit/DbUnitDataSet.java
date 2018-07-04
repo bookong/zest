@@ -25,7 +25,7 @@ public class DbUnitDataSet extends AbstractDataSet {
 
         for (AbstractDataSourceTable<?> table : testCaseDataSource.getInitDatas()) {
             RmdbDataSourceTable initDataSourceTable = (RmdbDataSourceTable) table;
-            tables.add(initDataSourceTable.getName(), new DbUnitTable(testCaseData, initDataSourceTable));
+            tables.add(initDataSourceTable.getName(), new DbUnitTable(testCaseData, testCaseDataSource, initDataSourceTable));
         }
     }
 

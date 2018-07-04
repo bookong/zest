@@ -11,12 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 辅助操作 SQL
  * 
  * @author jiangxu
  */
 public class ZestSqlHelper {
+
+    private static Logger logger = LoggerFactory.getLogger(ZestSqlHelper.class);
 
     /**
      * 安全的关闭 Statement
@@ -28,7 +33,7 @@ public class ZestSqlHelper {
             try {
                 stat.close();
             } catch (SQLException e) {
-                System.out.println("Fail to close Statement.");
+                logger.error("", e);
             }
         }
     }
@@ -43,7 +48,7 @@ public class ZestSqlHelper {
             try {
                 rs.close();
             } catch (SQLException e) {
-                System.out.println("Fail to close ResultSet.");
+                logger.error("", e);
             }
         }
     }
@@ -67,7 +72,7 @@ public class ZestSqlHelper {
                 Map<String, Object> rowData = new HashMap<String, Object>();
                 datas.add(rowData);
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                    String colName = rs.getMetaData().getColumnName(i).toLowerCase();
+                    String colName = rs.getMetaData().getColumnName(i);
                     Object colValue = rs.getObject(i);
 
                     if (colValue == null) {
@@ -112,20 +117,20 @@ public class ZestSqlHelper {
             rs = stat.executeQuery(sql);
 
             while (rs.next()) {
-                System.out.println("-------------------------------------------");
+                logger.info("-------------------------------------------"); //$NON-NLS-1$
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                     String colName = rs.getMetaData().getColumnName(i);
                     Object colValue = rs.getObject(i);
-                    String colType = (colValue == null ? "UNKNOWN" : colValue.getClass().getName());
-                    System.out.println(colName.toLowerCase() + "(" + colType + "):" + colValue + "\t");
+                    String colType = (colValue == null ? "UNKNOWN" : colValue.getClass().getName()); //$NON-NLS-1$
+                    logger.info("{} ({}) : {}", colName, colType, colValue); //$NON-NLS-1$
                 }
             }
-            System.out.println("===========================================");
+            logger.info("==========================================="); //$NON-NLS-1$
 
         } catch (Exception e) {
             safeClose(rs);
             safeClose(stat);
-            e.printStackTrace();
+            logger.error("", e);
         }
     }
 }
