@@ -49,7 +49,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
 
             DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
             DatabaseOperation.INSERT.execute(dbUnitConn, zestDataSet);
-            //dbUnitConn.getConnection().commit();
+            // dbUnitConn.getConnection().commit();
         } catch (Exception e) {
             throw new RuntimeException(Messages.getString("dbUnitExcuter.failToInit", testCaseDataSource.getId()), e);
         }
@@ -162,7 +162,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
                 Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableColMustDate", testCaseDataSource.getId(), table.getName(), expectedColName),
                                   (actualColData instanceof Date));
                 Assert.assertEquals(Messages.getString("dbUnitExcuter.checkTableColValue", testCaseDataSource.getId(), table.getName(), expectedColName),
-                                    ZestDateUtil.formatDateNormal((Date) expectedColData), ZestDateUtil.getStringFromDBDate((Date) actualColData, testCaseData));
+                                    ZestDateUtil.getStringFromDBDate((Date) expectedColData, testCaseData), ZestDateUtil.formatDateNormal((Date) actualColData));
             } else {
                 // 具体值验证 - 非日期的其他类型
                 Assert.assertNotNull(Messages.getString("dbUnitExcuter.checkTableColMustNotNull", testCaseDataSource.getId(), table.getName(), expectedColName), actualColData);
