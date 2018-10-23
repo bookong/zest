@@ -214,7 +214,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
         long expectedMax = cal.getTimeInMillis();
 
         long tmp = getActualColDataTime(testCaseDataSource, table, idx, expectedColName, actualColData);
-        Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableColMustCurrentTime", testCaseDataSource.getId(), table.getName(), expectedColName),
+        Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableColMustCurrentTime", testCaseDataSource.getId(), table.getName(), idx, expectedColName),
                           (tmp >= expectedMin && tmp <= expectedMax));
     }
 
