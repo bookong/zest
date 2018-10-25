@@ -72,7 +72,7 @@ public class ZestSqlHelper {
                 Map<String, Object> rowData = new HashMap<String, Object>();
                 datas.add(rowData);
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                    String colName = rs.getMetaData().getColumnName(i);
+                    String colName = rs.getMetaData().getColumnName(i).toLowerCase();
                     Object colValue = rs.getObject(i);
 
                     if (colValue == null) {
