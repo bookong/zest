@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -86,6 +87,11 @@ public class Launcher {
 
     /** 在 BlockJUnit4ClassRunner 子类的 getChildren 方法中调用 */
     public List<FrameworkMethod> junit4ClassRunnerGetChildren(List<FrameworkMethod> list) {
+        if (ignoreTest()) {
+            logger.info(Messages.getString("launcher.ignoreThisTest", testObject.getClass().getName()));
+            return Collections.emptyList();
+        }
+
         List<FrameworkMethod> results = new ArrayList<>(list.size() + 1);
         results.addAll(list);
         // 让 JUnit 接受 ZestTest 注解的方法
@@ -108,6 +114,18 @@ public class Launcher {
             }
         }
         return results;
+    }
+
+    private boolean ignoreTest() {
+        Class<?> clazz = testObject.getJavaClass();
+        while (clazz != null) {
+            if (clazz.getAnnotation(Ignore.class) != null) {
+                return true;
+            }
+            clazz = clazz.getSuperclass();
+        }
+
+        return false;
     }
 
     /** 在 BlockJUnit4ClassRunner 子类的 runChild 方法中调用 */
