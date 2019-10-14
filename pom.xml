@@ -6,7 +6,7 @@
 	<groupId>com.github.bookong</groupId>
 	<artifactId>zest</artifactId>
 	<name>DB Unit Testing toolkit - ZEST!</name>
-	<version>0.2.22/version>
+	<version>0.2.22</version>
 
 	<description>An easy-to-use database unit testing toolkit, support for Spring.</description>
 	<url>https://github.com/bookong/zest</url>
