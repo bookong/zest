@@ -7,7 +7,7 @@ public class ZestFilter extends Filter {
 
     private Filter filter;
 
-    public ZestFilter(Filter filter){
+    public ZestFilter(Filter filter) {
         this.filter = filter;
     }
 
@@ -22,7 +22,8 @@ public class ZestFilter extends Filter {
                 methodName = methodName.substring(0, pos).trim();
             }
 
-            return desiredDescription.indexOf(className) > 0 && desiredDescription.indexOf(methodName) > 0;
+            String expected = String.format(" %s(%s)", methodName, className);
+            return desiredDescription.indexOf(expected) > 0;
         }
 
         // explicitly check if any children want to run
