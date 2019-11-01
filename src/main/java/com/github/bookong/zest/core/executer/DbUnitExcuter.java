@@ -139,7 +139,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
                     }
                 } else {
                     if (expectedField.isMustNull()) {
-                        Assert.assertNull(Messages.getString("dbUnitExcuter.checkTableColMustNotNull", testCaseDataSource.getId(), table.getName(), expectedColName),
+                        Assert.assertNull(Messages.getString("dbUnitExcuter.checkTableColMustNotNull", testCaseDataSource.getId(), table.getName(), idx, expectedColName),
                                           actualColData);
 
                     } else if (expectedField.getCurrentTimeRule() != null) {
