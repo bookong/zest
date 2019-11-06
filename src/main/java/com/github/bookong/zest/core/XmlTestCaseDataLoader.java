@@ -38,6 +38,7 @@ public class XmlTestCaseDataLoader {
             }
 
             zestData.setFileName(file.getName());
+            zestData.setFilePath(file.getAbsolutePath());
             JAXBContext cxt = JAXBContext.newInstance(ZestGlobalConstant.DATA_XML_CODE_PACKAGE);
             Unmarshaller unm = cxt.createUnmarshaller();
             fis = new FileInputStream(file);

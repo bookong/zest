@@ -30,6 +30,8 @@ public class TestCaseData {
 
     /** 测试数据文件名称 */
     private String                                         fileName;
+    /** 测试数据文件路径 */
+    private String                                         filePath;
     /** 对于日期类型，在插入数据库时是否需要做偏移处理 */
     private boolean                                        transferTime = false;
     /** 如果日期需要偏移处理，当前时间与测试用例上描述的时间相差多少毫秒 */
@@ -49,7 +51,7 @@ public class TestCaseData {
 
     /**
      * 用 XML 数据初始化对象
-     * 
+     *
      * @param data
      * @throws LoadTestCaseFileException
      */
@@ -119,7 +121,9 @@ public class TestCaseData {
                     }
                 }
             } catch (Exception e) {
-                throw new LoadTestCaseFileException(Messages.getString("testCaseData.failToLoadPath", xmlParamField.getPath()), e);
+                throw new LoadTestCaseFileException(Messages.getString("testCaseData.failToLoadPath",
+                                                                       xmlParamField.getPath()),
+                                                    e);
             }
         }
     }
@@ -137,7 +141,8 @@ public class TestCaseData {
             info.setField(ZestReflectHelper.getFieldByFieldName(obj, testParamField.getFieldName()));
             info.setObj(obj);
             if (info.getField() == null) {
-                throw new RuntimeException(Messages.getString("testCaseData.canNotFindField", testParamField.getFieldName(), obj.getClass().getName()));
+                throw new RuntimeException(Messages.getString("testCaseData.canNotFindField",
+                                                              testParamField.getFieldName(), obj.getClass().getName()));
             }
 
             Class<?> fieldClass = info.getField().getType();
@@ -145,7 +150,8 @@ public class TestCaseData {
 
             if (testParamField.isMap() && !Map.class.isAssignableFrom(fieldClass)) {
                 // xml 文件与实际对象不一致
-                throw new RuntimeException(Messages.getString("testCaseData.notClassMapObject", testParamField.getFieldName()));
+                throw new RuntimeException(Messages.getString("testCaseData.notClassMapObject",
+                                                              testParamField.getFieldName()));
             }
 
             obj = ZestReflectHelper.getValueByFieldName(obj, info.getField().getName());
@@ -153,13 +159,15 @@ public class TestCaseData {
             // 由于 Map 和 List 容器只支持包含基本类型，所以他们必须出现在最后一层的属性中
             if (Map.class.isAssignableFrom(fieldClass)) {
                 if (notLastOne) {
-                    throw new RuntimeException(Messages.getString("testCaseData.mapMustLastField", testParamField.getFieldName()));
+                    throw new RuntimeException(Messages.getString("testCaseData.mapMustLastField",
+                                                                  testParamField.getFieldName()));
                 }
                 info.setMap((Map) obj);
             }
             if (List.class.isAssignableFrom(fieldClass)) {
                 if (notLastOne) {
-                    throw new RuntimeException(Messages.getString("testCaseData.listMustLastField", testParamField.getFieldName()));
+                    throw new RuntimeException(Messages.getString("testCaseData.listMustLastField",
+                                                                  testParamField.getFieldName()));
                 }
                 info.setList((List) obj);
             }
@@ -170,7 +178,7 @@ public class TestCaseData {
 
     /**
      * 获取指定数据源下指定表下各个列的 SqlType
-     * 
+     *
      * @param testDataSourceId 数据源ID
      * @param tableName 表名
      * @return 返回一个 map，key 为列名，value 是 SqlType
@@ -181,7 +189,7 @@ public class TestCaseData {
 
     /**
      * 设定指定数据源下指定表的 SqlType
-     * 
+     *
      * @param testDataSourceId 数据源ID
      * @param tableName 表名
      * @param colName 列名
@@ -204,6 +212,54 @@ public class TestCaseData {
         }
 
         map2.put(colName.toLowerCase(), sqlType);
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public ZestTestParam getTestParam() {
+        return testParam;
+    }
+
+    public void setTestParam(ZestTestParam testParam) {
+        this.testParam = testParam;
+    }
+
+    public List<TestCaseDataSource> getDataSources() {
+        return dataSources;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public boolean isTransferTime() {
+        return transferTime;
+    }
+
+    public long getCurrDbTimeDiff() {
+        return currDbTimeDiff;
     }
 
     @SuppressWarnings("rawtypes")
@@ -303,51 +359,11 @@ public class TestCaseData {
 
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public ZestTestParam getTestParam() {
-        return testParam;
-    }
-
-    public void setTestParam(ZestTestParam testParam) {
-        this.testParam = testParam;
-    }
-
-    public List<TestCaseDataSource> getDataSources() {
-        return dataSources;
-    }
-
-    public long getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
-    public long getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(long endTime) {
-        this.endTime = endTime;
-    }
-
-    public boolean isTransferTime() {
-        return transferTime;
-    }
-
-    public long getCurrDbTimeDiff() {
-        return currDbTimeDiff;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
