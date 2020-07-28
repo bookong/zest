@@ -15,12 +15,10 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.github.bookong.zest.core.testcase.AbstractDataSourceTable;
-import com.github.bookong.zest.core.testcase.RmdbDataSourceRow;
-import com.github.bookong.zest.core.testcase.RmdbDataSourceTable;
+import com.github.bookong.zest.core.testcase.SqlDataSourceRow;
+import com.github.bookong.zest.core.testcase.SqlDataSourceTable;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 import com.github.bookong.zest.thirdparty.dbunit.DbUnitDataSet;
@@ -35,7 +33,6 @@ import com.github.bookong.zest.util.ZestSqlHelper;
  */
 public class DbUnitExcuter extends AbstractJdbcExcuter {
 
-    private static Logger       logger = LoggerFactory.getLogger(DbUnitExcuter.class);
     private IDatabaseConnection dbUnitConn;
     private DbUnitDataSet       zestDataSet;
 
@@ -61,13 +58,13 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
             if (testCaseDataSource.isIgnoreTargetData()) {
                 logger.info(Messages.getString("dbUnitExcuter.ignoreTargetDataSource", testCaseDataSource.getId()));
             } else {
-                for (AbstractDataSourceTable<?> table : testCaseDataSource.getTargetDatas().values()) {
-                    if (table.isIgnoreCheckTarget()) {
-                        logger.info(Messages.getString("dbUnitExcuter.ignoreTargetTable", testCaseDataSource.getId(), table.getName()));
-                    } else {
-                        verifyTable(conn, testCaseData, testCaseDataSource, (RmdbDataSourceTable) table);
-                    }
-                }
+//                for (AbstractDataSourceTable<?> table : testCaseDataSource.getTargetDatas().values()) {
+//                    if (table.isIgnoreCheckTarget()) {
+//                        logger.info(Messages.getString("dbUnitExcuter.ignoreTargetTable", testCaseDataSource.getId(), table.getName()));
+//                    } else {
+//                        verifyTable(conn, testCaseData, testCaseDataSource, (RmdbDataSourceTable) table);
+//                    }
+//                }
             }
         } catch (AssertionError e) {
             throw e;
@@ -86,7 +83,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
     }
 
     /** 验证表数据 */
-    private void verifyTable(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, RmdbDataSourceTable table) {
+    private void verifyTable(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable table) {
         logger.info(Messages.getString("dbUnitExcuter.startCheckTargetTable", testCaseDataSource.getId(), table.getName()));
 
         try {
@@ -96,7 +93,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
 
             for (int rowIdx = 0; rowIdx < datasInDb.size(); rowIdx++) {
                 Map<String, Object> actualRowDatas = datasInDb.get(rowIdx);
-                RmdbDataSourceRow rmdbDataSourceRow = table.getRowDatas().get(rowIdx);
+                SqlDataSourceRow rmdbDataSourceRow = table.getRowDatas().get(rowIdx);
                 verifyRowData(testCaseData, testCaseDataSource, table, (rowIdx + 1), rmdbDataSourceRow, actualRowDatas);
             }
         } catch (AssertionError e) {
@@ -119,7 +116,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
     }
 
     /** 验证每行的数据 */
-    private void verifyRowData(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, RmdbDataSourceTable table, int idx, RmdbDataSourceRow rmdbDataSourceRow,
+    private void verifyRowData(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable table, int idx, SqlDataSourceRow rmdbDataSourceRow,
                                Map<String, Object> actualRowDatas) {
         for (Entry<String, Object> entry : rmdbDataSourceRow.getFields().entrySet()) {
             String expectedColName = entry.getKey();
@@ -173,14 +170,14 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
         }
     }
 
-    private void verifyCurrentTimeRule(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, RmdbDataSourceTable table, int idx, String expectedColName,
+    private void verifyCurrentTimeRule(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable table, int idx, String expectedColName,
                                        Object expectedColData, com.github.bookong.zest.core.xml.data.Field expectedField, Object actualColData) {
         long tmp = getActualColDataTime(testCaseDataSource, table, idx, expectedColName, actualColData);
         Assert.assertTrue(Messages.getString("dbUnitExcuter.checkTableColMustCurrentTime", testCaseDataSource.getId(), table.getName(), idx, expectedColName),
                           (tmp >= testCaseData.getStartTime() && tmp <= testCaseData.getEndTime() + expectedField.getCurrentTimeRule().getOffset()));
     }
 
-    private void verifyFromCurrentTimeRule(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, RmdbDataSourceTable table, int idx, String expectedColName,
+    private void verifyFromCurrentTimeRule(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable table, int idx, String expectedColName,
                                            Object expectedColData, com.github.bookong.zest.core.xml.data.Field expectedField, Object actualColData) {
         int unit = Calendar.SECOND;
         switch (expectedField.getFromCurrentTimeRule().getUnit()) {
@@ -218,7 +215,7 @@ public class DbUnitExcuter extends AbstractJdbcExcuter {
                           (tmp >= expectedMin && tmp <= expectedMax));
     }
 
-    private long getActualColDataTime(TestCaseDataSource testCaseDataSource, RmdbDataSourceTable table, int idx, String expectedColName, Object actualColData) {
+    private long getActualColDataTime(TestCaseDataSource testCaseDataSource, SqlDataSourceTable table, int idx, String expectedColName, Object actualColData) {
         long tmp = 0;
         if (actualColData instanceof Date) {
             tmp = ((Date) actualColData).getTime();

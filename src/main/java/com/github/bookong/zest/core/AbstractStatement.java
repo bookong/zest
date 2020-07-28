@@ -5,7 +5,7 @@ import java.lang.annotation.Annotation;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import com.github.bookong.zest.core.annotations.ZestJdbcConn;
+import com.github.bookong.zest.core.annotation.ZestJdbcConn;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
 

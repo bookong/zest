@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.github.bookong.zest.core.Launcher;
 import com.github.bookong.zest.core.ZestFilter;
-import com.github.bookong.zest.core.annotations.ZestTest;
+import com.github.bookong.zest.core.annotation.ZestTest;
 
 /**
  * @author jiangxu
@@ -42,8 +42,8 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner impleme
 
     @Override
     protected void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
-        ZestTest ztest = frameworkMethod.getAnnotation(ZestTest.class);
-        if (ztest == null) {
+        ZestTest zest = frameworkMethod.getAnnotation(ZestTest.class);
+        if (zest == null) {
             super.runChild(frameworkMethod, notifier);
         } else {
             zestLauncher.junit4ClassRunnerRunChild(frameworkMethod, notifier);

@@ -39,4 +39,6 @@ public abstract class AbstractJdbcExcuter extends AbstractExcuter {
      */
     public abstract void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource);
 
+
+
 }

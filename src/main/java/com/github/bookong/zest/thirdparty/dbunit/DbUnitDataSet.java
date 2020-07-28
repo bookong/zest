@@ -8,8 +8,6 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableIterator;
 import org.dbunit.dataset.OrderedTableNameMap;
 
-import com.github.bookong.zest.core.testcase.AbstractDataSourceTable;
-import com.github.bookong.zest.core.testcase.RmdbDataSourceTable;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 
@@ -23,10 +21,10 @@ public class DbUnitDataSet extends AbstractDataSet {
     public DbUnitDataSet(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) throws AmbiguousTableNameException{
         tables = super.createTableNameMap();
 
-        for (AbstractDataSourceTable<?> table : testCaseDataSource.getInitDatas()) {
-            RmdbDataSourceTable initDataSourceTable = (RmdbDataSourceTable) table;
-            tables.add(initDataSourceTable.getName(), new DbUnitTable(testCaseData, testCaseDataSource, initDataSourceTable));
-        }
+//        for (AbstractDataSourceTable<?> table : testCaseDataSource.getInitDatas()) {
+//            RmdbDataSourceTable initDataSourceTable = (RmdbDataSourceTable) table;
+//            tables.add(initDataSourceTable.getName(), new DbUnitTable(testCaseData, testCaseDataSource, initDataSourceTable));
+//        }
     }
 
     @SuppressWarnings("unchecked")

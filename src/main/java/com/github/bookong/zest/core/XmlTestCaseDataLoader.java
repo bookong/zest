@@ -1,19 +1,17 @@
 package com.github.bookong.zest.core;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
+import com.github.bookong.zest.core.testcase.TestCaseData;
+import com.github.bookong.zest.exceptions.LoadTestCaseFileException;
+import com.github.bookong.zest.support.xml.data.Data;
+import com.github.bookong.zest.util.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.core.xml.data.Data;
-import com.github.bookong.zest.exceptions.ParseTestCaseException;
-import com.github.bookong.zest.util.Messages;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * @author jiangxu
@@ -27,14 +25,14 @@ public class XmlTestCaseDataLoader {
      * 
      * @param filePath 数据文件绝对路径
      * @param zestData
-     * @param zestLauncher
      */
-    public void loadFromAbsolutePath(String filePath, TestCaseData zestData, Launcher zestLauncher) throws ParseTestCaseException {
+    public void loadFromAbsolutePath(Launcher launcher, String filePath,
+                                     TestCaseData zestData) throws LoadTestCaseFileException {
         FileInputStream fis = null;
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                throw new ParseTestCaseException(Messages.getString("xmlTestCaseDataLoader.fileNotFound", filePath));
+                throw new LoadTestCaseFileException(Messages.fileNotFound(filePath));
             }
 
             zestData.setFileName(file.getName());
@@ -42,17 +40,19 @@ public class XmlTestCaseDataLoader {
             JAXBContext cxt = JAXBContext.newInstance(ZestGlobalConstant.DATA_XML_CODE_PACKAGE);
             Unmarshaller unm = cxt.createUnmarshaller();
             fis = new FileInputStream(file);
-            zestData.load(Data.class.cast(unm.unmarshal(fis)));
-        } catch (ParseTestCaseException e) {
+            Data data = (Data) unm.unmarshal(fis);
+            zestData.load(launcher, data);
+
+        } catch (LoadTestCaseFileException e) {
             throw e;
         } catch (Exception e) {
-            throw new ParseTestCaseException(Messages.getString("xmlTestCaseDataLoader.failToParseFile", filePath), e);
+            throw new LoadTestCaseFileException(Messages.failParseFile(filePath), e);
         } finally {
             if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    logger.error("", e);
+                    logger.warn("", e);
                 }
             }
         }

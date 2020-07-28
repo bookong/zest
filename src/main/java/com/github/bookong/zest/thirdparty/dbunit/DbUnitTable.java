@@ -12,7 +12,7 @@ import org.dbunit.dataset.DefaultTableMetaData;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.datatype.StringDataType;
 
-import com.github.bookong.zest.core.testcase.RmdbDataSourceTable;
+import com.github.bookong.zest.core.testcase.SqlDataSourceTable;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 import com.github.bookong.zest.util.ZestDateUtil;
@@ -24,9 +24,9 @@ public class DbUnitTable extends AbstractTable {
 
     private ITableMetaData      metaData;
     private TestCaseData        testCaseData;
-    private RmdbDataSourceTable initDataSourceTable;
+    private SqlDataSourceTable initDataSourceTable;
 
-    public DbUnitTable(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, RmdbDataSourceTable initDataSourceTable){
+    public DbUnitTable(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable initDataSourceTable){
         this.testCaseData = testCaseData;
         this.initDataSourceTable = initDataSourceTable;
         List<Column> columnList = new ArrayList<>();
