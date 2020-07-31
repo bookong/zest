@@ -186,8 +186,8 @@ public class Launcher {
         loadTestCaseData(method);
 
         ZestStatement zestStatement = new ZestStatement(this, test, method);
-        Statement statement = withZestBefores(this, test, zestStatement);
-        statement = withBefores(test, statement);
+        Statement statement = withBefores(test, statement);
+        statement = withZestBefores(this, test, zestStatement);
         statement = withZestAfters(this, test, statement);
         statement = withAfters(test, statement);
 
