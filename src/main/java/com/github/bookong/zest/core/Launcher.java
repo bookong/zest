@@ -186,16 +186,16 @@ public class Launcher {
         loadTestCaseData(method);
 
         ZestStatement zestStatement = new ZestStatement(this, test, method);
-        Statement statement = withBefores(test, statement);
-        statement = withZestBefores(this, test, zestStatement);
-        statement = withZestAfters(this, test, statement);
+        Statement statement = withZestBefores(this, test, zestStatement);
+        statement = withBefores(test, statement);
         statement = withAfters(test, statement);
+        statement = withZestAfters(this, test, statement);
 
         return statement;
     }
 
     /** 加载自动注入的内容 */
-    private void loadAutowiredFieldFromTest(Object test) {
+    private void loadAutowiredFieldFromTest(Object test) throws Exception {
         connectionMap.clear();
         executerMap.clear();
 
@@ -353,11 +353,11 @@ public class Launcher {
                 Connection conn = connectionMap.get(testCaseDataSource.getId());
                 AbstractJdbcExcuter jdbcExcuter = (AbstractJdbcExcuter) executer;
 
-                if (testCaseDataSource.isIgnoreTargetData()) {
-                    logger.info(String.format("DataSource (Id : %1$s) ignore verify", testCaseDataSource.getId()));
-                } else {
-                    jdbcExcuter.checkTargetDatabase(conn, testCaseData, testCaseDataSource);
-                }
+//                if (testCaseDataSource.isIgnoreTargetData()) {
+//                    logger.info(String.format("DataSource (Id : %1$s) ignore verify", testCaseDataSource.getId()));
+//                } else {
+//                    jdbcExcuter.checkTargetDatabase(conn, testCaseData, testCaseDataSource);
+//                }
                 jdbcExcuter.clearDatabase(conn, testCaseData, testCaseDataSource);
             }
             // FIXME 以后可能有 Mongo 的 Excuter

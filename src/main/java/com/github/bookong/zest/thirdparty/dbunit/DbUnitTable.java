@@ -41,7 +41,8 @@ public class DbUnitTable extends AbstractTable {
 
     @Override
     public int getRowCount() {
-        return initDataSourceTable.getRowDatas().size();
+//        return initDataSourceTable.getRowDatas().size();
+        return 0; // TODO
     }
 
     @Override
@@ -52,11 +53,12 @@ public class DbUnitTable extends AbstractTable {
     @Override
     public Object getValue(int row, String column) throws DataSetException {
         assertValidRowIndex(row);
-        Object obj = initDataSourceTable.getRowDatas().get(row).getFields().get(column);
-        if (obj != null && (obj instanceof Date)) {
-            return ZestDateUtil.getDateInDB((Date) obj, testCaseData);
-        }
-        return obj;
+//        Object obj = initDataSourceTable.getRowDatas().get(row).getFields().get(column);
+//        if (obj != null && (obj instanceof Date)) {
+//            return ZestDateUtil.getDateInDB((Date) obj, testCaseData);
+//        }
+//        return obj;
+        return null;//TODO
     }
 
 }
