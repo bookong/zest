@@ -1,7 +1,7 @@
 package com.github.bookong.zest.core.testcase;
 
 import com.github.bookong.zest.core.Launcher;
-import com.github.bookong.zest.exceptions.LoadTestCaseFileException;
+import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.Data;
 import com.github.bookong.zest.support.xml.data.DataSource;
 import com.github.bookong.zest.support.xml.data.ParamField;

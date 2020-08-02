@@ -1,6 +1,6 @@
 package com.github.bookong.zest.core.testcase;
 
-import com.github.bookong.zest.exceptions.LoadTestCaseFileException;
+import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.support.xml.data.Row;

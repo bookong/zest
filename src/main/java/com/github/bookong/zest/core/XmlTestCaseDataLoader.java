@@ -1,7 +1,7 @@
 package com.github.bookong.zest.core;
 
 import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.exceptions.LoadTestCaseFileException;
+import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.Data;
 import com.github.bookong.zest.util.Messages;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.github.bookong.zest.exceptions;
+package com.github.bookong.zest.exception;
 
 /**
  * @author jiangxu

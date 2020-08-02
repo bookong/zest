@@ -1,7 +1,7 @@
 package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.core.ZestGlobalConstant;
-import com.github.bookong.zest.exceptions.LoadTestCaseFileException;
+import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 
