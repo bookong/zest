@@ -1,6 +1,5 @@
 package com.github.bookong.zest.core.testcase;
 
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.support.xml.data.Row;
@@ -23,8 +22,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
     private Map<String, Object> fields = new LinkedHashMap<>();
 
     public SqlDataSourceRow(TestCaseData testCaseData, String dataSourceId, String tableName, Row xmlRow,
-                            List<AbstractDataConverter> dataConverterList,
-                            boolean isTargetData) throws LoadTestCaseFileException{
+                            List<AbstractDataConverter> dataConverterList, boolean isTargetData){
         Map<String, Integer> colSqlTypes = testCaseData.getRmdbTableColSqlTypes(dataSourceId, tableName);
 
         for (Entry<QName, String> entry : xmlRow.getOtherAttributes().entrySet()) {
@@ -36,7 +34,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
         for (Field xmlField : xmlRow.getField()) {
             String fieldName = xmlField.getName();
             if (fields.containsKey(xmlField.getName())) {
-                throw new LoadTestCaseFileException(Messages.parseDataFieldDuplicate(tableName, fieldName));
+                throw new RuntimeException(Messages.parseDataFieldDuplicate(tableName, fieldName));
             }
 
             if (xmlField.getNull() != null) {
@@ -47,7 +45,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
 
             } else {
                 if (!isTargetData) {
-                    throw new LoadTestCaseFileException(Messages.parseDataFieldUnder(tableName, fieldName));
+                    throw new RuntimeException(Messages.parseDataFieldUnder(tableName, fieldName));
                 }
 
                 fields.put(fieldName, RuleFactory.createRule(tableName, fieldName, xmlField));
@@ -56,11 +54,10 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
     }
 
     private Object parseValue(String tableName, String fieldName, String xmlFieldValue,
-                              Map<String, Integer> colSqlTypes,
-                              List<AbstractDataConverter> dataConverterList) throws LoadTestCaseFileException {
+                              Map<String, Integer> colSqlTypes, List<AbstractDataConverter> dataConverterList) {
         Integer colSqlType = colSqlTypes.get(fieldName.toLowerCase());
         if (colSqlType == null) {
-            throw new LoadTestCaseFileException(Messages.parseDataSqlType(tableName, fieldName));
+            throw new RuntimeException(Messages.parseDataSqlType(tableName, fieldName));
         }
 
         for (AbstractDataConverter dataConverter : dataConverterList) {
@@ -99,8 +96,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
                 return xmlFieldValue;
 
             default:
-                throw new LoadTestCaseFileException(Messages.parseDataSqlTypeUnsupport(tableName, fieldName,
-                                                                                           colSqlType));
+                throw new RuntimeException(Messages.parseDataSqlTypeUnsupport(tableName, fieldName, colSqlType));
         }
     }
 

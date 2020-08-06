@@ -1,6 +1,5 @@
 package com.github.bookong.zest.core.testcase;
 
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.DataSource;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class TestCaseDataSource {
     private TargetData targetData;
 
     public TestCaseDataSource(TestCaseData testCaseData, DataSource xmlDataSource,
-                              List<AbstractDataConverter> dataConverterList) throws LoadTestCaseFileException{
+                              List<AbstractDataConverter> dataConverterList){
         this.id = xmlDataSource.getId();
         this.type = xmlDataSource.getType();
 

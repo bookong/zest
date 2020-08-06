@@ -1,7 +1,6 @@
 package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.core.ZestGlobalConstant;
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 
@@ -24,11 +23,10 @@ public class LoadTestCaseUtil {
      * 
      * @param value 待解析的字符串
      * @return 解析后的日期对象
-     * @throws LoadTestCaseFileException
      */
-    public static Date parseDate(String value) throws LoadTestCaseFileException {
+    public static Date parseDate(String value) {
         if (StringUtils.isBlank(value)) {
-            throw new LoadTestCaseFileException(Messages.parseDate(value));
+            throw new RuntimeException(Messages.parseDate(value));
         }
         value = value.trim();
         try {
@@ -37,7 +35,7 @@ public class LoadTestCaseUtil {
                                                                      "yyyy-MM-dd HH", //
                                                                      "yyyy-MM-dd" });
         } catch (ParseException e) {
-            throw new LoadTestCaseFileException(Messages.parseDate(value), e);
+            throw new RuntimeException(Messages.parseDate(value), e);
         }
     }
 

@@ -1,7 +1,6 @@
 package com.github.bookong.zest.core.testcase;
 
 import com.github.bookong.zest.core.Launcher;
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.Data;
 import com.github.bookong.zest.support.xml.data.DataSource;
 import com.github.bookong.zest.support.xml.data.ParamField;
@@ -64,9 +63,8 @@ public class TestCaseData {
      * 用 XML 数据初始化对象
      *
      * @param xmlData
-     * @throws LoadTestCaseFileException
      */
-    public void load(Launcher launcher, Data xmlData) throws LoadTestCaseFileException {
+    public void load(Launcher launcher, Data xmlData) {
         this.description = StringUtils.trimToEmpty(xmlData.getDescription());
         this.transferTime = StringUtils.isNotBlank(xmlData.getCurrDbTime());
         if (isTransferTime()) {
@@ -86,24 +84,22 @@ public class TestCaseData {
         }
     }
 
-    private void load(TestParam xmlTestParam) throws LoadTestCaseFileException {
+    private void load(TestParam xmlTestParam) {
         for (ParamField xmlParamField : xmlTestParam.getParamField()) {
             try {
                 Triple<Object, String, String> triple = getObjectAndFieldAndMapKey(xmlParamField);
                 setParamObjValue(xmlParamField, triple.getLeft(), triple.getMiddle(), triple.getRight());
 
-            } catch (LoadTestCaseFileException e) {
-                throw e;
             } catch (Exception e) {
-                throw new LoadTestCaseFileException(Messages.parseParamPath(xmlParamField), e);
+                throw new RuntimeException(Messages.parseParamPath(xmlParamField), e);
             }
         }
     }
 
-    private Triple<Object, String, String> getObjectAndFieldAndMapKey(ParamField xmlParamField) throws LoadTestCaseFileException {
+    private Triple<Object, String, String> getObjectAndFieldAndMapKey(ParamField xmlParamField) {
         try {
             if (xmlParamField.isNull() && StringUtils.isBlank(xmlParamField.getValue())) {
-                throw new LoadTestCaseFileException(Messages.parseParamNull(xmlParamField));
+                throw new RuntimeException(Messages.parseParamNull(xmlParamField));
             }
 
             String path = xmlParamField.getPath();
@@ -112,14 +108,14 @@ public class TestCaseData {
             if (path.endsWith("-")) {
                 // List
                 if (xmlParamField.isNull()) {
-                    throw new LoadTestCaseFileException(Messages.parseParamSetContainerNull(xmlParamField));
+                    throw new RuntimeException(Messages.parseParamSetContainerNull(xmlParamField));
                 }
                 path = path.substring(0, path.length() - 1);
 
             } else if ((pos = path.indexOf(':')) > 0) {
                 // Map
                 if (xmlParamField.isNull()) {
-                    throw new LoadTestCaseFileException(Messages.parseParamSetContainerNull(xmlParamField));
+                    throw new RuntimeException(Messages.parseParamSetContainerNull(xmlParamField));
                 }
                 path = path.substring(0, pos);
                 mapKey = path.substring(pos + 1);
@@ -133,20 +129,17 @@ public class TestCaseData {
             }
 
             if (obj == null) {
-                throw new LoadTestCaseFileException(Messages.parseParamObj(xmlParamField));
+                throw new RuntimeException(Messages.parseParamObj(xmlParamField));
             }
 
             return new ImmutableTriple<>(obj, fieldNames[fieldNames.length - 1], mapKey);
 
-        } catch (LoadTestCaseFileException e) {
-            throw e;
         } catch (Exception e) {
-            throw new LoadTestCaseFileException(Messages.parseParamObj(xmlParamField), e);
+            throw new RuntimeException(Messages.parseParamObj(xmlParamField), e);
         }
     }
 
-    private void setParamObjValue(ParamField xmlParamField, Object obj, String lastFieldName,
-                                  String mapKey) throws LoadTestCaseFileException {
+    private void setParamObjValue(ParamField xmlParamField, Object obj, String lastFieldName, String mapKey) {
         try {
             if (xmlParamField.isNull()) {
                 ZestReflectHelper.setValueByFieldName(obj, lastFieldName, null);
@@ -155,7 +148,7 @@ public class TestCaseData {
 
             Field field = ZestReflectHelper.getFieldByFieldName(obj, lastFieldName);
             if (field == null) {
-                throw new LoadTestCaseFileException(Messages.parseParamObj(xmlParamField));
+                throw new RuntimeException(Messages.parseParamObj(xmlParamField));
             }
 
             String value = StringUtils.trimToEmpty(xmlParamField.getValue());
@@ -188,30 +181,28 @@ public class TestCaseData {
                 addParamObjContainerValue(xmlParamField, obj, field, mapKey, value, false);
 
             } else {
-                throw new LoadTestCaseFileException(Messages.parseParamSetTypes(xmlParamField, fieldClass));
+                throw new RuntimeException(Messages.parseParamSetTypes(xmlParamField, fieldClass));
             }
 
-        } catch (LoadTestCaseFileException e) {
-            throw e;
         } catch (Exception e) {
-            throw new LoadTestCaseFileException(Messages.parseParamSet(xmlParamField), e);
+            throw new RuntimeException(Messages.parseParamSet(xmlParamField), e);
         }
     }
 
     @SuppressWarnings({ "unchecked" })
     private void addParamObjContainerValue(ParamField xmlParamField, Object obj, Field field, String mapKey,
-                                           String value, boolean isList) throws LoadTestCaseFileException {
+                                           String value, boolean isList) {
         try {
             Type gt = field.getGenericType();
             if (!(gt instanceof ParameterizedType)) {
-                throw new LoadTestCaseFileException(Messages.parseParamSetGeneric(xmlParamField));
+                throw new RuntimeException(Messages.parseParamSetGeneric(xmlParamField));
             }
 
             Type[] types = ((ParameterizedType) gt).getActualTypeArguments();
 
             if (isList) {
                 if (types.length != 1) {
-                    throw new LoadTestCaseFileException(Messages.parseParamSetGeneric(xmlParamField));
+                    throw new RuntimeException(Messages.parseParamSetGeneric(xmlParamField));
                 }
 
                 Class<?> listValueClass = (Class<?>) types[0];
@@ -220,7 +211,7 @@ public class TestCaseData {
             } else {
                 // Map
                 if (types.length != 2) {
-                    throw new LoadTestCaseFileException(Messages.parseParamSetGeneric(xmlParamField));
+                    throw new RuntimeException(Messages.parseParamSetGeneric(xmlParamField));
                 }
 
                 Class<?> mapKeyClass = (Class<?>) types[0];
@@ -230,15 +221,12 @@ public class TestCaseData {
                 map.put(key, convertParamValue(xmlParamField, mapValueClass, value));
             }
 
-        } catch (LoadTestCaseFileException e) {
-            throw e;
         } catch (Exception e) {
-            throw new LoadTestCaseFileException(Messages.parseParamSetContainer(xmlParamField), e);
+            throw new RuntimeException(Messages.parseParamSetContainer(xmlParamField), e);
         }
     }
 
-    private Object convertParamValue(ParamField xmlParamField, Class<?> target,
-                                     String value) throws LoadTestCaseFileException {
+    private Object convertParamValue(ParamField xmlParamField, Class<?> target, String value) {
         if (Integer.class.isAssignableFrom(target)) {
             return Integer.valueOf(value);
 
@@ -261,7 +249,7 @@ public class TestCaseData {
             return LoadTestCaseUtil.parseDate(value);
 
         } else {
-            throw new LoadTestCaseFileException(Messages.parseParamSetTypes(xmlParamField, target));
+            throw new RuntimeException(Messages.parseParamSetTypes(xmlParamField, target));
         }
     }
 
@@ -365,6 +353,7 @@ public class TestCaseData {
             throw new RuntimeException(e);
         }
     }
+
     // FIXME
     /** 比较时间（考虑数据偏移情况) */
     public void assertDateEquals(String msg, Date expect, Date actual) {

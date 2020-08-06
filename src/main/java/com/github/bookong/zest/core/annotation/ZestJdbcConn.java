@@ -7,7 +7,7 @@ import java.lang.annotation.*;
  * 
  * @author jiangxu
  */
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented

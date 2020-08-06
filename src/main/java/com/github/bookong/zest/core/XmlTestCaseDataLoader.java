@@ -1,7 +1,6 @@
 package com.github.bookong.zest.core;
 
 import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.Data;
 import com.github.bookong.zest.util.Messages;
 import org.slf4j.Logger;
@@ -26,13 +25,12 @@ public class XmlTestCaseDataLoader {
      * @param filePath 数据文件绝对路径
      * @param zestData
      */
-    public void loadFromAbsolutePath(Launcher launcher, String filePath,
-                                     TestCaseData zestData) throws LoadTestCaseFileException {
+    public void loadFromAbsolutePath(Launcher launcher, String filePath, TestCaseData zestData) {
         FileInputStream fis = null;
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                throw new LoadTestCaseFileException(Messages.fileNotFound(filePath));
+                throw new RuntimeException(Messages.fileNotFound(filePath));
             }
 
             zestData.setFileName(file.getName());
@@ -43,10 +41,8 @@ public class XmlTestCaseDataLoader {
             Data data = (Data) unm.unmarshal(fis);
             zestData.load(launcher, data);
 
-        } catch (LoadTestCaseFileException e) {
-            throw e;
         } catch (Exception e) {
-            throw new LoadTestCaseFileException(Messages.parseFile(filePath), e);
+            throw new RuntimeException(Messages.parseFile(filePath), e);
         } finally {
             if (fis != null) {
                 try {

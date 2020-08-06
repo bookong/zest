@@ -10,5 +10,5 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractExcuter {
 
-    protected static Logger logger = LoggerFactory.getLogger(DbUnitExcuter.class);
+    protected static Logger logger = LoggerFactory.getLogger(AbstractExcuter.class);
 }

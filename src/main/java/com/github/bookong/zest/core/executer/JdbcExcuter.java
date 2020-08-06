@@ -10,7 +10,7 @@ import com.github.bookong.zest.core.testcase.TestCaseDataSource;
  * 
  * @author jiangxu
  */
-public abstract class AbstractJdbcExcuter extends AbstractExcuter {
+public class JdbcExcuter extends AbstractExcuter {
 
     /**
      * 初始化数据库中数据
@@ -19,7 +19,9 @@ public abstract class AbstractJdbcExcuter extends AbstractExcuter {
      * @param testCaseData
      * @param testCaseDataSource
      */
-    public abstract void initDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource);
+    public void initDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) {
+
+    }
 
     /**
      * 验证数据库中的数据
@@ -28,7 +30,9 @@ public abstract class AbstractJdbcExcuter extends AbstractExcuter {
      * @param testCaseData
      * @param testCaseDataSource
      */
-    public abstract void checkTargetDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource);
+    public void checkTargetDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) {
+
+    }
 
     /**
      * 清空初始化的数据
@@ -37,8 +41,8 @@ public abstract class AbstractJdbcExcuter extends AbstractExcuter {
      * @param testCaseData
      * @param testCaseDataSource
      */
-    public abstract void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource);
+    public void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) {
 
-
+    }
 
 }

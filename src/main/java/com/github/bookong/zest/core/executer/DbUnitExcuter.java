@@ -1,14 +1,10 @@
 package com.github.bookong.zest.core.executer;
 
 import java.sql.Connection;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -23,7 +19,6 @@ import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 import com.github.bookong.zest.thirdparty.dbunit.DbUnitDataSet;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestSqlHelper;
 
 /**
@@ -31,7 +26,7 @@ import com.github.bookong.zest.util.ZestSqlHelper;
  * 
  * @author jiangxu
  */
-public class DbUnitExcuter extends AbstractJdbcExcuter {
+public class DbUnitExcuter extends JdbcExcuter {
 
     private IDatabaseConnection dbUnitConn;
     private DbUnitDataSet       zestDataSet;

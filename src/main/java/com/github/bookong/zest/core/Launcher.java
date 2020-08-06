@@ -39,7 +39,7 @@ import com.github.bookong.zest.core.annotation.ZestBefore;
 import com.github.bookong.zest.core.annotation.ZestDataSource;
 import com.github.bookong.zest.core.annotation.ZestTest;
 import com.github.bookong.zest.core.executer.AbstractExcuter;
-import com.github.bookong.zest.core.executer.AbstractJdbcExcuter;
+import com.github.bookong.zest.core.executer.JdbcExcuter;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
@@ -117,9 +117,9 @@ public class Launcher {
     void initDataSource() {
         for (TestCaseDataSource testCaseDataSource : testCaseData.getDataSources()) {
             AbstractExcuter executer = executerMap.get(testCaseDataSource.getId());
-            if (executer instanceof AbstractJdbcExcuter) {
+            if (executer instanceof JdbcExcuter) {
                 Connection conn = connectionMap.get(testCaseDataSource.getId());
-                ((AbstractJdbcExcuter) executer).initDatabase(conn, testCaseData, testCaseDataSource);
+                ((JdbcExcuter) executer).initDatabase(conn, testCaseData, testCaseDataSource);
             }
         }
     }
@@ -128,9 +128,9 @@ public class Launcher {
         for (TestCaseDataSource dataSource : testCaseData.getDataSources()) {
             AbstractExcuter executer = executerMap.get(dataSource.getId());
 
-            if (executer instanceof AbstractJdbcExcuter) {
+            if (executer instanceof JdbcExcuter) {
                 Connection conn = connectionMap.get(dataSource.getId());
-                AbstractJdbcExcuter jdbcExcuter = (AbstractJdbcExcuter) executer;
+                JdbcExcuter jdbcExcuter = (JdbcExcuter) executer;
 
                 if (dataSource.getTargetData().isIgnoreCheck()) {
                     logger.info(Messages.ignoreTargetData(dataSource.getId()));

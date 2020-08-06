@@ -1,6 +1,5 @@
 package com.github.bookong.zest.support.rule;
 
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
 
@@ -9,8 +8,7 @@ import com.github.bookong.zest.util.Messages;
  */
 public class RuleFactory {
 
-    public static AbstractRule createRule(String tableName, String fieldName,
-                                          Field xmlField) throws LoadTestCaseFileException {
+    public static AbstractRule createRule(String tableName, String fieldName, Field xmlField) {
         if (xmlField.getRegExp() != null) {
             return new RegExpRule(xmlField);
 
@@ -21,7 +19,7 @@ public class RuleFactory {
             return new FromCurrentTimeRule(xmlField);
 
         } else {
-            throw new LoadTestCaseFileException(Messages.parseDataFieldNone(tableName, fieldName));
+            throw new RuntimeException(Messages.parseDataFieldNone(tableName, fieldName));
         }
     }
 }

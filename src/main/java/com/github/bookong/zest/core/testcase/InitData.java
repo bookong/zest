@@ -1,6 +1,5 @@
 package com.github.bookong.zest.core.testcase;
 
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.Init;
 import com.github.bookong.zest.support.xml.data.Table;
 import com.github.bookong.zest.util.LoadTestCaseUtil;
@@ -17,7 +16,7 @@ public class InitData {
     private List<AbstractDataSourceTable<?>> initDataList = new ArrayList<>();
 
     public InitData(TestCaseData testCaseData, String dataSourceId, String dataSourceType, Init xmlInit,
-                    List<AbstractDataConverter> dataConverterList) throws LoadTestCaseFileException{
+                    List<AbstractDataConverter> dataConverterList){
         if (LoadTestCaseUtil.isRmdb(dataSourceType)) {
             for (Table xmlTable : xmlInit.getTable()) {
                 initDataList.add(new SqlDataSourceTable(testCaseData, dataSourceId, xmlTable, dataConverterList,

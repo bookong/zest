@@ -1,6 +1,5 @@
 package com.github.bookong.zest.core.testcase;
 
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.Row;
 import com.github.bookong.zest.support.xml.data.Table;
 
@@ -18,8 +17,7 @@ public class SqlDataSourceTable extends AbstractDataSourceTable<SqlDataSourceRow
     private List<SqlDataSourceRow> rowDataList = new ArrayList<>();
 
     public SqlDataSourceTable(TestCaseData testCaseData, String dataSourceId, Table xmlTable,
-                              List<AbstractDataConverter> dataConverterList,
-                              boolean isTargetData) throws LoadTestCaseFileException{
+                              List<AbstractDataConverter> dataConverterList, boolean isTargetData){
         super(xmlTable);
 
         for (Row xmlRow : xmlTable.getRow()) {

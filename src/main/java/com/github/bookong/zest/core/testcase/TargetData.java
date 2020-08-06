@@ -1,6 +1,5 @@
 package com.github.bookong.zest.core.testcase;
 
-import com.github.bookong.zest.exception.LoadTestCaseFileException;
 import com.github.bookong.zest.support.xml.data.Init;
 import com.github.bookong.zest.support.xml.data.Table;
 import com.github.bookong.zest.support.xml.data.Target;
@@ -23,7 +22,7 @@ public class TargetData {
     private Map<String, AbstractDataSourceTable<?>> targetDataMap = new LinkedHashMap<>();
 
     public TargetData(TestCaseData testCaseData, String dataSourceId, String dataSourceType, Init xmlInit,
-                      Target xmlTarget, List<AbstractDataConverter> dataConverterList) throws LoadTestCaseFileException{
+                      Target xmlTarget, List<AbstractDataConverter> dataConverterList){
         this.ignoreCheck = xmlTarget.isIgnore();
         this.onlyCheckCoreData = xmlTarget.isOnlyCoreData();
 
