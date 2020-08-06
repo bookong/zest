@@ -16,6 +16,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface ZestTest {
 
-    /** 测试用例文件，如果不设置，则默认认为在指定路径下所有文件都是有效的 xml 文件 */
+    /** 测试用例文件名（不含扩展名)，如果不设置，则默认认为在指定路径下所有文件都是有效的 xml 文件 */
     String value() default "";
+
+    /** 测试用例扩展名 */
+    String extName() default "xml";
 }

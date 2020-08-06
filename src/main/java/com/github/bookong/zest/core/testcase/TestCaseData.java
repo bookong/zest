@@ -95,7 +95,7 @@ public class TestCaseData {
             } catch (LoadTestCaseFileException e) {
                 throw e;
             } catch (Exception e) {
-                throw new LoadTestCaseFileException(Messages.failParseParamPath(xmlParamField), e);
+                throw new LoadTestCaseFileException(Messages.parseParamPath(xmlParamField), e);
             }
         }
     }
@@ -103,7 +103,7 @@ public class TestCaseData {
     private Triple<Object, String, String> getObjectAndFieldAndMapKey(ParamField xmlParamField) throws LoadTestCaseFileException {
         try {
             if (xmlParamField.isNull() && StringUtils.isBlank(xmlParamField.getValue())) {
-                throw new LoadTestCaseFileException(Messages.failParseParamNull(xmlParamField));
+                throw new LoadTestCaseFileException(Messages.parseParamNull(xmlParamField));
             }
 
             String path = xmlParamField.getPath();
@@ -112,14 +112,14 @@ public class TestCaseData {
             if (path.endsWith("-")) {
                 // List
                 if (xmlParamField.isNull()) {
-                    throw new LoadTestCaseFileException(Messages.failParseParamSetContainerNull(xmlParamField));
+                    throw new LoadTestCaseFileException(Messages.parseParamSetContainerNull(xmlParamField));
                 }
                 path = path.substring(0, path.length() - 1);
 
             } else if ((pos = path.indexOf(':')) > 0) {
                 // Map
                 if (xmlParamField.isNull()) {
-                    throw new LoadTestCaseFileException(Messages.failParseParamSetContainerNull(xmlParamField));
+                    throw new LoadTestCaseFileException(Messages.parseParamSetContainerNull(xmlParamField));
                 }
                 path = path.substring(0, pos);
                 mapKey = path.substring(pos + 1);
@@ -133,7 +133,7 @@ public class TestCaseData {
             }
 
             if (obj == null) {
-                throw new LoadTestCaseFileException(Messages.failParseParamObj(xmlParamField));
+                throw new LoadTestCaseFileException(Messages.parseParamObj(xmlParamField));
             }
 
             return new ImmutableTriple<>(obj, fieldNames[fieldNames.length - 1], mapKey);
@@ -141,7 +141,7 @@ public class TestCaseData {
         } catch (LoadTestCaseFileException e) {
             throw e;
         } catch (Exception e) {
-            throw new LoadTestCaseFileException(Messages.failParseParamObj(xmlParamField), e);
+            throw new LoadTestCaseFileException(Messages.parseParamObj(xmlParamField), e);
         }
     }
 
@@ -155,7 +155,7 @@ public class TestCaseData {
 
             Field field = ZestReflectHelper.getFieldByFieldName(obj, lastFieldName);
             if (field == null) {
-                throw new LoadTestCaseFileException(Messages.failParseParamObj(xmlParamField));
+                throw new LoadTestCaseFileException(Messages.parseParamObj(xmlParamField));
             }
 
             String value = StringUtils.trimToEmpty(xmlParamField.getValue());
@@ -188,13 +188,13 @@ public class TestCaseData {
                 addParamObjContainerValue(xmlParamField, obj, field, mapKey, value, false);
 
             } else {
-                throw new LoadTestCaseFileException(Messages.failParseParamSetTypes(xmlParamField, fieldClass));
+                throw new LoadTestCaseFileException(Messages.parseParamSetTypes(xmlParamField, fieldClass));
             }
 
         } catch (LoadTestCaseFileException e) {
             throw e;
         } catch (Exception e) {
-            throw new LoadTestCaseFileException(Messages.failParseParamSet(xmlParamField), e);
+            throw new LoadTestCaseFileException(Messages.parseParamSet(xmlParamField), e);
         }
     }
 
@@ -204,14 +204,14 @@ public class TestCaseData {
         try {
             Type gt = field.getGenericType();
             if (!(gt instanceof ParameterizedType)) {
-                throw new LoadTestCaseFileException(Messages.failParseParamSetGeneric(xmlParamField));
+                throw new LoadTestCaseFileException(Messages.parseParamSetGeneric(xmlParamField));
             }
 
             Type[] types = ((ParameterizedType) gt).getActualTypeArguments();
 
             if (isList) {
                 if (types.length != 1) {
-                    throw new LoadTestCaseFileException(Messages.failParseParamSetGeneric(xmlParamField));
+                    throw new LoadTestCaseFileException(Messages.parseParamSetGeneric(xmlParamField));
                 }
 
                 Class<?> listValueClass = (Class<?>) types[0];
@@ -220,7 +220,7 @@ public class TestCaseData {
             } else {
                 // Map
                 if (types.length != 2) {
-                    throw new LoadTestCaseFileException(Messages.failParseParamSetGeneric(xmlParamField));
+                    throw new LoadTestCaseFileException(Messages.parseParamSetGeneric(xmlParamField));
                 }
 
                 Class<?> mapKeyClass = (Class<?>) types[0];
@@ -233,7 +233,7 @@ public class TestCaseData {
         } catch (LoadTestCaseFileException e) {
             throw e;
         } catch (Exception e) {
-            throw new LoadTestCaseFileException(Messages.failParseParamSetContainer(xmlParamField), e);
+            throw new LoadTestCaseFileException(Messages.parseParamSetContainer(xmlParamField), e);
         }
     }
 
@@ -261,7 +261,7 @@ public class TestCaseData {
             return LoadTestCaseUtil.parseDate(value);
 
         } else {
-            throw new LoadTestCaseFileException(Messages.failParseParamSetTypes(xmlParamField, target));
+            throw new LoadTestCaseFileException(Messages.parseParamSetTypes(xmlParamField, target));
         }
     }
 

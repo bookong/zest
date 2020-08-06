@@ -241,6 +241,13 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
+            <xsd:attribute name="Trim" type="xsd:boolean" default="true">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        当子元素为 Value 时，是否对内容进行 trim 操作
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
 

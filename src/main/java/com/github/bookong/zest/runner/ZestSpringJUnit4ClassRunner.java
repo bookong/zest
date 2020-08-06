@@ -1,15 +1,27 @@
 package com.github.bookong.zest.runner;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.internal.MethodSorter;
 import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.TestClass;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,22 +34,16 @@ import com.github.bookong.zest.core.annotation.ZestTest;
  */
 public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner implements ZestClassRunner {
 
-    protected Launcher zestLauncher = new Launcher();
+    private Launcher zestLauncher;
 
     public ZestSpringJUnit4ClassRunner(Class<?> clazz) throws InitializationError{
         super(clazz);
-        zestLauncher.junit4ClassRunnerConstructor(getTestClass(), this);
+        zestLauncher = new Launcher(getTestClass(), this);
     }
 
     @Override
-    protected void collectInitializationErrors(List<Throwable> errors) {
-        super.collectInitializationErrors(errors);
-        Launcher.junit4ClassRunnerCollectInitializationErrors(errors);
-    }
-
-    @Override
-    protected List<FrameworkMethod> getChildren() {
-        return zestLauncher.junit4ClassRunnerGetChildren(computeTestMethods());
+    protected List<FrameworkMethod> computeTestMethods() {
+        return Launcher.computeTestMethods(getTestClass());
     }
 
     @Override
@@ -46,7 +52,7 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner impleme
         if (zest == null) {
             super.runChild(frameworkMethod, notifier);
         } else {
-            zestLauncher.junit4ClassRunnerRunChild(frameworkMethod, notifier);
+            zestLauncher.runChild(frameworkMethod, notifier);
         }
     }
 

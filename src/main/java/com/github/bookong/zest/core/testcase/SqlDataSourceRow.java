@@ -36,7 +36,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
         for (Field xmlField : xmlRow.getField()) {
             String fieldName = xmlField.getName();
             if (fields.containsKey(xmlField.getName())) {
-                throw new LoadTestCaseFileException(Messages.failParseDataFieldDuplicate(tableName, fieldName));
+                throw new LoadTestCaseFileException(Messages.parseDataFieldDuplicate(tableName, fieldName));
             }
 
             if (xmlField.getNull() != null) {
@@ -47,7 +47,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
 
             } else {
                 if (!isTargetData) {
-                    throw new LoadTestCaseFileException(Messages.failParseDataFieldUnder(tableName, fieldName));
+                    throw new LoadTestCaseFileException(Messages.parseDataFieldUnder(tableName, fieldName));
                 }
 
                 fields.put(fieldName, RuleFactory.createRule(tableName, fieldName, xmlField));
@@ -60,7 +60,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
                               List<AbstractDataConverter> dataConverterList) throws LoadTestCaseFileException {
         Integer colSqlType = colSqlTypes.get(fieldName.toLowerCase());
         if (colSqlType == null) {
-            throw new LoadTestCaseFileException(Messages.failParseDataSqlType(tableName, fieldName));
+            throw new LoadTestCaseFileException(Messages.parseDataSqlType(tableName, fieldName));
         }
 
         for (AbstractDataConverter dataConverter : dataConverterList) {
@@ -99,7 +99,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
                 return xmlFieldValue;
 
             default:
-                throw new LoadTestCaseFileException(Messages.failParseDataSqlTypeUnsupport(tableName, fieldName,
+                throw new LoadTestCaseFileException(Messages.parseDataSqlTypeUnsupport(tableName, fieldName,
                                                                                            colSqlType));
         }
     }

@@ -28,7 +28,7 @@ public class LoadTestCaseUtil {
      */
     public static Date parseDate(String value) throws LoadTestCaseFileException {
         if (StringUtils.isBlank(value)) {
-            throw new LoadTestCaseFileException(Messages.failParseDate(value));
+            throw new LoadTestCaseFileException(Messages.parseDate(value));
         }
         value = value.trim();
         try {
@@ -37,7 +37,7 @@ public class LoadTestCaseUtil {
                                                                      "yyyy-MM-dd HH", //
                                                                      "yyyy-MM-dd" });
         } catch (ParseException e) {
-            throw new LoadTestCaseFileException(Messages.failParseDate(value), e);
+            throw new LoadTestCaseFileException(Messages.parseDate(value), e);
         }
     }
 

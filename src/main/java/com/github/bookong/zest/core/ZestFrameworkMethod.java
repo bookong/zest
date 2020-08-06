@@ -12,8 +12,8 @@ public class ZestFrameworkMethod extends FrameworkMethod {
 	private String testCaseFilePath;
 	private String testCaseFileName;
 
-	public ZestFrameworkMethod(FrameworkMethod fmethod, String testCaseFilePath) {
-		super(fmethod.getMethod());
+	public ZestFrameworkMethod(FrameworkMethod method, String testCaseFilePath) {
+		super(method.getMethod());
 		this.testCaseFilePath = testCaseFilePath;
 		this.testCaseFileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
 	}

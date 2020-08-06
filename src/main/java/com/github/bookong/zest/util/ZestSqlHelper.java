@@ -28,7 +28,7 @@ public class ZestSqlHelper {
      * 
      * @param stat 待关闭的 Statement
      */
-    public static void safeClose(Statement stat) {
+    public static void close(Statement stat) {
         if (stat != null) {
             try {
                 stat.close();
@@ -43,7 +43,7 @@ public class ZestSqlHelper {
      * 
      * @param rs 待关闭的 ResultSet
      */
-    public static void safeClose(ResultSet rs) {
+    public static void close(ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
@@ -61,7 +61,7 @@ public class ZestSqlHelper {
      * @return 返回列表中，Map 的 key 为字段名，value 为字段值
      */
     public static List<Map<String, Object>> findDataInDatabase(Connection conn, String sql) {
-        List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> dataList = new ArrayList<>();
         Statement stat = null;
         ResultSet rs = null;
         try {
@@ -70,7 +70,7 @@ public class ZestSqlHelper {
 
             while (rs.next()) {
                 Map<String, Object> rowData = new HashMap<String, Object>();
-                datas.add(rowData);
+                dataList.add(rowData);
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                     String colName = rs.getMetaData().getColumnName(i).toLowerCase();
                     Object colValue = rs.getObject(i);
@@ -78,27 +78,30 @@ public class ZestSqlHelper {
                     if (colValue == null) {
                         rowData.put(colName, colValue);
 
-                    } else if ((colValue instanceof Integer) || (colValue instanceof Long) || (colValue instanceof Byte)) {
-                        rowData.put(colName, ((Number) colValue).longValue());
+                    } else
+                        if ((colValue instanceof Integer) || (colValue instanceof Long) || (colValue instanceof Byte)) {
+                            rowData.put(colName, ((Number) colValue).longValue());
 
-                    } else if ((colValue instanceof Double) || (colValue instanceof Float) || (colValue instanceof BigDecimal)) {
-                        rowData.put(colName, ((Number) colValue).doubleValue());
+                        } else if ((colValue instanceof Double) || (colValue instanceof Float)
+                                   || (colValue instanceof BigDecimal)) {
+                                       rowData.put(colName, ((Number) colValue).doubleValue());
 
-                    } else if (colValue instanceof NClob) {
-                        NClob clob = (NClob) colValue;
-                        rowData.put(colName, clob.getSubString(1, Long.valueOf(clob.length()).intValue()));
+                                   } else
+                            if (colValue instanceof NClob) {
+                                NClob clob = (NClob) colValue;
+                                rowData.put(colName, clob.getSubString(1, Long.valueOf(clob.length()).intValue()));
 
-                    } else {
-                        // Timestamp , String
-                        rowData.put(colName, colValue);
-                    }
+                            } else {
+                                // Timestamp , String
+                                rowData.put(colName, colValue);
+                            }
                 }
             }
 
-            return datas;
+            return dataList;
         } catch (Exception e) {
-            safeClose(rs);
-            safeClose(stat);
+            close(rs);
+            close(stat);
             throw new RuntimeException(e);
         }
     }
@@ -128,8 +131,8 @@ public class ZestSqlHelper {
             logger.info("==========================================="); //$NON-NLS-1$
 
         } catch (Exception e) {
-            safeClose(rs);
-            safeClose(stat);
+            close(rs);
+            close(stat);
             logger.error("", e);
         }
     }

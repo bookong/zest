@@ -46,7 +46,7 @@ public class XmlTestCaseDataLoader {
         } catch (LoadTestCaseFileException e) {
             throw e;
         } catch (Exception e) {
-            throw new LoadTestCaseFileException(Messages.failParseFile(filePath), e);
+            throw new LoadTestCaseFileException(Messages.parseFile(filePath), e);
         } finally {
             if (fis != null) {
                 try {

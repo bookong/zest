@@ -8,17 +8,18 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
 import com.github.bookong.zest.core.testcase.AbstractDataConverter;
+import com.github.bookong.zest.util.ZestSqlHelper;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.internal.runners.model.ReflectiveCallable;
@@ -55,7 +56,7 @@ public class Launcher {
 
     private XmlTestCaseDataLoader                    testCaseLoader   = new XmlTestCaseDataLoader();
     /** 被测试的对象 */
-    private TestClass                                testObject;
+    private TestClass                                testClass;
     /** 当前要处理的 test case 文件路径 */
     private String                                   currTestCaseFilePath;
     /** 从当前要处理的 xml 中读取的测试用例 */
@@ -72,57 +73,106 @@ public class Launcher {
 
     private ZestClassRunner                          zestClassRunner;
 
-    /** 在 BlockJUnit4ClassRunner 子类的 collectInitializationErrors 方法中调用 */
-    public static void junit4ClassRunnerCollectInitializationErrors(List<Throwable> errors) {
-        // 忽略没有 Test 注解的方法这种错误，因为我们的测试方法是用 ZestTest 标识的
-        Iterator<Throwable> it = errors.iterator();
-        while (it.hasNext()) {
-            Throwable e = it.next();
-            if ("No runnable methods".equals(e.getMessage())) { // $NON-NLS-1$
-                it.remove();
-            }
-        }
+    public Launcher(){
     }
 
-    /** 在 BlockJUnit4ClassRunner 子类的构造函数中调用 */
-    public void junit4ClassRunnerConstructor(TestClass testObject, ZestClassRunner zestClassRunner) {
-        this.testObject = testObject;
+    public Launcher(TestClass testClass, ZestClassRunner zestClassRunner){
+        this.testClass = testClass;
         this.zestClassRunner = zestClassRunner;
     }
 
-    /** 在 BlockJUnit4ClassRunner 子类的 getChildren 方法中调用 */
-    public List<FrameworkMethod> junit4ClassRunnerGetChildren(List<FrameworkMethod> list) {
-        if (ignoreTest()) {
-            logger.info(Messages.getString("launcher.ignoreThisTest", testObject.getClass().getName()));
-            return Collections.emptyList();
-        }
+    public static List<FrameworkMethod> computeTestMethods(TestClass testCase) {
+        List<FrameworkMethod> list = new ArrayList<>(testCase.getAnnotatedMethods(Test.class));
 
-        List<FrameworkMethod> results = new ArrayList<>(list.size() + 1);
-        results.addAll(list);
-        // 让 JUnit 接受 ZestTest 注解的方法
-        for (FrameworkMethod method : testObject.getAnnotatedMethods(ZestTest.class)) {
-            ZestTest ztest = method.getAnnotation(ZestTest.class);
-            String dir = getDir(ztest, method);
-            if (StringUtils.isBlank(ztest.value())) {
-                // 查找 dir 路径下所有文件
+        for (FrameworkMethod method : testCase.getAnnotatedMethods(ZestTest.class)) {
+            ZestTest zestTest = method.getAnnotation(ZestTest.class);
+            String dir = getDir(testCase, method);
+            String extName = ".".concat(zestTest.extName());
+
+            if (StringUtils.isBlank(zestTest.value())) {
                 File searchDir = new File(dir);
                 File[] searchFiles = searchDir.listFiles();
                 if (searchFiles != null) {
                     for (File searchFile : searchFiles) {
-                        if (searchFile.isFile() && searchFile.getName().endsWith(".xml")) {
-                            results.add(new ZestFrameworkMethod(method, searchFile.getAbsolutePath()));
+                        if (searchFile.isFile() && searchFile.getName().endsWith(extName)) {
+                            list.add(new ZestFrameworkMethod(method, searchFile.getAbsolutePath()));
                         }
                     }
                 }
             } else {
-                results.add(new ZestFrameworkMethod(method, dir + ztest.value()));
+                list.add(new ZestFrameworkMethod(method, dir.concat(zestTest.value()).concat(extName)));
             }
         }
-        return results;
+
+        return Collections.unmodifiableList(list);
+    }
+
+    private static String getDir(TestClass testCase, FrameworkMethod frameworkMethod) {
+        return String.format("%s%sdata%s%s%s%s%s", testCase.getJavaClass().getResource("").getPath(), File.separator, //
+                             File.separator, //
+                             testCase.getJavaClass().getSimpleName(), File.separator, //
+                             frameworkMethod.getName(), File.separator);
+    }
+
+    void initDataSource() {
+        for (TestCaseDataSource testCaseDataSource : testCaseData.getDataSources()) {
+            AbstractExcuter executer = executerMap.get(testCaseDataSource.getId());
+            if (executer instanceof AbstractJdbcExcuter) {
+                Connection conn = connectionMap.get(testCaseDataSource.getId());
+                ((AbstractJdbcExcuter) executer).initDatabase(conn, testCaseData, testCaseDataSource);
+            }
+        }
+    }
+
+    void checkTargetDataSource() {
+        for (TestCaseDataSource dataSource : testCaseData.getDataSources()) {
+            AbstractExcuter executer = executerMap.get(dataSource.getId());
+
+            if (executer instanceof AbstractJdbcExcuter) {
+                Connection conn = connectionMap.get(dataSource.getId());
+                AbstractJdbcExcuter jdbcExcuter = (AbstractJdbcExcuter) executer;
+
+                if (dataSource.getTargetData().isIgnoreCheck()) {
+                    logger.info(Messages.ignoreTargetData(dataSource.getId()));
+                } else {
+                    jdbcExcuter.checkTargetDatabase(conn, testCaseData, dataSource);
+                }
+
+                jdbcExcuter.clearDatabase(conn, testCaseData, dataSource);
+            }
+        }
+    }
+
+    Connection getJdbcConn(String databaseName) {
+        return connectionMap.get(databaseName);
+    }
+
+    public void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
+        Description description = Description.createTestDescription(testClass.getJavaClass(), frameworkMethod.getName(),
+                                                                    frameworkMethod.getAnnotations());
+
+        if (ignoreTest()) {
+            // 整个测试类忽略
+            notifier.fireTestIgnored(description);
+
+        } else if (frameworkMethod.getAnnotation(Ignore.class) != null) {
+            notifier.fireTestIgnored(description);
+
+        } else {
+            runTestCase((ZestFrameworkMethod) frameworkMethod, description, notifier);
+        }
+    }
+
+    public TestCaseData getTestCaseData() {
+        return testCaseData;
+    }
+
+    public Map<String, List<AbstractDataConverter>> getDataConverterMap() {
+        return dataConverterMap;
     }
 
     private boolean ignoreTest() {
-        Class<?> clazz = testObject.getJavaClass();
+        Class<?> clazz = testClass.getJavaClass();
         while (clazz != null) {
             if (clazz.getAnnotation(Ignore.class) != null) {
                 return true;
@@ -133,34 +183,21 @@ public class Launcher {
         return false;
     }
 
-    /** 在 BlockJUnit4ClassRunner 子类的 runChild 方法中调用 */
-    public void junit4ClassRunnerRunChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
-        Description description = Description.createTestDescription(testObject.getJavaClass(),
-                                                                    frameworkMethod.getName(),
-                                                                    frameworkMethod.getAnnotations());
-
-        if (frameworkMethod.getAnnotation(Ignore.class) != null) {
-            notifier.fireTestIgnored(description);
-        } else {
-            runTestCase((ZestFrameworkMethod) frameworkMethod, description, notifier);
-        }
-    }
-
-    /** 运行单元测试 */
     private void runTestCase(ZestFrameworkMethod frameworkMethod, Description description, RunNotifier notifier) {
         EachTestNotifier eachNotifier = new EachTestNotifier(notifier, description);
         eachNotifier.fireTestStarted();
         try {
             Statement statement = methodBlock(frameworkMethod);
             statement.evaluate();
+
         } catch (AssumptionViolatedException e) {
             eachNotifier.addFailedAssumption(e);
+
         } catch (AssertionError e) {
             eachNotifier.addFailure(e);
+
         } catch (Throwable e) {
-            e.printStackTrace();
-            eachNotifier.addFailure(new RuntimeException(Messages.getString("launcher.failToEvaluateStatement",
-                                                                            frameworkMethod.getTestCaseFilePath()),
+            eachNotifier.addFailure(new RuntimeException(Messages.statementEvaluate(frameworkMethod.getTestCaseFilePath()),
                                                          e));
         } finally {
             eachNotifier.fireTestFinished();
@@ -194,7 +231,6 @@ public class Launcher {
         return statement;
     }
 
-    /** 加载自动注入的内容 */
     private void loadAutowiredFieldFromTest(Object test) throws Exception {
         connectionMap.clear();
         executerMap.clear();
@@ -208,26 +244,12 @@ public class Launcher {
                     if (obj instanceof DataSource) {
                         Connection conn = zestClassRunner.getConnection((DataSource) obj);
                         setConnection(zestDataSource.value(), conn);
-                        loadAllTableColSqlTypes(zestDataSource.value(), conn);
+                    } else {
+                        throw new RuntimeException(Messages.parseDs());
                     }
 
-                    try {
-                        executerMap.put(zestDataSource.value(), zestDataSource.executerClass().newInstance());
-
-                    } catch (Exception e) {
-                        throw new RuntimeException("Fail to set executer. Executer class:"
-                                                   + zestDataSource.executerClass().getName(), e);
-                    }
-
-                    for (Class<? extends AbstractDataConverter> dataConverterClass : zestDataSource.dataConverterClasses()) {
-                        try {
-                            dataConverterMap.computeIfAbsent(zestDataSource.value(),
-                                                             o -> new ArrayList<>()).add(dataConverterClass.newInstance());
-                        } catch (Exception e) {
-                            throw new RuntimeException("Fail to set Data Converter. Executer class:"
-                                                       + dataConverterClass.getName(), e);
-                        }
-                    }
+                    setExecuter(zestDataSource.value(), zestDataSource.executerClass());
+                    setDataConverter(zestDataSource.value(), zestDataSource.dataConverterClasses());
                 }
             }
 
@@ -235,9 +257,60 @@ public class Launcher {
         }
     }
 
-    /** 从数据库里获取所有表的列的类型 */
-    private void loadAllTableColSqlTypes(String testDataSourceId, Connection conn) {
-        DatabaseMetaData dbMetaData = null;
+    private void setConnection(String dataSourceId, Connection conn) {
+        if (connectionMap.containsKey(dataSourceId)) {
+            throw new RuntimeException(Messages.duplicateDs(dataSourceId));
+        }
+
+        connectionMap.put(dataSourceId, conn);
+        loadAllTableColSqlTypes(dataSourceId, conn);
+    }
+
+    private void setExecuter(String dataSourceId, Class<? extends AbstractExcuter> executerClass) {
+        if (executerMap.containsKey(dataSourceId)) {
+            return;
+        }
+
+        try {
+            executerMap.put(dataSourceId, executerClass.newInstance());
+        } catch (Exception e) {
+            throw new RuntimeException(Messages.initExecuter(executerClass.getName()), e);
+        }
+    }
+
+    private void setDataConverter(String dataSourceId, Class<? extends AbstractDataConverter>[] dataConverterClasses) {
+        for (Class<? extends AbstractDataConverter> dataConverterClass : dataConverterClasses) {
+            try {
+                dataConverterMap.computeIfAbsent(dataSourceId,
+                                                 o -> new ArrayList<>()).add(dataConverterClass.newInstance());
+            } catch (Exception e) {
+                throw new RuntimeException(Messages.initDc(dataConverterClass.getName()), e);
+            }
+        }
+    }
+
+    private Statement withBefores(Object target, Statement statement) {
+        List<FrameworkMethod> befores = testClass.getAnnotatedMethods(Before.class);
+        return befores.isEmpty() ? statement : new RunBefores(statement, befores, target);
+    }
+
+    private Statement withAfters(Object target, Statement statement) {
+        List<FrameworkMethod> afters = testClass.getAnnotatedMethods(After.class);
+        return afters.isEmpty() ? statement : new RunAfters(statement, afters, target);
+    }
+
+    private Statement withZestBefores(Launcher launcher, Object target, Statement statement) {
+        List<FrameworkMethod> befores = testClass.getAnnotatedMethods(ZestBefore.class);
+        return befores.isEmpty() ? statement : new RunZestBefores(launcher, target, statement, befores);
+    }
+
+    private Statement withZestAfters(Launcher launcher, Object target, Statement statement) {
+        List<FrameworkMethod> afters = testClass.getAnnotatedMethods(ZestAfter.class);
+        return afters.isEmpty() ? statement : new RunZestAfters(launcher, target, statement, afters);
+    }
+
+    private void loadAllTableColSqlTypes(String dataSourceId, Connection conn) {
+        DatabaseMetaData dbMetaData;
         ResultSet rs = null;
         try {
             dbMetaData = conn.getMetaData();
@@ -246,28 +319,20 @@ public class Launcher {
             while (rs.next()) {
                 tableNames.add(rs.getString("TABLE_NAME"));
             }
-            rs.close();
-            rs = null;
+            ZestSqlHelper.close(rs);
 
             for (String tableName : tableNames) {
                 rs = conn.getMetaData().getColumns(null, "%", tableName, "%");
                 while (rs.next()) {
-                    testCaseData.putRmdbTableColSqlTypes(testDataSourceId, tableName, rs.getString("column_name"),
+                    testCaseData.putRmdbTableColSqlTypes(dataSourceId, tableName, rs.getString("column_name"),
                                                          rs.getInt("data_type"));
                 }
-                rs.close();
-                rs = null;
+                ZestSqlHelper.close(rs);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Fail to parse Database MetaData", e);
+            throw new RuntimeException(Messages.parseDbMeta(), e);
         } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e2) {
-                    logger.error("", e2);
-                }
-            }
+            ZestSqlHelper.close(rs);
         }
     }
 
@@ -277,106 +342,22 @@ public class Launcher {
         for (Class<?> paramClass : paramClasses) {
             if (ZestTestParam.class.isAssignableFrom(paramClass)) {
                 if (testParam != null) {
-                    throw new RuntimeException("The method must have and only one parameterized annotation with @ZestParam");
+                    throw new RuntimeException(Messages.initParam());
                 }
-                testParam = ZestTestParam.class.cast(paramClass.newInstance());
+                testParam = (ZestTestParam) paramClass.newInstance();
             }
         }
 
         if (testParam == null) {
-            throw new RuntimeException("The method must have and only one ZestTestParam");
+            throw new RuntimeException(Messages.initParam());
         }
 
         testCaseData.setTestParam(testParam);
         currTestCaseFilePath = method.getTestCaseFilePath();
         testCaseLoader.loadFromAbsolutePath(this, currTestCaseFilePath, testCaseData);
 
-        logger.info("[Zest] Test Case \"" + testCaseData.getDescription() + "\"");
+        logger.info("[Zest] Test Case \"{}\"", testCaseData.getDescription());
         logger.info(currTestCaseFilePath);
     }
 
-    private Statement withBefores(Object target, Statement statement) {
-        List<FrameworkMethod> befores = testObject.getAnnotatedMethods(Before.class);
-        return befores.isEmpty() ? statement : new RunBefores(statement, befores, target);
-    }
-
-    private Statement withAfters(Object target, Statement statement) {
-        List<FrameworkMethod> afters = testObject.getAnnotatedMethods(After.class);
-        return afters.isEmpty() ? statement : new RunAfters(statement, afters, target);
-    }
-
-    private Statement withZestBefores(Launcher launcher, Object target, Statement statement) {
-        List<FrameworkMethod> befores = testObject.getAnnotatedMethods(ZestBefore.class);
-        return befores.isEmpty() ? statement : new RunZestBefores(launcher, target, statement, befores);
-    }
-
-    private Statement withZestAfters(Launcher launcher, Object target, Statement statement) {
-        List<FrameworkMethod> afters = testObject.getAnnotatedMethods(ZestAfter.class);
-        return afters.isEmpty() ? statement : new RunZestAfters(launcher, target, statement, afters);
-    }
-
-    private String getDir(ZestTest zest, FrameworkMethod frameworkMethod) {
-        return rightDir(testObject.getJavaClass().getResource("").getPath() + "datas" + File.separator
-                        + testObject.getJavaClass().getSimpleName() + File.separator + frameworkMethod.getName());
-
-    }
-
-    private String rightDir(String dir) {
-        if (dir.endsWith(File.separator)) {
-            return dir;
-        } else {
-            return dir + File.separator;
-        }
-    }
-
-    public void setConnection(String databaseName, Connection conn) {
-        connectionMap.put(databaseName, conn);
-    }
-
-    public void initDataSource() {
-        for (TestCaseDataSource testCaseDataSource : testCaseData.getDataSources()) {
-            AbstractExcuter executer = executerMap.get(testCaseDataSource.getId());
-            if (executer instanceof AbstractJdbcExcuter) {
-                Connection conn = connectionMap.get(testCaseDataSource.getId());
-                ((AbstractJdbcExcuter) executer).initDatabase(conn, testCaseData, testCaseDataSource);
-            }
-            // FIXME 以后可能有 Mongo 的 Excuter
-        }
-
-    }
-
-    public void checkTargetDataSource() {
-        for (TestCaseDataSource testCaseDataSource : testCaseData.getDataSources()) {
-            AbstractExcuter executer = executerMap.get(testCaseDataSource.getId());
-
-            if (executer instanceof AbstractJdbcExcuter) {
-                Connection conn = connectionMap.get(testCaseDataSource.getId());
-                AbstractJdbcExcuter jdbcExcuter = (AbstractJdbcExcuter) executer;
-
-//                if (testCaseDataSource.isIgnoreTargetData()) {
-//                    logger.info(String.format("DataSource (Id : %1$s) ignore verify", testCaseDataSource.getId()));
-//                } else {
-//                    jdbcExcuter.checkTargetDatabase(conn, testCaseData, testCaseDataSource);
-//                }
-                jdbcExcuter.clearDatabase(conn, testCaseData, testCaseDataSource);
-            }
-            // FIXME 以后可能有 Mongo 的 Excuter
-        }
-    }
-
-    public Connection getJdbcConn(String databaseName) {
-        return connectionMap.get(databaseName);
-    }
-
-    public TestClass getTestObject() {
-        return testObject;
-    }
-
-    public TestCaseData getTestCaseData() {
-        return testCaseData;
-    }
-
-    public Map<String, List<AbstractDataConverter>> getDataConverterMap() {
-        return dataConverterMap;
-    }
 }

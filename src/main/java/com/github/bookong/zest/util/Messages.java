@@ -18,67 +18,99 @@ public class Messages {
     }
 
     public static String fileNotFound(String filePath) {
-        return String.format(getString("file.found"), filePath);
+        return getString("file.found", filePath);
     }
 
-    public static String failParseFile(String filePath) {
-        return String.format(getString("fail.parse.file"), filePath);
+    public static String parseFile(String filePath) {
+        return getString("parse.file", filePath);
     }
 
-    public static String failParseDate(String value) {
-        return String.format(getString("fail.parse.date"), value);
+    public static String parseDate(String value) {
+        return getString("parse.date", value);
     }
 
-    public static String failParseParamPath(ParamField xmlParamField) {
-        return String.format(getString("fail.parse.param.path"), xmlParamField.getPath());
+    public static String parseParamPath(ParamField xmlParamField) {
+        return getString("parse.param.path", xmlParamField.getPath());
     }
 
-    public static String failParseParamNull(ParamField xmlParamField) {
-        return String.format(getString("fail.parse.param.null"), xmlParamField.getPath());
+    public static String parseParamNull(ParamField xmlParamField) {
+        return getString("parse.param.null", xmlParamField.getPath());
     }
 
-    public static String failParseParamObj(ParamField xmlParamField) {
-        return String.format(getString("fail.parse.param.obj"), xmlParamField.getPath());
+    public static String parseParamObj(ParamField xmlParamField) {
+        return getString("parse.param.obj", xmlParamField.getPath());
     }
 
-    public static String failParseParamSet(ParamField xmlParamField) {
-        return String.format(getString("fail.parse.param.set"), xmlParamField.getPath());
+    public static String parseParamSet(ParamField xmlParamField) {
+        return getString("parse.param.set", xmlParamField.getPath());
     }
 
-    public static String failParseParamSetTypes(ParamField xmlParamField, Class<?> fieldClass) {
-        return String.format(getString("fail.parse.param.set.types"), xmlParamField.getPath(), fieldClass.getName());
+    public static String parseParamSetTypes(ParamField xmlParamField, Class<?> fieldClass) {
+        return getString("parse.param.set.types", xmlParamField.getPath(), fieldClass.getName());
     }
 
-    public static String failParseParamSetGeneric(ParamField xmlParamField) {
-        return String.format(getString("fail.parse.param.set.generic"), xmlParamField.getPath());
+    public static String parseParamSetGeneric(ParamField xmlParamField) {
+        return getString("parse.param.set.generic", xmlParamField.getPath());
     }
 
-    public static String failParseParamSetContainerNull(ParamField xmlParamField) {
-        return String.format(getString("fail.parse.param.set.container.null"), xmlParamField.getPath());
+    public static String parseParamSetContainerNull(ParamField xmlParamField) {
+        return getString("parse.param.set.container.null", xmlParamField.getPath());
     }
 
-    public static String failParseParamSetContainer(ParamField xmlParamField) {
-        return String.format(getString("fail.parse.param.set.container"), xmlParamField.getPath());
+    public static String parseParamSetContainer(ParamField xmlParamField) {
+        return getString("parse.param.set.container", xmlParamField.getPath());
     }
 
-    public static String failParseDataSqlType(String tableName, String fieldName) {
-        return String.format(getString("fail.parse.data.sql.type"), tableName, fieldName);
+    public static String parseDataSqlType(String tableName, String fieldName) {
+        return getString("parse.data.sql.type", tableName, fieldName);
     }
 
-    public static String failParseDataSqlTypeUnsupport(String tableName, String fieldName, Integer colSqlType) {
-        return String.format(getString("fail.parse.data.sql.type.unsupport"), tableName, fieldName, colSqlType);
+    public static String parseDataSqlTypeUnsupport(String tableName, String fieldName, Integer colSqlType) {
+        return getString("parse.data.sql.type.unsupport", tableName, fieldName, colSqlType);
     }
 
-    public static String failParseDataFieldDuplicate(String tableName, String fieldName) {
-        return String.format(getString("fail.parse.data.field.duplicate"), tableName, fieldName);
+    public static String parseDataFieldDuplicate(String tableName, String fieldName) {
+        return getString("parse.data.field.duplicate", tableName, fieldName);
     }
 
-    public static String failParseDataFieldUnder(String tableName, String fieldName) {
-        return String.format(getString("fail.parse.data.field.under"), tableName, fieldName);
+    public static String parseDataFieldUnder(String tableName, String fieldName) {
+        return getString("parse.data.field.under", tableName, fieldName);
     }
 
-    public static String failParseDataFieldNone(String tableName, String fieldName) {
-        return String.format(getString("fail.parse.data.field.none"), tableName, fieldName);
+    public static String parseDataFieldNone(String tableName, String fieldName) {
+        return getString("parse.data.field.none", tableName, fieldName);
+    }
+
+    public static String statementEvaluate(String testCaseFilePath) {
+        return getString("statement.evaluate", testCaseFilePath);
+    }
+
+    public static String parseDbMeta() {
+        return getString("parse.db.meta");
+    }
+
+    public static String initExecuter(String className) {
+        return getString("init.executer", className);
+    }
+
+    public static String duplicateDs(String value) {
+        return getString("duplicate.ds", value);
+    }
+
+    public static String parseDs() {
+        return getString("parse.ds");
+    }
+
+    public static String initDc(String className) {
+        return getString("init.dc", className);
+    }
+
+    public static String ignoreTargetData(String id) {
+        return getString("ignore.target.data", id);
+    }
+
+    public static String initParam() {
+        return getString("init.param");
     }
 
     private static String getString(String key) {

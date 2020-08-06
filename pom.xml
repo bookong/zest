@@ -86,7 +86,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>4.13</version>
 		</dependency>
 		<dependency>
 			<groupId>org.dbunit</groupId>
@@ -106,6 +106,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- XML -->
+		<!-- mvn exec:java -Dexec.mainClass="com.sun.tools.xjc.XJCFacade" -Dexec.args="-p com.github.bookong.zest.support.xml.data -d ./tmp ./schema/data.xsd" -->
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-xjc</artifactId>
@@ -205,7 +206,7 @@
 	<developers>
 		<developer>
 			<id>jiangxu</id>
-			<name>Xu Jiang</name>
+			<name>Jiang Xu</name>
 			<email>bookong@gmail.com</email>
 		</developer>
 	</developers>

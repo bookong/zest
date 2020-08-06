@@ -21,7 +21,7 @@ public class RuleFactory {
             return new FromCurrentTimeRule(xmlField);
 
         } else {
-            throw new LoadTestCaseFileException(Messages.failParseDataFieldNone(tableName, fieldName));
+            throw new LoadTestCaseFileException(Messages.parseDataFieldNone(tableName, fieldName));
         }
     }
 }
