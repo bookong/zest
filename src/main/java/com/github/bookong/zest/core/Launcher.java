@@ -39,7 +39,7 @@ import com.github.bookong.zest.core.annotation.ZestBefore;
 import com.github.bookong.zest.core.annotation.ZestDataSource;
 import com.github.bookong.zest.core.annotation.ZestTest;
 import com.github.bookong.zest.core.executer.AbstractExcuter;
-import com.github.bookong.zest.core.executer.JdbcExcuter;
+import com.github.bookong.zest.core.executer.SqlExcuter;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
@@ -115,11 +115,15 @@ public class Launcher {
     }
 
     void initDataSource() {
-        for (TestCaseDataSource testCaseDataSource : testCaseData.getDataSources()) {
-            AbstractExcuter executer = executerMap.get(testCaseDataSource.getId());
-            if (executer instanceof JdbcExcuter) {
-                Connection conn = connectionMap.get(testCaseDataSource.getId());
-                ((JdbcExcuter) executer).initDatabase(conn, testCaseData, testCaseDataSource);
+        for (TestCaseDataSource dataSource : testCaseData.getDataSources()) {
+            AbstractExcuter executer = executerMap.get(dataSource.getId());
+
+            if (executer instanceof SqlExcuter) {
+                Connection conn = connectionMap.get(dataSource.getId());
+                SqlExcuter jdbcExcuter = (SqlExcuter) executer;
+
+                jdbcExcuter.clearDatabase(conn, dataSource);
+                jdbcExcuter.initDatabase(conn, testCaseData, dataSource);
             }
         }
     }
@@ -128,9 +132,9 @@ public class Launcher {
         for (TestCaseDataSource dataSource : testCaseData.getDataSources()) {
             AbstractExcuter executer = executerMap.get(dataSource.getId());
 
-            if (executer instanceof JdbcExcuter) {
+            if (executer instanceof SqlExcuter) {
                 Connection conn = connectionMap.get(dataSource.getId());
-                JdbcExcuter jdbcExcuter = (JdbcExcuter) executer;
+                SqlExcuter jdbcExcuter = (SqlExcuter) executer;
 
                 if (dataSource.getTargetData().isIgnoreCheck()) {
                     logger.info(Messages.ignoreTargetData(dataSource.getId()));
@@ -138,7 +142,7 @@ public class Launcher {
                     jdbcExcuter.checkTargetDatabase(conn, testCaseData, dataSource);
                 }
 
-                jdbcExcuter.clearDatabase(conn, testCaseData, dataSource);
+                jdbcExcuter.clearDatabase(conn, dataSource);
             }
         }
     }

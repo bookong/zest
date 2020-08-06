@@ -16,30 +16,45 @@ import com.github.bookong.zest.core.testcase.TestCaseData;
  */
 public class ZestDateUtil {
 
-    private static final ThreadLocal<Map<String, SimpleDateFormat>> DATE_FORMAT_CACHE = new ThreadLocal<Map<String, SimpleDateFormat>>();
+    private static final ThreadLocal<SimpleDateFormat> TYPE_NORMAL = new ThreadLocal<>();
+    private static final ThreadLocal<SimpleDateFormat> TYPE_MINUTE = new ThreadLocal<>();
+    private static final ThreadLocal<SimpleDateFormat> TYPE_HOUR   = new ThreadLocal<>();
+    private static final ThreadLocal<SimpleDateFormat> TYPE_DAY    = new ThreadLocal<>();
 
-    /**
-     * 以格式 (yyyy-MM-dd HH:mm:ss) 解析时间
-     * 
-     * @param time 待处理的时间字符串
-     * @return 解析后的日期对象
-     */
-    public static Date parseNormalDate(String time) {
+    public static Date parseDate(String time) {
         try {
-            return getDateFormat(DateFormatType.NORMAL_DATE).parse(time);
-        } catch (ParseException e) {
+            return getDateFormat(time).parse(time);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * 以格式 (yyyy-MM-dd HH:mm:ss) 格式化日期
-     * 
-     * @param time 待处理的时间对象
-     * @return 格式化后的字符串
-     */
     public static String formatDateNormal(Date time) {
-        return getDateFormat(DateFormatType.NORMAL_DATE).format(time);
+        return getDateFormat("yyyy-MM-dd HH:mm:ss").format(time);
+    }
+
+    private static SimpleDateFormat getDateFormat(String time) {
+        switch (time.length()) {
+            case 19:
+                return getDateFormat(TYPE_NORMAL, "yyyy-MM-dd HH:mm:ss");
+            case 16:
+                return getDateFormat(TYPE_MINUTE, "yyyy-MM-dd HH:mm");
+            case 13:
+                return getDateFormat(TYPE_HOUR, "yyyy-MM-dd HH");
+            case 10:
+                return getDateFormat(TYPE_DAY, "yyyy-MM-dd");
+            default:
+                throw new RuntimeException(Messages.parseDate(time));
+        }
+    }
+
+    private static SimpleDateFormat getDateFormat(ThreadLocal<SimpleDateFormat> threadLocal, String pattern) {
+        SimpleDateFormat obj = threadLocal.get();
+        if (obj == null) {
+            obj = new SimpleDateFormat(pattern);
+            threadLocal.set(obj);
+        }
+        return obj;
     }
 
     /**
@@ -73,54 +88,4 @@ public class ZestDateUtil {
         return ZestDateUtil.formatDateNormal(getDateInDB(date, testCaseData));
     }
 
-    /**
-     * 得到指定的格式化对象
-     * 
-     * @param formatType 格式化类型
-     * @return 返回格式化对象
-     */
-    public static SimpleDateFormat getDateFormat(DateFormatType formatType) {
-        Map<String, SimpleDateFormat> map = DATE_FORMAT_CACHE.get();
-        if (map == null) {
-            map = new HashMap<String, SimpleDateFormat>();
-        }
-
-        SimpleDateFormat dateFormat = map.get(formatType.getFormatType());
-        if (dateFormat == null) {
-            dateFormat = new SimpleDateFormat(formatType.getFormatType());
-            map.put(formatType.getFormatType(), dateFormat);
-        }
-
-        return dateFormat;
-    }
-
-    /**
-     * 格式化对象枚举值
-     * 
-     * @author jiangxu
-     */
-    public static enum DateFormatType {
-                                       /** yyyy-MM-dd HH:mm:ss */
-                                       NORMAL_DATE("yyyy-MM-dd HH:mm:ss"),
-                                       /** yyyy-MM-dd HH:mm:ss.SSS */
-                                       FULL_DATE("yyyy-MM-dd HH:mm:ss.SSS"),
-                                       /** yyyy-MM-dd */
-                                       DAY_DATE("yyyy-MM-dd");
-
-        private String formatType;
-
-        private DateFormatType(String dateFormatType){
-            this.formatType = dateFormatType;
-        }
-
-        /**
-         * 获得指定枚举值对应的格式化字符串
-         * 
-         * @return 返回格式化字符串
-         */
-        public String getFormatType() {
-            return formatType;
-        }
-
-    }
 }

@@ -16,4 +16,9 @@ public interface ZestGlobalConstant {
         String SQLServer = "SQLServer"; // $NON-NLS-1$
         String MongoDB   = "MongoDB";   // $NON-NLS-1$
     }
+
+    interface Logger {
+
+        String SQL = "zest_sql"; // $NON-NLS-1$
+    }
 }

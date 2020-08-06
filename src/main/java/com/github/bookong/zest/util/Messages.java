@@ -113,6 +113,10 @@ public class Messages {
         return getString("init.param");
     }
 
+    public static String executerMatchSql() {
+        return getString("executer.match.sql");
+    }
+
     private static String getString(String key) {
         try {
             return RESOURCE_BUNDLE.getString(key);

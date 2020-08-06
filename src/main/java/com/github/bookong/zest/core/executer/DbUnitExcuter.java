@@ -26,7 +26,7 @@ import com.github.bookong.zest.util.ZestSqlHelper;
  * 
  * @author jiangxu
  */
-public class DbUnitExcuter extends JdbcExcuter {
+public class DbUnitExcuter extends SqlExcuter {
 
     private IDatabaseConnection dbUnitConn;
     private DbUnitDataSet       zestDataSet;
@@ -69,7 +69,7 @@ public class DbUnitExcuter extends JdbcExcuter {
     }
 
     @Override
-    public void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) {
+    public void clearDatabase(Connection conn, TestCaseDataSource dataSource) {
         try {
             DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
         } catch (Exception e2) {

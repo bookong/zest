@@ -1,16 +1,13 @@
 package com.github.bookong.zest.util;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.NClob;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.bookong.zest.core.ZestGlobalConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,35 +18,82 @@ import org.slf4j.LoggerFactory;
  */
 public class ZestSqlHelper {
 
-    private static Logger logger = LoggerFactory.getLogger(ZestSqlHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(ZestGlobalConstant.Logger.SQL);
 
-    /**
-     * 安全的关闭 Statement
-     * 
-     * @param stat 待关闭的 Statement
-     */
     public static void close(Statement stat) {
         if (stat != null) {
             try {
                 stat.close();
             } catch (SQLException e) {
-                logger.error("", e);
+                logger.warn("Statement close, {}:{}", e.getClass().getName(), e.getMessage());
             }
         }
     }
 
-    /**
-     * 安全的关闭 ResultSet
-     * 
-     * @param rs 待关闭的 ResultSet
-     */
     public static void close(ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
             } catch (SQLException e) {
-                logger.error("", e);
+                logger.warn("ResultSet close, {}:{}", e.getClass().getName(), e.getMessage());
             }
+        }
+    }
+
+    public static boolean execute(Connection conn, String sql) {
+        Statement stat = null;
+        try {
+            logger.debug("   SQL: {}", sql);
+            stat = conn.createStatement();
+            boolean b = stat.execute(sql);
+            logger.debug("RESULT: {}", b);
+            return b;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(stat);
+        }
+    }
+
+    public static boolean execute(Connection conn, String sql, Object[] values) {
+        PreparedStatement stat = null;
+        try {
+            if (logger.isDebugEnabled()) {
+                logger.debug("   SQL: {}", sql);
+                if (values != null) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < values.length; i++) {
+                        Object value = values[i];
+                        if (value == null) {
+                            sb.append("NULL");
+                        } else if (value instanceof Date) {
+                            sb.append("(Date)").append(ZestDateUtil.formatDateNormal((Date) value));
+                        } else {
+                            sb.append("(").append(value.getClass().getSimpleName()).append(")").append(value);
+                        }
+
+                        if (i < values.length - 1) {
+                            sb.append(", ");
+                        }
+                    }
+                    logger.debug("PARAMS: {}", sb.toString());
+                }
+
+            }
+
+            stat = conn.prepareStatement(sql);
+            if (values != null) {
+                for (int i = 0; i < values.length; i++) {
+                    stat.setObject(i + 1, values[i]);
+                }
+            }
+            boolean b = stat.execute();
+            logger.debug("RESULT: {}", b);
+            return b;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(stat);
         }
     }
 
