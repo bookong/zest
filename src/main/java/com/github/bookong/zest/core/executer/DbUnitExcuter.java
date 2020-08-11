@@ -69,7 +69,7 @@ public class DbUnitExcuter extends SqlExcuter {
     }
 
     @Override
-    public void clearDatabase(Connection conn, TestCaseDataSource dataSource) {
+    public void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource) {
         try {
             DatabaseOperation.TRUNCATE_TABLE.execute(dbUnitConn, zestDataSet);
         } catch (Exception e2) {
@@ -78,7 +78,7 @@ public class DbUnitExcuter extends SqlExcuter {
     }
 
     /** 验证表数据 */
-    private void verifyTable(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable table) {
+    protected void verifyTable(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable table) {
         logger.info(Messages.getString("dbUnitExcuter.startCheckTargetTable", testCaseDataSource.getId(), table.getName()));
 
         try {
@@ -107,7 +107,8 @@ public class DbUnitExcuter extends SqlExcuter {
 //            sql = "select * from " + table.getName();
 //        }
 
-        return ZestSqlHelper.findDataInDatabase(conn, sql);
+//        return ZestSqlHelper.findDataInDatabase(conn, sql);
+        return null;
     }
 
     /** 验证每行的数据 */

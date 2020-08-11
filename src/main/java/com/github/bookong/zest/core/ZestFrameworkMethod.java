@@ -6,36 +6,24 @@ import org.junit.runners.model.FrameworkMethod;
 
 /**
  * @author jiangxu
- *
  */
 public class ZestFrameworkMethod extends FrameworkMethod {
-	private String testCaseFilePath;
-	private String testCaseFileName;
 
-	public ZestFrameworkMethod(FrameworkMethod method, String testCaseFilePath) {
-		super(method.getMethod());
-		this.testCaseFilePath = testCaseFilePath;
-		this.testCaseFileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
-	}
-	
-	@Override
+    private String testCaseFilePath;
+    private String testCaseFileName;
+
+    public ZestFrameworkMethod(FrameworkMethod method, String testCaseFilePath){
+        super(method.getMethod());
+        this.testCaseFilePath = testCaseFilePath;
+        this.testCaseFileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
+    }
+
+    @Override
     public String getName() {
-		return String.format("%s [%s] ", super.getName(), testCaseFileName);
-	}
+        return String.format("%s [%s] ", super.getName(), testCaseFileName);
+    }
 
-	public String getTestCaseFilePath() {
-		return testCaseFilePath;
-	}
-
-	public void setTestCaseFilePath(String testCaseFilePath) {
-		this.testCaseFilePath = testCaseFilePath;
-	}
-
-	public String getTestCaseFileName() {
-		return testCaseFileName;
-	}
-
-	public void setTestCaseFileName(String testCaseFileName) {
-		this.testCaseFileName = testCaseFileName;
-	}
+    public String getTestCaseFilePath() {
+        return testCaseFilePath;
+    }
 }

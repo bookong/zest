@@ -17,13 +17,10 @@ public abstract class AbstractDataSourceTable<T extends AbstractDataSourceRow> {
     /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
     private boolean ignoreCheckTarget;
 
-    /** 排序的依据 */
-    private String  query;
-
     public AbstractDataSourceTable(Table xmlTable){
         this.name = xmlTable.getName();
         this.ignoreCheckTarget = xmlTable.isIgnore();
-        this.query = xmlTable.getQuery();
+
     }
 
     public abstract List<T> getRowDataList();
@@ -34,10 +31,6 @@ public abstract class AbstractDataSourceTable<T extends AbstractDataSourceRow> {
 
     public boolean isIgnoreCheckTarget() {
         return ignoreCheckTarget;
-    }
-
-    public String getQuery() {
-        return query;
     }
 
 }

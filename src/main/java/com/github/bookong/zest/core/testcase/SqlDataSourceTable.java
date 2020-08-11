@@ -2,6 +2,8 @@ package com.github.bookong.zest.core.testcase;
 
 import com.github.bookong.zest.support.xml.data.Row;
 import com.github.bookong.zest.support.xml.data.Table;
+import com.github.bookong.zest.util.Messages;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,9 @@ import java.util.List;
  */
 public class SqlDataSourceTable extends AbstractDataSourceTable<SqlDataSourceRow> {
 
+    /** 排序的依据 */
+    private String                 query;
+
     /** 关系型数据库相关数据 */
     private List<SqlDataSourceRow> rowDataList = new ArrayList<>();
 
@@ -20,14 +25,24 @@ public class SqlDataSourceTable extends AbstractDataSourceTable<SqlDataSourceRow
                               List<AbstractDataConverter> dataConverterList, boolean isTargetData){
         super(xmlTable);
 
+        if (StringUtils.isNotBlank(xmlTable.getQuery()) && !isTargetData) {
+            throw new RuntimeException(Messages.parseDataTableQuery());
+        }
+        this.query = xmlTable.getQuery();
+
+        int rowIdx = 1;
         for (Row xmlRow : xmlTable.getRow()) {
-            rowDataList.add(new SqlDataSourceRow(testCaseData, dataSourceId, getName(), xmlRow, dataConverterList,
-                                                 isTargetData));
+            rowDataList.add(new SqlDataSourceRow(testCaseData, dataSourceId, getName(), rowIdx++, xmlRow,
+                                                 dataConverterList, isTargetData));
         }
     }
 
     @Override
     public List<SqlDataSourceRow> getRowDataList() {
         return rowDataList;
+    }
+
+    public String getQuery() {
+        return query;
     }
 }

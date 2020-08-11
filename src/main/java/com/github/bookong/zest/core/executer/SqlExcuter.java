@@ -1,15 +1,21 @@
 package com.github.bookong.zest.core.executer;
 
 import com.github.bookong.zest.core.testcase.*;
+import com.github.bookong.zest.support.rule.CurrentTimeRule;
+import com.github.bookong.zest.support.rule.FromCurrentTimeRule;
+import com.github.bookong.zest.support.rule.RegExpRule;
+import com.github.bookong.zest.support.xml.data.CurrentTime;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.*;
 
 /**
  * 简单的 Sql 的执行器
@@ -20,6 +26,10 @@ public class SqlExcuter extends AbstractExcuter {
 
     /**
      * 初始化数据库中数据
+     * 
+     * @param conn
+     * @param testCaseData
+     * @param dataSource
      */
     public void initDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource) {
         for (AbstractDataSourceTable<?> item : dataSource.getInitData().getInitDataList()) {
@@ -40,7 +50,7 @@ public class SqlExcuter extends AbstractExcuter {
 
             for (int i = 0; i < table.getRowDataList().size(); i++) {
                 SqlDataSourceRow row = table.getRowDataList().get(i);
-                String sql = genInsertSql(conn, columnNames, table);
+                String sql = genInsertSql(columnNames, table);
                 Object[] params = new Object[columnNames.size()];
                 int idx = 0;
                 for (String columnName : columnNames) {
@@ -56,16 +66,40 @@ public class SqlExcuter extends AbstractExcuter {
      * 
      * @param conn
      * @param testCaseData
-     * @param testCaseDataSource
+     * @param dataSource
      */
-    public void checkTargetDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) {
+    public void checkTargetDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource) {
+        try {
+            if (dataSource.getTargetData().isIgnoreCheck()) {
+                logger.info(Messages.ignoreTargetData(dataSource.getId()));
+                return;
+            }
 
+            for (AbstractDataSourceTable<?> table : dataSource.getTargetData().getTargetDataMap().values()) {
+                if (table.isIgnoreCheckTarget()) {
+                    logger.info(Messages.ignoreTargetTable(dataSource.getId(), table.getName()));
+                    continue;
+                }
+
+                logger.info(Messages.startCheckTable(dataSource.getId(), table.getName()));
+                verifyTable(conn, testCaseData, dataSource, (SqlDataSourceTable) table);
+            }
+
+        } catch (AssertionError e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AssertionError(Messages.checkDs(dataSource.getId()), e);
+        }
     }
 
     /**
      * 清空数据
+     * 
+     * @param conn
+     * @param testCaseData
+     * @param dataSource
      */
-    public void clearDatabase(Connection conn, TestCaseDataSource dataSource) {
+    public void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource) {
         Set<String> tableNames = new LinkedHashSet<>();
         dataSource.getInitData().getInitDataList().forEach(table -> tableNames.add(table.getName()));
         dataSource.getTargetData().getTargetDataMap().values().forEach(table -> tableNames.add(table.getName()));
@@ -83,10 +117,10 @@ public class SqlExcuter extends AbstractExcuter {
         return columnNames;
     }
 
-    protected String genInsertSql(Connection conn, Set<String> columnNames, SqlDataSourceTable table) {
+    protected String genInsertSql(Set<String> columnNames, SqlDataSourceTable table) {
         try {
             StringBuilder sb = new StringBuilder(128);
-            sb.append("insert into ").append(getDbSchema(conn)).append("`").append(table.getName()).append("`(");
+            sb.append("insert into ").append("`").append(table.getName()).append("`(");
             Iterator<String> it = columnNames.iterator();
             while (it.hasNext()) {
                 String columnName = it.next();
@@ -112,18 +146,114 @@ public class SqlExcuter extends AbstractExcuter {
     }
 
     protected void truncateTable(Connection conn, String tableName) {
-        ZestSqlHelper.execute(conn, String.format("truncate table %s`%s`", getDbSchema(conn), tableName));
+        ZestSqlHelper.execute(conn, String.format("truncate table `%s`", tableName));
     }
 
     protected void insert(Connection conn, String sql, Object[] params) {
         ZestSqlHelper.execute(conn, sql, params);
     }
 
-    protected String getDbSchema(Connection conn) {
-        try {
-            return String.format("`%s`.", conn.getSchema());
-        } catch (Throwable e) {
-            return StringUtils.EMPTY;
+    protected void verifyTable(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource,
+                               SqlDataSourceTable table) {
+        List<Map<String, Object>> dataInDb = findDatas(conn, table);
+        Assert.assertEquals(Messages.checkTableSize(dataSource.getId(), table.getName()), table.getRowDataList().size(),
+                            dataInDb.size());
+        for (int i = 0; i < table.getRowDataList().size(); i++) {
+            SqlDataSourceRow expected = table.getRowDataList().get(i);
+            Map<String, Object> actual = dataInDb.get(i);
+            verifyRow(testCaseData, dataSource, table, i, expected, actual);
         }
+    }
+
+    protected void verifyRow(TestCaseData testCaseData, TestCaseDataSource dataSource, SqlDataSourceTable table,
+                             int rowIdx, SqlDataSourceRow expectedRow, Map<String, Object> actualRow) {
+        List<String> columnNames = new ArrayList<>(actualRow.size() + 1);
+        if (dataSource.getTargetData().isOnlyCheckCoreData()) {
+            logger.info(Messages.ignoreTargetColUnspecified(dataSource.getId(), table.getName()));
+            columnNames.addAll(expectedRow.getFields().keySet());
+        } else {
+            columnNames.addAll(actualRow.keySet());
+        }
+
+        for (String columnName : columnNames) {
+            Object expected = expectedRow.getFields().get(columnName);
+            Object actual = actualRow.get(columnName);
+
+            if (expected == null) {
+                Assert.assertNull(Messages.checkTableColNull(dataSource.getId(), table.getName(), rowIdx, columnName),
+                                  actual);
+
+            } else if (expected instanceof CurrentTimeRule) {
+                ((CurrentTimeRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
+
+            } else if (expected instanceof FromCurrentTimeRule) {
+                ((FromCurrentTimeRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
+
+            } else if (expected instanceof RegExpRule) {
+                ((RegExpRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
+
+            } else if (expected instanceof Date) {
+                Assert.assertTrue(Messages.checkTableColDateType(dataSource.getId(), table.getName(), rowIdx,
+                                                                 columnName),
+                                  (actual instanceof Date));
+                String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInDB((Date) expected,
+                                                                                             testCaseData));
+                String actualDate = ZestDateUtil.formatDateNormal((Date) actual);
+                Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName),
+                                    expectedDate, actualDate);
+
+            } else {
+                Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName),
+                                    String.valueOf(expected), String.valueOf(actual));
+            }
+        }
+    }
+
+    protected List<Map<String, Object>> findDatas(Connection conn, SqlDataSourceTable table) {
+        String sql = String.format("select * from `%s`", table.getName());
+        if (StringUtils.isNotBlank(table.getQuery())) {
+            sql = table.getQuery();
+        }
+
+        Statement stat = null;
+        ResultSet rs = null;
+        try {
+            List<Map<String, Object>> list = new ArrayList<>();
+            stat = conn.createStatement();
+            rs = stat.executeQuery(sql);
+
+            while (rs.next()) {
+                Map<String, Object> obj = new HashMap<>();
+                list.add(obj);
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    String name = rs.getMetaData().getColumnName(i).toLowerCase();
+                    Object value = rs.getObject(i);
+                    obj.put(name, parseValue(value));
+                }
+            }
+
+            return list;
+        } catch (Exception e) {
+            ZestSqlHelper.close(rs);
+            ZestSqlHelper.close(stat);
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected Object parseValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Integer || value instanceof Long || value instanceof Byte) {
+            return ((Number) value).longValue();
+        }
+
+        if (value instanceof Double || value instanceof Float || value instanceof BigDecimal) {
+            return ((Number) value).doubleValue();
+        }
+
+        // Timestamp , String
+        return value;
     }
 }

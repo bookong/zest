@@ -21,7 +21,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
 
     private Map<String, Object> fields = new LinkedHashMap<>();
 
-    public SqlDataSourceRow(TestCaseData testCaseData, String dataSourceId, String tableName, Row xmlRow,
+    public SqlDataSourceRow(TestCaseData testCaseData, String dataSourceId, String tableName, int rowIdx, Row xmlRow,
                             List<AbstractDataConverter> dataConverterList, boolean isTargetData){
         Map<String, Integer> colSqlTypes = testCaseData.getRmdbTableColSqlTypes(dataSourceId, tableName);
 
@@ -48,7 +48,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
                     throw new RuntimeException(Messages.parseDataFieldUnder(tableName, fieldName));
                 }
 
-                fields.put(fieldName, RuleFactory.createRule(tableName, fieldName, xmlField));
+                fields.put(fieldName, RuleFactory.createRule(dataSourceId, tableName, rowIdx, fieldName, xmlField));
             }
         }
     }

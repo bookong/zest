@@ -76,16 +76,4 @@ public class ZestDateUtil {
         return cal.getTime();
     }
 
-    /**
-     * 得到数据库中 Date 类型字段在通过 currDbTimeDiff 修正以后的字符串表示
-     * 
-     * @param date 待转换的日期对象
-     * @param testCaseData 测试用例数据
-     * @return 转换后字符串表达的日期
-     * @see #getDateInDB(Date, TestCaseData)
-     */
-    public static String getStringFromDBDate(Date date, TestCaseData testCaseData) {
-        return ZestDateUtil.formatDateNormal(getDateInDB(date, testCaseData));
-    }
-
 }

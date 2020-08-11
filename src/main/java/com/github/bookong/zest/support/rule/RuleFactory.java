@@ -8,7 +8,8 @@ import com.github.bookong.zest.util.Messages;
  */
 public class RuleFactory {
 
-    public static AbstractRule createRule(String tableName, String fieldName, Field xmlField) {
+    public static AbstractRule createRule(String dataSourceId, String tableName, int rowIdx, String fieldName,
+                                          Field xmlField) {
         if (xmlField.getRegExp() != null) {
             return new RegExpRule(xmlField);
 
@@ -16,7 +17,7 @@ public class RuleFactory {
             return new CurrentTimeRule(xmlField);
 
         } else if (xmlField.getFromCurrentTime() != null) {
-            return new FromCurrentTimeRule(xmlField);
+            return new FromCurrentTimeRule(dataSourceId, tableName, rowIdx, fieldName, xmlField);
 
         } else {
             throw new RuntimeException(Messages.parseDataFieldNone(tableName, fieldName));

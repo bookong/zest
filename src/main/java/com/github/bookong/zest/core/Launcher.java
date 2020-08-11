@@ -108,10 +108,10 @@ public class Launcher {
     }
 
     private static String getDir(TestClass testCase, FrameworkMethod frameworkMethod) {
-        return String.format("%s%sdata%s%s%s%s%s", testCase.getJavaClass().getResource("").getPath(), File.separator, //
-                             File.separator, //
-                             testCase.getJavaClass().getSimpleName(), File.separator, //
-                             frameworkMethod.getName(), File.separator);
+        return testCase.getJavaClass().getResource("").getPath() //
+                       .concat("data").concat(File.separator) //
+                       .concat(testCase.getJavaClass().getSimpleName()).concat(File.separator) //
+                       .concat(frameworkMethod.getName()).concat(File.separator);
     }
 
     void initDataSource() {
@@ -122,7 +122,7 @@ public class Launcher {
                 Connection conn = connectionMap.get(dataSource.getId());
                 SqlExcuter jdbcExcuter = (SqlExcuter) executer;
 
-                jdbcExcuter.clearDatabase(conn, dataSource);
+                jdbcExcuter.clearDatabase(conn, testCaseData, dataSource);
                 jdbcExcuter.initDatabase(conn, testCaseData, dataSource);
             }
         }
@@ -141,8 +141,6 @@ public class Launcher {
                 } else {
                     jdbcExcuter.checkTargetDatabase(conn, testCaseData, dataSource);
                 }
-
-                jdbcExcuter.clearDatabase(conn, dataSource);
             }
         }
     }

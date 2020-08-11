@@ -109,12 +109,75 @@ public class Messages {
         return getString("ignore.target.data", id);
     }
 
+    public static String ignoreTargetTable(String dataSourceId, String tableName) {
+        return getString("ignore.target.table", dataSourceId, tableName);
+    }
+
     public static String initParam() {
         return getString("init.param");
     }
 
     public static String executerMatchSql() {
         return getString("executer.match.sql");
+    }
+
+    public static String checkDs(String value) {
+        return getString("check.ds", value);
+    }
+
+    public static String startCheckTable(String dataSourceId, String tableName) {
+        return getString("start.check.table", dataSourceId, tableName);
+    }
+
+    public static String checkTableSize(String dataSourceId, String tableName) {
+        return getString("check.table.size", dataSourceId, tableName);
+    }
+
+    public static String ignoreTargetColUnspecified(String dataSourceId, String tableName) {
+        return getString("ignore.target.col.unspecified", dataSourceId, tableName);
+    }
+
+    public static String checkTableColDate(String dataSourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.date", dataSourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkTableColdateCurrent(String dataSourceId, String tableName, int rowIdx,
+                                                  String columnName) {
+        return getString("check.table.col.date.current", dataSourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkTableColNullable(String dataSourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.nullable", dataSourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkTableColDateFrom(String dataSourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.date.from", dataSourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkTableColNull(String dataSourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.null", dataSourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkTableColDateType(String dataSourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.date.type", dataSourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkTableCol(String dataSourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col", dataSourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkTableColRegexp(String dataSourceId, String tableName, int rowIdx, String columnName,
+                                             String regExp) {
+        return getString("check.table.col.regexp", dataSourceId, tableName, rowIdx, columnName, regExp);
+    }
+
+    public static String checkTableColDateFromUnit(String dataSourceId, String tableName, int rowIdx, String columnName,
+                                                   String unit) {
+        return getString("check.table.col.date.from.unit", dataSourceId, tableName, rowIdx, columnName, unit);
+    }
+
+    public static String parseDataTableQuery() {
+        return getString("parse.data.table.query");
     }
 
     private static String getString(String key) {
