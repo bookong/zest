@@ -7,6 +7,7 @@ import com.github.bookong.zest.support.xml.data.ParamField;
 import com.github.bookong.zest.support.xml.data.TestParam;
 import com.github.bookong.zest.util.LoadTestCaseUtil;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -68,7 +69,7 @@ public class TestCaseData {
         this.description = StringUtils.trimToEmpty(xmlData.getDescription());
         this.transferTime = StringUtils.isNotBlank(xmlData.getCurrDbTime());
         if (isTransferTime()) {
-            Date currDbTime = LoadTestCaseUtil.parseDate(xmlData.getCurrDbTime());
+            Date currDbTime = ZestDateUtil.parseDate(xmlData.getCurrDbTime());
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.MILLISECOND, 0);
             currDbTimeDiff = cal.getTimeInMillis() - currDbTime.getTime();
@@ -172,7 +173,7 @@ public class TestCaseData {
                 ZestReflectHelper.setValueByFieldName(obj, lastFieldName, value);
 
             } else if (Date.class.isAssignableFrom(fieldClass)) {
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, LoadTestCaseUtil.parseDate(value));
+                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, ZestDateUtil.parseDate(value));
 
             } else if (List.class.isAssignableFrom(fieldClass)) {
                 addParamObjContainerValue(xmlParamField, obj, field, mapKey, value, true);
@@ -246,7 +247,7 @@ public class TestCaseData {
             return value;
 
         } else if (Date.class.isAssignableFrom(target)) {
-            return LoadTestCaseUtil.parseDate(value);
+            return ZestDateUtil.parseDate(value);
 
         } else {
             throw new RuntimeException(Messages.parseParamSetTypes(xmlParamField, target));

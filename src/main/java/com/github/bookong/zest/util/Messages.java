@@ -125,6 +125,10 @@ public class Messages {
         return getString("check.ds", value);
     }
 
+    public static String statementRun(String desc) {
+        return getString("statement.run", desc);
+    }
+
     public static String startCheckTable(String dataSourceId, String tableName) {
         return getString("start.check.table", dataSourceId, tableName);
     }
@@ -188,8 +192,7 @@ public class Messages {
         }
     }
 
-    @Deprecated
-    public static String getString(String key, Object... args) {
+    private static String getString(String key, Object... args) {
         return String.format(getString(key), args);
     }
 }

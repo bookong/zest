@@ -358,7 +358,7 @@ public class Launcher {
         currTestCaseFilePath = method.getTestCaseFilePath();
         testCaseLoader.loadFromAbsolutePath(this, currTestCaseFilePath, testCaseData);
 
-        logger.info("[Zest] Test Case \"{}\"", testCaseData.getDescription());
+        logger.info(Messages.statementRun(testCaseData.getDescription()));
         logger.info(currTestCaseFilePath);
     }
 

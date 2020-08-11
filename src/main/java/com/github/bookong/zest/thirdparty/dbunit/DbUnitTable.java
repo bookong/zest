@@ -22,16 +22,18 @@ import com.github.bookong.zest.util.ZestDateUtil;
  */
 public class DbUnitTable extends AbstractTable {
 
-    private ITableMetaData      metaData;
-    private TestCaseData        testCaseData;
+    private ITableMetaData     metaData;
+    private TestCaseData       testCaseData;
     private SqlDataSourceTable initDataSourceTable;
 
-    public DbUnitTable(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable initDataSourceTable){
+    public DbUnitTable(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource,
+                       SqlDataSourceTable initDataSourceTable){
         this.testCaseData = testCaseData;
         this.initDataSourceTable = initDataSourceTable;
         List<Column> columnList = new ArrayList<>();
 
-        for (Entry<String, Integer> entry : testCaseData.getRmdbTableColSqlTypes(testCaseDataSource.getId(), initDataSourceTable.getName()).entrySet()) {
+        for (Entry<String, Integer> entry : testCaseData.getRmdbTableColSqlTypes(testCaseDataSource.getId(),
+                                                                                 initDataSourceTable.getName()).entrySet()) {
             Column column = new Column(entry.getKey(), new StringDataType(entry.getKey(), entry.getValue()));
             columnList.add(column);
         }
@@ -41,8 +43,7 @@ public class DbUnitTable extends AbstractTable {
 
     @Override
     public int getRowCount() {
-//        return initDataSourceTable.getRowDatas().size();
-        return 0; // TODO
+        return initDataSourceTable.getRowDataList().size();
     }
 
     @Override
@@ -53,12 +54,11 @@ public class DbUnitTable extends AbstractTable {
     @Override
     public Object getValue(int row, String column) throws DataSetException {
         assertValidRowIndex(row);
-//        Object obj = initDataSourceTable.getRowDatas().get(row).getFields().get(column);
-//        if (obj != null && (obj instanceof Date)) {
-//            return ZestDateUtil.getDateInDB((Date) obj, testCaseData);
-//        }
-//        return obj;
-        return null;//TODO
+        Object obj = initDataSourceTable.getRowDataList().get(row).getFields().get(column);
+        if (obj != null && (obj instanceof Date)) {
+            return ZestDateUtil.getDateInDB((Date) obj, testCaseData);
+        }
+        return obj;
     }
 
 }

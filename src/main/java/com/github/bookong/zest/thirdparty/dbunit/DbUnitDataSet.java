@@ -1,5 +1,7 @@
 package com.github.bookong.zest.thirdparty.dbunit;
 
+import com.github.bookong.zest.core.testcase.AbstractDataSourceTable;
+import com.github.bookong.zest.core.testcase.SqlDataSourceTable;
 import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.AbstractDataSet;
 import org.dbunit.dataset.DataSetException;
@@ -18,18 +20,20 @@ public class DbUnitDataSet extends AbstractDataSet {
 
     private final OrderedTableNameMap tables;
 
-    public DbUnitDataSet(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) throws AmbiguousTableNameException{
+    public DbUnitDataSet(TestCaseData testCaseData,
+                         TestCaseDataSource testCaseDataSource) throws AmbiguousTableNameException{
         tables = super.createTableNameMap();
 
-//        for (AbstractDataSourceTable<?> table : testCaseDataSource.getInitDatas()) {
-//            RmdbDataSourceTable initDataSourceTable = (RmdbDataSourceTable) table;
-//            tables.add(initDataSourceTable.getName(), new DbUnitTable(testCaseData, testCaseDataSource, initDataSourceTable));
-//        }
+        for (AbstractDataSourceTable<?> table : testCaseDataSource.getInitData().getInitDataList()) {
+            SqlDataSourceTable initDataSourceTable = (SqlDataSourceTable) table;
+            tables.add(initDataSourceTable.getName(),
+                       new DbUnitTable(testCaseData, testCaseDataSource, initDataSourceTable));
+        }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected ITableIterator createIterator(boolean reversed) throws DataSetException {
+    protected ITableIterator createIterator(boolean reversed) {
         return new DefaultTableIterator((ITable[]) tables.orderedValues().toArray(new ITable[0]), reversed);
     }
 }

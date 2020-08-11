@@ -5,6 +5,7 @@ import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.support.xml.data.Row;
 import com.github.bookong.zest.util.LoadTestCaseUtil;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestDateUtil;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.namespace.QName;
@@ -88,7 +89,7 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
             case Types.DATE:
             case Types.TIME:
             case Types.TIMESTAMP:
-                return LoadTestCaseUtil.parseDate(xmlFieldValue);
+                return ZestDateUtil.parseDate(xmlFieldValue);
 
             case Types.CHAR:
             case Types.VARCHAR:
