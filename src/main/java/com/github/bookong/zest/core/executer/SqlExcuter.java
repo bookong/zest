@@ -161,7 +161,7 @@ public class SqlExcuter extends AbstractExcuter {
         for (int i = 0; i < table.getRowDataList().size(); i++) {
             SqlDataSourceRow expected = table.getRowDataList().get(i);
             Map<String, Object> actual = dataInDb.get(i);
-            verifyRow(testCaseData, dataSource, table, i, expected, actual);
+            verifyRow(testCaseData, dataSource, table, i + 1, expected, actual);
         }
     }
 
