@@ -3,7 +3,6 @@ package com.github.bookong.zest.core.testcase;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.support.xml.data.Row;
-import com.github.bookong.zest.util.LoadTestCaseUtil;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import org.apache.commons.lang.StringUtils;

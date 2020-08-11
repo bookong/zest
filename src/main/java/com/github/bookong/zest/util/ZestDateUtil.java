@@ -1,13 +1,10 @@
 package com.github.bookong.zest.util;
 
-import java.text.ParseException;
+import com.github.bookong.zest.core.testcase.TestCaseData;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.github.bookong.zest.core.testcase.TestCaseData;
 
 /**
  * 日期处理
