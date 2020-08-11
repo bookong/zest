@@ -50,6 +50,9 @@ public class MessagesTest {
                     } else if (String.class.isAssignableFrom(c)) {
                         params[idx++] = "6";
 
+                    } else if ("int".equals(c.getName())) {
+                        params[idx++] = 6;
+
                     } else {
                         throw new Exception("unknown ".concat(c.getName()));
 
