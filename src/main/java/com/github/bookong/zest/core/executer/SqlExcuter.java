@@ -1,10 +1,11 @@
 package com.github.bookong.zest.core.executer;
 
 import com.github.bookong.zest.core.testcase.*;
+import com.github.bookong.zest.core.testcase.sql.SqlDataSourceRow;
+import com.github.bookong.zest.core.testcase.sql.SqlDataSourceTable;
 import com.github.bookong.zest.support.rule.CurrentTimeRule;
 import com.github.bookong.zest.support.rule.FromCurrentTimeRule;
 import com.github.bookong.zest.support.rule.RegExpRule;
-import com.github.bookong.zest.support.xml.data.CurrentTime;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestSqlHelper;

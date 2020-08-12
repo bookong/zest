@@ -1,6 +1,5 @@
 package com.github.bookong.zest.runner.junit4.statement;
 
-import com.github.bookong.zest.core.AbstractStatement;
 import com.github.bookong.zest.runner.ZestLauncher;
 
 /**

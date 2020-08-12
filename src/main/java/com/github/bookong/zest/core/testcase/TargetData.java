@@ -1,5 +1,6 @@
 package com.github.bookong.zest.core.testcase;
 
+import com.github.bookong.zest.core.testcase.sql.SqlDataSourceTable;
 import com.github.bookong.zest.support.xml.data.Init;
 import com.github.bookong.zest.support.xml.data.Table;
 import com.github.bookong.zest.support.xml.data.Target;

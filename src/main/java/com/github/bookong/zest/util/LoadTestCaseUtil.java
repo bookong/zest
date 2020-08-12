@@ -1,6 +1,5 @@
 package com.github.bookong.zest.util;
 
-import com.github.bookong.zest.core.Launcher;
 import com.github.bookong.zest.core.ZestGlobalConstant;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.runner.ZestLauncher;

@@ -1,7 +1,7 @@
 package com.github.bookong.zest.thirdparty.dbunit;
 
 import com.github.bookong.zest.core.testcase.AbstractDataSourceTable;
-import com.github.bookong.zest.core.testcase.SqlDataSourceTable;
+import com.github.bookong.zest.core.testcase.sql.SqlDataSourceTable;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
 import org.dbunit.database.AmbiguousTableNameException;

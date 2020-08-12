@@ -1,22 +1,18 @@
 package zest;
 
-import java.sql.Connection;
-import java.text.SimpleDateFormat;
-
+import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.runner.ZestLauncher;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.github.bookong.zest.core.Launcher;
-import com.github.bookong.zest.core.testcase.TestCaseData;
-
 import zest.param.Param1;
 import zest.param.Param3;
 import zest.param.Param4;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.text.SimpleDateFormat;
 
 /**
  *
