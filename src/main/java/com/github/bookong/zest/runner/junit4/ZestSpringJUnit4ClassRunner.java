@@ -30,7 +30,7 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner impleme
 
     @Override
     protected List<FrameworkMethod> computeTestMethods() {
-        return zestLauncher.computeTestMethods(getTestClass());
+        return ZestJUnit4Launcher.computeTestMethods(getTestClass());
     }
 
     @Override

@@ -16,9 +16,9 @@ import java.io.IOException;
 /**
  * @author jiangxu
  */
-public class LoadTestCaseUtil {
+public class ZestTestCaseUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(LoadTestCaseUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(ZestTestCaseUtil.class);
 
     /**
      * 从绝对路径加载 xml 文件
@@ -65,5 +65,12 @@ public class LoadTestCaseUtil {
             default:
                 return false;
         }
+    }
+
+    public static String getDir(Class<?> testObjClass, String methodName) {
+        return testObjClass.getResource("").getPath() //
+                           .concat("data").concat(File.separator) //
+                           .concat(testObjClass.getSimpleName()).concat(File.separator) //
+                           .concat(methodName).concat(File.separator);
     }
 }

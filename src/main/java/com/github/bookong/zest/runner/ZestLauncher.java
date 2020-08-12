@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -41,31 +42,7 @@ public abstract class ZestLauncher {
 
     protected abstract Connection getConnection(DataSource dataSource);
 
-    protected void loadAutowiredFieldFromTest(Object test) throws Exception {
-        connectionMap.clear();
-        executerMap.clear();
 
-        Class<?> clazz = test.getClass();
-        while (clazz != null) {
-            for (Field f : clazz.getDeclaredFields()) {
-                ZestDataSource zestDataSource = f.getAnnotation(ZestDataSource.class);
-                if (zestDataSource != null) {
-                    Object obj = ZestReflectHelper.getValueByFieldName(test, f.getName());
-                    if (obj instanceof DataSource) {
-                        Connection conn = getConnection((DataSource) obj);
-                        setConnection(zestDataSource.value(), conn);
-                    } else {
-                        throw new RuntimeException(Messages.parseDs());
-                    }
-
-                    setExecuter(zestDataSource.value(), zestDataSource.executerClass());
-                    setDataConverter(zestDataSource.value(), zestDataSource.dataConverterClasses());
-                }
-            }
-
-            clazz = clazz.getSuperclass();
-        }
-    }
 
     public void initDataSource() {
         for (TestCaseDataSource dataSource : testCaseData.getDataSources()) {
@@ -98,7 +75,7 @@ public abstract class ZestLauncher {
         }
     }
 
-    private void setConnection(String dataSourceId, Connection conn) {
+    protected void setConnection(String dataSourceId, Connection conn) {
         if (connectionMap.containsKey(dataSourceId)) {
             throw new RuntimeException(Messages.duplicateDs(dataSourceId));
         }
@@ -107,7 +84,7 @@ public abstract class ZestLauncher {
         loadAllTableColSqlTypes(dataSourceId, conn);
     }
 
-    private void setExecuter(String dataSourceId, Class<? extends AbstractExcuter> executerClass) {
+    protected void setExecuter(String dataSourceId, Class<? extends AbstractExcuter> executerClass) {
         if (executerMap.containsKey(dataSourceId)) {
             return;
         }
@@ -119,7 +96,7 @@ public abstract class ZestLauncher {
         }
     }
 
-    private void setDataConverter(String dataSourceId, Class<? extends AbstractDataConverter>[] dataConverterClasses) {
+    protected void setDataConverter(String dataSourceId, Class<? extends AbstractDataConverter>[] dataConverterClasses) {
         for (Class<? extends AbstractDataConverter> dataConverterClass : dataConverterClasses) {
             try {
                 dataConverterMap.computeIfAbsent(dataSourceId,

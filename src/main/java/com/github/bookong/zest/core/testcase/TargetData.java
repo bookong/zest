@@ -4,7 +4,7 @@ import com.github.bookong.zest.core.testcase.sql.SqlDataSourceTable;
 import com.github.bookong.zest.support.xml.data.Init;
 import com.github.bookong.zest.support.xml.data.Table;
 import com.github.bookong.zest.support.xml.data.Target;
-import com.github.bookong.zest.util.LoadTestCaseUtil;
+import com.github.bookong.zest.util.ZestTestCaseUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,7 +31,7 @@ public class TargetData {
             return;
         }
 
-        if (LoadTestCaseUtil.isRmdb(dataSourceType)) {
+        if (ZestTestCaseUtil.isRmdb(dataSourceType)) {
             for (Table xmlTable : xmlTarget.getTable()) {
                 SqlDataSourceTable table = new SqlDataSourceTable(testCaseData, dataSourceId, xmlTable,
                                                                   dataConverterList, true);

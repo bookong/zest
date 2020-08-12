@@ -4,12 +4,14 @@ import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
 import com.github.bookong.zest.runner.ZestClassRunner;
 import com.github.bookong.zest.runner.ZestLauncher;
+import com.github.bookong.zest.runner.junit4.annotation.ZestDataSource;
 import com.github.bookong.zest.runner.junit4.annotation.ZestTest;
 import com.github.bookong.zest.runner.junit4.statement.ZestFrameworkMethod;
 import com.github.bookong.zest.runner.junit4.statement.ZestStatement;
-import com.github.bookong.zest.util.LoadTestCaseUtil;
+import com.github.bookong.zest.util.ZestReflectHelper;
+import com.github.bookong.zest.util.ZestTestCaseUtil;
 import com.github.bookong.zest.util.Messages;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -28,6 +30,7 @@ import org.junit.runners.model.TestClass;
 
 import javax.sql.DataSource;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +51,7 @@ public class ZestJUnit4Launcher extends ZestLauncher {
         this.zestClassRunner = zestClassRunner;
     }
 
-    public List<FrameworkMethod> computeTestMethods(TestClass testCase) {
+    public static List<FrameworkMethod> computeTestMethods(TestClass testCase) {
         List<FrameworkMethod> list = new ArrayList<>(testCase.getAnnotatedMethods(Test.class));
 
         for (FrameworkMethod method : testCase.getAnnotatedMethods(ZestTest.class)) {
@@ -72,6 +75,10 @@ public class ZestJUnit4Launcher extends ZestLauncher {
         }
 
         return Collections.unmodifiableList(list);
+    }
+
+    private static String getDir(TestClass testCase, FrameworkMethod frameworkMethod) {
+        return ZestTestCaseUtil.getDir(testCase.getJavaClass(), frameworkMethod.getName());
     }
 
     public void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
@@ -105,7 +112,7 @@ public class ZestJUnit4Launcher extends ZestLauncher {
 
         } catch (Throwable e) {
             eachNotifier.addFailure(new RuntimeException(Messages.statementEvaluate(frameworkMethod.getTestCaseFilePath()),
-                    e));
+                                                         e));
         } finally {
             eachNotifier.fireTestFinished();
         }
@@ -136,6 +143,32 @@ public class ZestJUnit4Launcher extends ZestLauncher {
         return statement;
     }
 
+    protected void loadAutowiredFieldFromTest(Object test) throws Exception {
+        connectionMap.clear();
+        executerMap.clear();
+
+        Class<?> clazz = test.getClass();
+        while (clazz != null) {
+            for (Field f : clazz.getDeclaredFields()) {
+                ZestDataSource zestDataSource = f.getAnnotation(ZestDataSource.class);
+                if (zestDataSource != null) {
+                    Object obj = ZestReflectHelper.getValue(test, f.getName());
+                    if (obj instanceof DataSource) {
+                        Connection conn = getConnection((DataSource) obj);
+                        setConnection(zestDataSource.value(), conn);
+                    } else {
+                        throw new RuntimeException(Messages.parseDs());
+                    }
+
+                    setExecuter(zestDataSource.value(), zestDataSource.executerClass());
+                    setDataConverter(zestDataSource.value(), zestDataSource.dataConverterClasses());
+                }
+            }
+
+            clazz = clazz.getSuperclass();
+        }
+    }
+
     private boolean ignoreTest() {
         Class<?> clazz = testClass.getJavaClass();
         while (clazz != null) {
@@ -146,13 +179,6 @@ public class ZestJUnit4Launcher extends ZestLauncher {
         }
 
         return false;
-    }
-
-    private String getDir(TestClass testCase, FrameworkMethod frameworkMethod) {
-        return testCase.getJavaClass().getResource("").getPath() //
-                       .concat("data").concat(File.separator) //
-                       .concat(testCase.getJavaClass().getSimpleName()).concat(File.separator) //
-                       .concat(frameworkMethod.getName()).concat(File.separator);
     }
 
     private Statement withBefores(Object target, Statement statement) {
@@ -183,7 +209,7 @@ public class ZestJUnit4Launcher extends ZestLauncher {
 
         testCaseData.setTestParam(testParam);
         currTestCaseFilePath = method.getTestCaseFilePath();
-        LoadTestCaseUtil.loadFromAbsolutePath(this, currTestCaseFilePath, testCaseData);
+        ZestTestCaseUtil.loadFromAbsolutePath(this, currTestCaseFilePath, testCaseData);
 
         logger.info(Messages.statementRun(testCaseData.getDescription()));
         logger.info(currTestCaseFilePath);

@@ -3,7 +3,7 @@ package com.github.bookong.zest.core.testcase;
 import com.github.bookong.zest.core.testcase.sql.SqlDataSourceTable;
 import com.github.bookong.zest.support.xml.data.Init;
 import com.github.bookong.zest.support.xml.data.Table;
-import com.github.bookong.zest.util.LoadTestCaseUtil;
+import com.github.bookong.zest.util.ZestTestCaseUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class InitData {
 
     public InitData(TestCaseData testCaseData, String dataSourceId, String dataSourceType, Init xmlInit,
                     List<AbstractDataConverter> dataConverterList){
-        if (LoadTestCaseUtil.isRmdb(dataSourceType)) {
+        if (ZestTestCaseUtil.isRmdb(dataSourceType)) {
             for (Table xmlTable : xmlInit.getTable()) {
                 initDataList.add(new SqlDataSourceTable(testCaseData, dataSourceId, xmlTable, dataConverterList,
                                                         false));

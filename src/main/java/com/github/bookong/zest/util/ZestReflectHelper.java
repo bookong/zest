@@ -1,6 +1,11 @@
 package com.github.bookong.zest.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 反射工具
@@ -9,46 +14,35 @@ import java.lang.reflect.Field;
  */
 public class ZestReflectHelper {
 
-    /**
-     * 获取 obj 对象 fieldName 的 Field
-     * 
-     * @param obj 待操作对象
-     * @param fieldName 方法名
-     * @return 返回指定方法名的 Field 对象
-     */
-    public static Field getFieldByFieldName(Object obj, String fieldName) {
-        Class<?> clazz = obj.getClass();
-        while (!clazz.getName().equals(Object.class.getName())) {
-            try {
-                return clazz.getDeclaredField(fieldName);
-            } catch (NoSuchFieldException e) {
-                clazz = clazz.getSuperclass();
+    public static Field getField(Object obj, String fieldName) {
+        for (Class<?> clazz : getAllClass(obj)) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (StringUtils.equals(fieldName, f.getName())) {
+                    return f;
+                }
             }
         }
+
         return null;
     }
 
-    /**
-     * 获取 obj 对象 fieldName 的属性值
-     * 
-     * @param obj 待操作对象
-     * @param fieldName 方法名
-     * @return 返回指定方法的值
-     * @throws IllegalAccessException
-     */
-    public static Object getValueByFieldName(Object obj, String fieldName) throws IllegalAccessException {
-        return getValueByFieldName( obj, getFieldByFieldName(obj, fieldName));
+    public static Method getMethod(Object obj, String methodName) {
+        for (Class<?> clazz : getAllClass(obj)) {
+            for (Method m : clazz.getDeclaredMethods()) {
+                if (StringUtils.equals(methodName, m.getName())) {
+                    return m;
+                }
+            }
+        }
+
+        return null;
     }
 
-    /**
-     * 获取 obj 对象 fieldName 的属性值
-     *
-     * @param obj 待操作对象
-     * @param fieldName 方法名
-     * @return 返回指定方法的值
-     * @throws IllegalAccessException
-     */
-    public static Object getValueByFieldName(Object obj, Field field) throws IllegalAccessException {
+    public static Object getValue(Object obj, String fieldName) throws IllegalAccessException {
+        return getValue(obj, getField(obj, fieldName));
+    }
+
+    public static Object getValue(Object obj, Field field) throws IllegalAccessException {
         Object value = null;
         if (field != null) {
             if (field.isAccessible()) {
@@ -62,16 +56,8 @@ public class ZestReflectHelper {
         return value;
     }
 
-    /**
-     * 设置 obj 对象 fieldName 的属性值
-     * 
-     * @param obj 待操作对象
-     * @param fieldName 方法名
-     * @param value 欲设置的值
-     * @throws IllegalAccessException
-     */
-    public static void setValueByFieldName(Object obj, String fieldName, Object value) throws IllegalAccessException {
-        Field field = getFieldByFieldName(obj, fieldName);
+    public static void setValue(Object obj, String fieldName, Object value) throws IllegalAccessException {
+        Field field = getField(obj, fieldName);
         if (field == null) {
             return;
         }
@@ -83,5 +69,17 @@ public class ZestReflectHelper {
             field.set(obj, value);
             field.setAccessible(false);
         }
+    }
+
+    private static List<Class<?>> getAllClass(Object obj) {
+        List<Class<?>> list = new ArrayList<>();
+        Class<?> clazz = obj.getClass();
+
+        do {
+            list.add(clazz);
+            clazz = clazz.getSuperclass();
+        } while (!clazz.getName().equals(Object.class.getName()));
+
+        return list;
     }
 }

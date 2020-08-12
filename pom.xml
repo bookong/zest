@@ -87,6 +87,13 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.13</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.6.2</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.dbunit</groupId>

@@ -123,7 +123,7 @@ public class TestCaseData {
             Object obj = getTestParam();
             String[] fieldNames = StringUtils.split(path, '.');
             for (int i = 0; i < fieldNames.length - 1; i++) {
-                obj = ZestReflectHelper.getValueByFieldName(obj, fieldNames[i]);
+                obj = ZestReflectHelper.getValue(obj, fieldNames[i]);
             }
 
             if (obj == null) {
@@ -140,11 +140,11 @@ public class TestCaseData {
     private void setParamObjValue(ParamField xmlParamField, Object obj, String lastFieldName, String mapKey) {
         try {
             if (xmlParamField.isNull()) {
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, null);
+                ZestReflectHelper.setValue(obj, lastFieldName, null);
                 return;
             }
 
-            Field field = ZestReflectHelper.getFieldByFieldName(obj, lastFieldName);
+            Field field = ZestReflectHelper.getField(obj, lastFieldName);
             if (field == null) {
                 throw new RuntimeException(Messages.parseParamObj(xmlParamField));
             }
@@ -152,25 +152,25 @@ public class TestCaseData {
             String value = StringUtils.trimToEmpty(xmlParamField.getValue());
             Class<?> fieldClass = field.getType();
             if (Integer.class.isAssignableFrom(fieldClass) || "int".equals(fieldClass.getName())) { //$NON-NLS-1$
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, Integer.valueOf(value));
+                ZestReflectHelper.setValue(obj, lastFieldName, Integer.valueOf(value));
 
             } else if (Long.class.isAssignableFrom(fieldClass) || "long".equals(fieldClass.getName())) { //$NON-NLS-1$
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, Long.valueOf(value));
+                ZestReflectHelper.setValue(obj, lastFieldName, Long.valueOf(value));
 
             } else if (Boolean.class.isAssignableFrom(fieldClass) || "boolean".equals(fieldClass.getName())) { //$NON-NLS-1$
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, Boolean.valueOf(value));
+                ZestReflectHelper.setValue(obj, lastFieldName, Boolean.valueOf(value));
 
             } else if (Double.class.isAssignableFrom(fieldClass) || "double".equals(fieldClass.getName())) { //$NON-NLS-1$
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, Double.valueOf(value));
+                ZestReflectHelper.setValue(obj, lastFieldName, Double.valueOf(value));
 
             } else if (Float.class.isAssignableFrom(fieldClass) || "float".equals(fieldClass.getName())) { //$NON-NLS-1$
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, Float.valueOf(value));
+                ZestReflectHelper.setValue(obj, lastFieldName, Float.valueOf(value));
 
             } else if (String.class.isAssignableFrom(fieldClass)) {
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, value);
+                ZestReflectHelper.setValue(obj, lastFieldName, value);
 
             } else if (Date.class.isAssignableFrom(fieldClass)) {
-                ZestReflectHelper.setValueByFieldName(obj, lastFieldName, ZestDateUtil.parseDate(value));
+                ZestReflectHelper.setValue(obj, lastFieldName, ZestDateUtil.parseDate(value));
 
             } else if (List.class.isAssignableFrom(fieldClass)) {
                 addParamObjContainerValue(xmlParamField, obj, field, mapKey, value, true);
@@ -204,7 +204,7 @@ public class TestCaseData {
                 }
 
                 Class<?> listValueClass = (Class<?>) types[0];
-                List list = ((List) ZestReflectHelper.getValueByFieldName(obj, field));
+                List list = ((List) ZestReflectHelper.getValue(obj, field));
                 list.add(convertParamValue(xmlParamField, listValueClass, value));
             } else {
                 // Map
@@ -214,7 +214,7 @@ public class TestCaseData {
 
                 Class<?> mapKeyClass = (Class<?>) types[0];
                 Class<?> mapValueClass = (Class<?>) types[1];
-                Map map = (Map) ZestReflectHelper.getValueByFieldName(obj, field);
+                Map map = (Map) ZestReflectHelper.getValue(obj, field);
                 Object key = convertParamValue(xmlParamField, mapKeyClass, mapKey);
                 map.put(key, convertParamValue(xmlParamField, mapValueClass, value));
             }
