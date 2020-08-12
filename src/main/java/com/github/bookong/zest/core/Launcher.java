@@ -34,8 +34,6 @@ import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.bookong.zest.core.annotation.ZestAfter;
-import com.github.bookong.zest.core.annotation.ZestBefore;
 import com.github.bookong.zest.core.annotation.ZestDataSource;
 import com.github.bookong.zest.core.annotation.ZestTest;
 import com.github.bookong.zest.core.executer.AbstractExcuter;
@@ -225,10 +223,8 @@ public class Launcher {
         loadTestCaseData(method);
 
         ZestStatement zestStatement = new ZestStatement(this, test, method);
-        Statement statement = withZestBefores(this, test, zestStatement);
-        statement = withBefores(test, statement);
+        Statement statement = withBefores(test, zestStatement);
         statement = withAfters(test, statement);
-        statement = withZestAfters(this, test, statement);
 
         return statement;
     }
@@ -299,16 +295,6 @@ public class Launcher {
     private Statement withAfters(Object target, Statement statement) {
         List<FrameworkMethod> afters = testClass.getAnnotatedMethods(After.class);
         return afters.isEmpty() ? statement : new RunAfters(statement, afters, target);
-    }
-
-    private Statement withZestBefores(Launcher launcher, Object target, Statement statement) {
-        List<FrameworkMethod> befores = testClass.getAnnotatedMethods(ZestBefore.class);
-        return befores.isEmpty() ? statement : new RunZestBefores(launcher, target, statement, befores);
-    }
-
-    private Statement withZestAfters(Launcher launcher, Object target, Statement statement) {
-        List<FrameworkMethod> afters = testClass.getAnnotatedMethods(ZestAfter.class);
-        return afters.isEmpty() ? statement : new RunZestAfters(launcher, target, statement, afters);
     }
 
     private void loadAllTableColSqlTypes(String dataSourceId, Connection conn) {
