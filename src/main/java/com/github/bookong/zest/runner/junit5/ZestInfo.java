@@ -18,6 +18,6 @@ public class ZestInfo {
     }
 
     public String getName() {
-        return String.format("[%s]", testMethodName, testCaseFileName);
+        return String.format("[%s]", testCaseFileName);
     }
 }
