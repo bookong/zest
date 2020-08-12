@@ -1,6 +1,6 @@
 package com.github.bookong.zest.core.testcase;
 
-import com.github.bookong.zest.core.Launcher;
+import com.github.bookong.zest.runner.ZestLauncher;
 import com.github.bookong.zest.support.xml.data.Data;
 import com.github.bookong.zest.support.xml.data.DataSource;
 import com.github.bookong.zest.support.xml.data.ParamField;
@@ -26,8 +26,6 @@ import java.util.*;
  * @author jiangxu
  */
 public class TestCaseData {
-
-    private static Logger                                  logger       = LoggerFactory.getLogger(TestCaseData.class);
 
     /** 测试数据文件名称 */
     private String                                         fileName;
@@ -64,7 +62,7 @@ public class TestCaseData {
      *
      * @param xmlData
      */
-    public void load(Launcher launcher, Data xmlData) {
+    public void load(ZestLauncher launcher, Data xmlData) {
         this.description = StringUtils.trimToEmpty(xmlData.getDescription());
         this.transferTime = StringUtils.isNotBlank(xmlData.getCurrDbTime());
         if (isTransferTime()) {

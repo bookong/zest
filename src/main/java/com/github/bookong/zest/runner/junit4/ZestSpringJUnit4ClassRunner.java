@@ -1,9 +1,9 @@
 package com.github.bookong.zest.runner.junit4;
 
-import com.github.bookong.zest.core.Launcher;
-import com.github.bookong.zest.core.ZestFilter;
-import com.github.bookong.zest.core.annotation.ZestTest;
 import com.github.bookong.zest.runner.ZestClassRunner;
+import com.github.bookong.zest.runner.ZestLauncher;
+import com.github.bookong.zest.runner.junit4.annotation.ZestTest;
+import com.github.bookong.zest.runner.junit4.statement.ZestFilter;
 import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
@@ -21,16 +21,16 @@ import java.util.List;
  */
 public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner implements ZestClassRunner {
 
-    private Launcher zestLauncher;
+    private ZestJUnit4Launcher zestLauncher;
 
     public ZestSpringJUnit4ClassRunner(Class<?> clazz) throws InitializationError{
         super(clazz);
-        zestLauncher = new Launcher(getTestClass(), this);
+        zestLauncher = new ZestJUnit4Launcher(getTestClass(), this);
     }
 
     @Override
     protected List<FrameworkMethod> computeTestMethods() {
-        return Launcher.computeTestMethods(getTestClass());
+        return zestLauncher.computeTestMethods(getTestClass());
     }
 
     @Override

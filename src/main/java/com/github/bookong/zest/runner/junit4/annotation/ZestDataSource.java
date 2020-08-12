@@ -1,4 +1,4 @@
-package com.github.bookong.zest.core.annotation;
+package com.github.bookong.zest.runner.junit4.annotation;
 
 import com.github.bookong.zest.core.executer.AbstractExcuter;
 import com.github.bookong.zest.core.executer.SqlExcuter;

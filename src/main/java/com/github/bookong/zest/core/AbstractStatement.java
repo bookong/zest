@@ -2,10 +2,11 @@ package com.github.bookong.zest.core;
 
 import java.lang.annotation.Annotation;
 
+import com.github.bookong.zest.runner.ZestLauncher;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import com.github.bookong.zest.core.annotation.ZestJdbcConn;
+import com.github.bookong.zest.runner.junit4.annotation.ZestJdbcConn;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
 
@@ -14,10 +15,10 @@ import com.github.bookong.zest.core.testcase.ZestTestParam;
  */
 public abstract class AbstractStatement extends Statement {
 
-    private final Launcher launcher;
-    private final Object   target;
+    private final ZestLauncher launcher;
+    private final Object       target;
 
-    public AbstractStatement(Launcher launcher, Object target){
+    public AbstractStatement(ZestLauncher launcher, Object target){
         this.launcher = launcher;
         this.target = target;
     }
@@ -37,7 +38,8 @@ public abstract class AbstractStatement extends Statement {
         return paramArrayOfObject;
     }
 
-    private Object genParamObject(Launcher launcher, Class<?> paramClass, Annotation[] paramAnnotations) throws Exception {
+    private Object genParamObject(ZestLauncher launcher, Class<?> paramClass,
+                                  Annotation[] paramAnnotations) throws Exception {
         for (Annotation item : paramAnnotations) {
             if (item instanceof ZestJdbcConn) {
                 ZestJdbcConn zestJdbcConn = (ZestJdbcConn) item;
@@ -55,7 +57,7 @@ public abstract class AbstractStatement extends Statement {
 
     }
 
-    public Launcher getLauncher() {
+    public ZestLauncher getLauncher() {
         return launcher;
     }
 
