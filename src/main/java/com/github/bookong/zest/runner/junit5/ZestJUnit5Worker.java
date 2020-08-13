@@ -92,6 +92,7 @@ public class ZestJUnit5Worker extends ZestWorker {
             testCaseData = new TestCaseData();
             T param = zestTestParamClass.newInstance();
             loadTestParamAnnotation(param);
+            testCaseData.setTestParam(param);
             ZestTestCaseUtil.loadFromAbsolutePath(this, info.getTestCaseFilePath(), testCaseData);
 
             logger.info(Messages.statementRun(testCaseData.getDescription()));
