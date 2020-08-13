@@ -7,14 +7,11 @@ import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestTestCaseUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
 import java.io.File;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,7 +19,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.DynamicTest.stream;
 
 public class ZestJUnit5Worker extends ZestWorker {
