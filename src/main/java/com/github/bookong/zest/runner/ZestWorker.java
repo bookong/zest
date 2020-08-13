@@ -145,11 +145,13 @@ public abstract class ZestWorker {
     protected void loadTestParamAnnotation(ZestTestParam param) throws Exception {
         for (Field f : param.getClass().getDeclaredFields()) {
             ZestConnection ann = f.getAnnotation(ZestConnection.class);
-            if (ann != null && !Connection.class.getName().equals(f.getType().getName())) {
-                throw new ZestException(Messages.annotationConnection());
-            }
+            if (ann != null) {
+                if (!Connection.class.getName().equals(f.getType().getName())) {
+                    throw new ZestException(Messages.annotationConnection());
+                }
 
-            ZestReflectHelper.setValue(param, f.getName(), connectionMap.get(ann.value()));
+                ZestReflectHelper.setValue(param, f.getName(), connectionMap.get(ann.value()));
+            }
         }
     }
 }
