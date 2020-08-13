@@ -7,6 +7,7 @@ import com.github.bookong.zest.runner.junit4.statement.ZestFrameworkMethod;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestTestCaseUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.DynamicTest;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
@@ -18,11 +19,32 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
-public class ZestJUnit5Luancher extends ZestLauncher {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.DynamicTest.stream;
 
-    public Iterator<ZestInfo> iterator(Object testObj) {
+public class ZestJUnit5Luancher<T extends ZestTestParam> extends ZestLauncher {
+
+    @Override
+    protected Connection getConnection(DataSource dataSource) {
+        return DataSourceUtils.getConnection(dataSource);
+    }
+
+    public Stream<DynamicTest> test(Object testObj, Class<T> zestTestParamClass,
+                                                              Consumer<ZestInfo<T>> fun) {
+        return stream(iterator(testObj), ZestInfo::getName, //
+                      info -> {
+                          T param = before(info, zestTestParamClass);
+                          info.setTestParam(param);
+                          fun.accept(info);
+                          after(info);
+                      });
+    }
+
+    protected Iterator<ZestInfo<T>> iterator(Object testObj) {
         try {
             String testMethodName = null;
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
@@ -37,19 +59,19 @@ public class ZestJUnit5Luancher extends ZestLauncher {
             String dir = ZestTestCaseUtil.getDir(testObj.getClass(), testMethodName);
             String extName = ".".concat(zestTest.extName());
 
-            List<ZestInfo> list = new ArrayList<>();
+            List<ZestInfo<T>> list = new ArrayList<>();
             if (StringUtils.isBlank(zestTest.value())) {
                 File searchDir = new File(dir);
                 File[] searchFiles = searchDir.listFiles();
                 if (searchFiles != null) {
                     for (File searchFile : searchFiles) {
                         if (searchFile.isFile() && searchFile.getName().endsWith(extName)) {
-                            list.add(new ZestInfo(testMethodName, searchFile.getAbsolutePath()));
+                            list.add(new ZestInfo<>(testMethodName, searchFile.getAbsolutePath()));
                         }
                     }
                 }
             } else {
-                list.add(new ZestInfo(testMethodName, dir.concat(zestTest.value()).concat(extName)));
+                list.add(new ZestInfo<>(testMethodName, dir.concat(zestTest.value()).concat(extName)));
             }
 
             return list.iterator();
@@ -58,21 +80,13 @@ public class ZestJUnit5Luancher extends ZestLauncher {
         }
     }
 
-    public Function<ZestInfo, String> display() {
-        return info -> info.getName();
-    }
-
-    public <T extends ZestTestParam> T before(ZestInfo info, Class<T> zestTestParamClass) {
+    protected T before(ZestInfo<T> info, Class<T> zestTestParamClass) {
 
         return null;
     }
 
-    public void after(ZestInfo info) {
+    protected void after(ZestInfo<T> info) {
 
     }
 
-    @Override
-    protected Connection getConnection(DataSource dataSource) {
-        return DataSourceUtils.getConnection(dataSource);
-    }
 }
