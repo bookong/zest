@@ -24,11 +24,8 @@ public class ZestTestCaseUtil {
 
     /**
      * 从绝对路径加载 xml 文件
-     *
-     * @param filePath 数据文件绝对路径
-     * @param zestData
      */
-    public static void loadFromAbsolutePath(ZestWorker launcher, String filePath, TestCaseData zestData) {
+    public static void loadFromAbsolutePath(ZestWorker worker, String filePath, TestCaseData zestData) {
         FileInputStream fis = null;
         try {
             File file = new File(filePath);
@@ -42,7 +39,7 @@ public class ZestTestCaseUtil {
             Unmarshaller unm = cxt.createUnmarshaller();
             fis = new FileInputStream(file);
             Data data = (Data) unm.unmarshal(fis);
-            zestData.load(launcher, data);
+            zestData.load(worker, data);
 
         } catch (Exception e) {
             throw new RuntimeException(Messages.parseFile(filePath), e);

@@ -92,7 +92,15 @@ public class ZestJUnit5Worker extends ZestWorker {
             testCaseData = new TestCaseData();
             T param = zestTestParamClass.newInstance();
             loadTestParamAnnotation(param);
+            ZestTestCaseUtil.loadFromAbsolutePath(this, info.getTestCaseFilePath(), testCaseData);
+
+            logger.info(Messages.statementRun(testCaseData.getDescription()));
+            logger.info(info.getTestCaseFilePath());
+            initDataSource();
+            getTestCaseData().setStartTime(System.currentTimeMillis());
+
             return param;
+
         } catch (ZestException e) {
             throw e;
         } catch (Exception e) {
@@ -101,7 +109,8 @@ public class ZestJUnit5Worker extends ZestWorker {
     }
 
     private void after() {
-
+        getTestCaseData().setEndTime(System.currentTimeMillis());
+        checkTargetDataSource();
     }
 
     private static class ZestInfo {

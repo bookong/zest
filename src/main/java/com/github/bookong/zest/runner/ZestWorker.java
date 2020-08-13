@@ -31,8 +31,6 @@ public abstract class ZestWorker {
 
     protected TestCaseData                             testCaseData;
 
-    protected String                                   currTestCaseFilePath;
-
     protected Map<String, Connection>                  connectionMap    = new HashMap<>();
 
     protected Map<String, AbstractExcuter>             executerMap      = new HashMap<>();

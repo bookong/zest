@@ -159,26 +159,23 @@ public class ZestJUnit4Worker extends ZestWorker {
     private void loadTestCaseData(ZestFrameworkMethod method) throws Exception {
         Class<?>[] paramClasses = method.getMethod().getParameterTypes();
         ZestTestParam param = null;
-        for (Class<?> paramClass : paramClasses) {
-            if (ZestTestParam.class.isAssignableFrom(paramClass)) {
-                if (param != null) {
-                    throw new RuntimeException(Messages.initParam());
-                }
-                param = (ZestTestParam) paramClass.newInstance();
-            }
-        }
 
-        if (param == null) {
+        if (paramClasses.length > 1) {
             throw new RuntimeException(Messages.initParam());
         }
 
+        Class<?> paramClass = paramClasses[0];
+        if (!ZestTestParam.class.isAssignableFrom(paramClass)) {
+            throw new RuntimeException(Messages.initParam());
+        }
+
+        param = (ZestTestParam) paramClass.newInstance();
         loadTestParamAnnotation(param);
         testCaseData.setTestParam(param);
-        currTestCaseFilePath = method.getTestCaseFilePath();
-        ZestTestCaseUtil.loadFromAbsolutePath(this, currTestCaseFilePath, testCaseData);
+        ZestTestCaseUtil.loadFromAbsolutePath(this, method.getTestCaseFilePath(), testCaseData);
 
         logger.info(Messages.statementRun(testCaseData.getDescription()));
-        logger.info(currTestCaseFilePath);
+        logger.info(method.getTestCaseFilePath());
     }
 
     @Override

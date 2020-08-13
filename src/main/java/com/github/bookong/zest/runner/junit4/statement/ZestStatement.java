@@ -16,10 +16,10 @@ public class ZestStatement extends AbstractStatement {
 
     @Override
     public void evaluate() throws Throwable {
-        getLauncher().initDataSource();
-        getLauncher().getTestCaseData().setStartTime(System.currentTimeMillis());
+        getWorker().initDataSource();
+        getWorker().getTestCaseData().setStartTime(System.currentTimeMillis());
         invokeMethod(zestMethod);
-        getLauncher().getTestCaseData().setEndTime(System.currentTimeMillis());
-        getLauncher().checkTargetDataSource();
+        getWorker().getTestCaseData().setEndTime(System.currentTimeMillis());
+        getWorker().checkTargetDataSource();
     }
 }
