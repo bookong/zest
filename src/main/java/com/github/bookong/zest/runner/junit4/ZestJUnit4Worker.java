@@ -4,11 +4,9 @@ import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
 import com.github.bookong.zest.runner.ZestClassRunner;
 import com.github.bookong.zest.runner.ZestWorker;
-import com.github.bookong.zest.runner.junit4.annotation.ZestDataSource;
-import com.github.bookong.zest.runner.junit4.annotation.ZestTest;
+import com.github.bookong.zest.annotation.ZestTest;
 import com.github.bookong.zest.runner.junit4.statement.ZestFrameworkMethod;
 import com.github.bookong.zest.runner.junit4.statement.ZestStatement;
-import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestTestCaseUtil;
 import com.github.bookong.zest.util.Messages;
 import org.apache.commons.lang3.StringUtils;
@@ -30,10 +28,8 @@ import org.junit.runners.model.TestClass;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,43 +41,38 @@ public class ZestJUnit4Worker extends ZestWorker {
 
     private ZestClassRunner zestClassRunner;
 
-    public ZestJUnit4Worker(TestClass testClass, ZestClassRunner zestClassRunner){
+    ZestJUnit4Worker(TestClass testClass, ZestClassRunner zestClassRunner){
         super();
         this.testClass = testClass;
         this.zestClassRunner = zestClassRunner;
     }
 
-    public static List<FrameworkMethod> computeTestMethods(TestClass testCase) {
+    static List<FrameworkMethod> computeTestMethods(TestClass testCase) {
         List<FrameworkMethod> list = new ArrayList<>(testCase.getAnnotatedMethods(Test.class));
 
         for (FrameworkMethod method : testCase.getAnnotatedMethods(ZestTest.class)) {
             ZestTest zestTest = method.getAnnotation(ZestTest.class);
-            String dir = getDir(testCase, method);
-            String extName = ".".concat(zestTest.extName());
+            String dir = ZestTestCaseUtil.getDir(testCase, method);
 
             if (StringUtils.isBlank(zestTest.value())) {
                 File searchDir = new File(dir);
                 File[] searchFiles = searchDir.listFiles();
                 if (searchFiles != null) {
                     for (File searchFile : searchFiles) {
-                        if (searchFile.isFile() && searchFile.getName().endsWith(extName)) {
+                        if (searchFile.isFile() && searchFile.getName().endsWith(zestTest.extName())) {
                             list.add(new ZestFrameworkMethod(method, searchFile.getAbsolutePath()));
                         }
                     }
                 }
             } else {
-                list.add(new ZestFrameworkMethod(method, dir.concat(zestTest.value()).concat(extName)));
+                list.add(new ZestFrameworkMethod(method, dir.concat(zestTest.value()).concat(zestTest.extName())));
             }
         }
 
-        return Collections.unmodifiableList(list);
+        return list;
     }
 
-    private static String getDir(TestClass testCase, FrameworkMethod frameworkMethod) {
-        return ZestTestCaseUtil.getDir(testCase.getJavaClass(), frameworkMethod.getName());
-    }
-
-    public void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
+    void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
         Description description = Description.createTestDescription(testClass.getJavaClass(), frameworkMethod.getName(),
                                                                     frameworkMethod.getAnnotations());
 
@@ -133,7 +124,7 @@ public class ZestJUnit4Worker extends ZestWorker {
         }
 
         testCaseData = new TestCaseData();
-        loadAutowiredFieldFromTest(test);
+        loadTestObjectAnnotation(test);
         loadTestCaseData(method);
 
         ZestStatement zestStatement = new ZestStatement(this, test, method);
@@ -141,32 +132,6 @@ public class ZestJUnit4Worker extends ZestWorker {
         statement = withAfters(test, statement);
 
         return statement;
-    }
-
-    protected void loadAutowiredFieldFromTest(Object test) throws Exception {
-        connectionMap.clear();
-        executerMap.clear();
-
-        Class<?> clazz = test.getClass();
-        while (clazz != null) {
-            for (Field f : clazz.getDeclaredFields()) {
-                ZestDataSource zestDataSource = f.getAnnotation(ZestDataSource.class);
-                if (zestDataSource != null) {
-                    Object obj = ZestReflectHelper.getValue(test, f.getName());
-                    if (obj instanceof DataSource) {
-                        Connection conn = getConnection((DataSource) obj);
-                        setConnection(zestDataSource.value(), conn);
-                    } else {
-                        throw new RuntimeException(Messages.parseDs());
-                    }
-
-                    setExecuter(zestDataSource.value(), zestDataSource.executerClass());
-                    setDataConverter(zestDataSource.value(), zestDataSource.dataConverterClasses());
-                }
-            }
-
-            clazz = clazz.getSuperclass();
-        }
     }
 
     private boolean ignoreTest() {
@@ -193,21 +158,22 @@ public class ZestJUnit4Worker extends ZestWorker {
 
     private void loadTestCaseData(ZestFrameworkMethod method) throws Exception {
         Class<?>[] paramClasses = method.getMethod().getParameterTypes();
-        ZestTestParam testParam = null;
+        ZestTestParam param = null;
         for (Class<?> paramClass : paramClasses) {
             if (ZestTestParam.class.isAssignableFrom(paramClass)) {
-                if (testParam != null) {
+                if (param != null) {
                     throw new RuntimeException(Messages.initParam());
                 }
-                testParam = (ZestTestParam) paramClass.newInstance();
+                param = (ZestTestParam) paramClass.newInstance();
             }
         }
 
-        if (testParam == null) {
+        if (param == null) {
             throw new RuntimeException(Messages.initParam());
         }
 
-        testCaseData.setTestParam(testParam);
+        loadTestParamAnnotation(param);
+        testCaseData.setTestParam(param);
         currTestCaseFilePath = method.getTestCaseFilePath();
         ZestTestCaseUtil.loadFromAbsolutePath(this, currTestCaseFilePath, testCaseData);
 

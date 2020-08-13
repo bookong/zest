@@ -2,6 +2,7 @@ package com.github.bookong.zest.core.testcase;
 
 import com.github.bookong.zest.support.xml.data.DataSource;
 
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -17,14 +18,13 @@ public class TestCaseDataSource {
 
     private TargetData targetData;
 
-    public TestCaseDataSource(TestCaseData testCaseData, DataSource xmlDataSource,
-                              List<AbstractDataConverter> dataConverterList){
+    public TestCaseDataSource(DataSource xmlDataSource, List<AbstractDataConverter> dataConverterList, Connection conn){
         this.id = xmlDataSource.getId();
         this.type = xmlDataSource.getType();
 
-        this.initData = new InitData(testCaseData, getId(), getType(), xmlDataSource.getInit(), dataConverterList);
-        this.targetData = new TargetData(testCaseData, getId(), getType(), xmlDataSource.getInit(),
-                                         xmlDataSource.getTarget(), dataConverterList);
+        this.initData = new InitData(getId(), getType(), xmlDataSource.getInit(), dataConverterList, conn);
+        this.targetData = new TargetData(getId(), getType(), xmlDataSource.getInit(), xmlDataSource.getTarget(),
+                                         dataConverterList, conn);
     }
 
     public String getId() {

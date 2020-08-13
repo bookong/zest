@@ -14,14 +14,12 @@ public class DbUnitDataSet extends AbstractDataSet {
 
     private final OrderedTableNameMap tables;
 
-    public DbUnitDataSet(TestCaseData testCaseData,
-                         TestCaseDataSource testCaseDataSource) throws AmbiguousTableNameException{
+    public DbUnitDataSet(TestCaseData testCaseData, TestCaseDataSource dataSource) throws AmbiguousTableNameException{
         tables = super.createTableNameMap();
 
-        for (AbstractDataSourceTable<?> table : testCaseDataSource.getInitData().getInitDataList()) {
-            SqlDataSourceTable initDataSourceTable = (SqlDataSourceTable) table;
-            tables.add(initDataSourceTable.getName(),
-                       new DbUnitTable(testCaseData, testCaseDataSource, initDataSourceTable));
+        for (AbstractDataSourceTable<?> obj : dataSource.getInitData().getInitDataList()) {
+            SqlDataSourceTable table = (SqlDataSourceTable) obj;
+            tables.add(table.getName(), new DbUnitTable(testCaseData, dataSource, table));
         }
     }
 

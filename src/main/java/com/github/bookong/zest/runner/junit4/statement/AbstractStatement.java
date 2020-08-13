@@ -6,7 +6,7 @@ import com.github.bookong.zest.runner.ZestWorker;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import com.github.bookong.zest.runner.junit4.annotation.ZestJdbcConn;
+import com.github.bookong.zest.annotation.ZestConnection;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
 
@@ -41,8 +41,8 @@ public abstract class AbstractStatement extends Statement {
     private Object genParamObject(ZestWorker launcher, Class<?> paramClass,
                                   Annotation[] paramAnnotations) throws Exception {
         for (Annotation item : paramAnnotations) {
-            if (item instanceof ZestJdbcConn) {
-                ZestJdbcConn zestJdbcConn = (ZestJdbcConn) item;
+            if (item instanceof ZestConnection) {
+                ZestConnection zestJdbcConn = (ZestConnection) item;
                 return launcher.getJdbcConn(zestJdbcConn.value());
             }
         }

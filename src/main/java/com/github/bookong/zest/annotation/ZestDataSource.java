@@ -1,4 +1,4 @@
-package com.github.bookong.zest.runner.junit4.annotation;
+package com.github.bookong.zest.annotation;
 
 import com.github.bookong.zest.core.executer.AbstractExcuter;
 import com.github.bookong.zest.core.executer.SqlExcuter;
@@ -7,9 +7,9 @@ import com.github.bookong.zest.core.testcase.AbstractDataConverter;
 import java.lang.annotation.*;
 
 /**
- * 用注解标记一个 javax.sql.DataSource 对象，用这个对象操作数据库
+ * 用注解标记一个 {@link javax.sql.DataSource} 对象，用这个对象操作数据库
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)

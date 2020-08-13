@@ -24,26 +24,24 @@ public class DbUnitTable extends AbstractTable {
 
     private ITableMetaData     metaData;
     private TestCaseData       testCaseData;
-    private SqlDataSourceTable initDataSourceTable;
+    private SqlDataSourceTable table;
 
-    public DbUnitTable(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource,
-                       SqlDataSourceTable initDataSourceTable){
+    public DbUnitTable(TestCaseData testCaseData, TestCaseDataSource testCaseDataSource, SqlDataSourceTable table){
         this.testCaseData = testCaseData;
-        this.initDataSourceTable = initDataSourceTable;
+        this.table = table;
         List<Column> columnList = new ArrayList<>();
 
-        for (Entry<String, Integer> entry : testCaseData.getRmdbTableColSqlTypes(testCaseDataSource.getId(),
-                                                                                 initDataSourceTable.getName()).entrySet()) {
+        for (Entry<String, Integer> entry : table.getSqlTypes().entrySet()) {
             Column column = new Column(entry.getKey(), new StringDataType(entry.getKey(), entry.getValue()));
             columnList.add(column);
         }
 
-        metaData = new DefaultTableMetaData(initDataSourceTable.getName(), columnList.toArray(new Column[0]));
+        metaData = new DefaultTableMetaData(table.getName(), columnList.toArray(new Column[0]));
     }
 
     @Override
     public int getRowCount() {
-        return initDataSourceTable.getRowDataList().size();
+        return table.getRowDataList().size();
     }
 
     @Override
@@ -54,7 +52,7 @@ public class DbUnitTable extends AbstractTable {
     @Override
     public Object getValue(int row, String column) throws DataSetException {
         assertValidRowIndex(row);
-        Object obj = initDataSourceTable.getRowDataList().get(row).getFields().get(column);
+        Object obj = table.getRowDataList().get(row).getFields().get(column);
         if (obj != null && (obj instanceof Date)) {
             return ZestDateUtil.getDateInDB((Date) obj, testCaseData);
         }

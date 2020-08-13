@@ -1,4 +1,4 @@
-package com.github.bookong.zest.runner.junit4.annotation;
+package com.github.bookong.zest.annotation;
 
 import java.lang.annotation.*;
 
@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * 以包名和类名作为目录名，中间加了一层 datas 目录目的是避免警告(The type XXXX collides with a package)<br>
  * 从找到的这些文件中（xml 格式）解析测试用例需要的数据，循环执行被测试方法。<br>
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
@@ -20,5 +20,5 @@ public @interface ZestTest {
     String value() default "";
 
     /** 测试用例扩展名 */
-    String extName() default "xml";
+    String extName() default ".xml";
 }

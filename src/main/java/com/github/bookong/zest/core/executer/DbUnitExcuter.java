@@ -22,9 +22,9 @@ public class DbUnitExcuter extends SqlExcuter {
     private DbUnitDataSet       zestDataSet;
 
     @Override
-    public void initDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource testCaseDataSource) {
+    public void initDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource) {
         try {
-            zestDataSet = new DbUnitDataSet(testCaseData, testCaseDataSource);
+            zestDataSet = new DbUnitDataSet(testCaseData, dataSource);
             dbUnitConn = new DatabaseConnection(conn);
             dbUnitConn.getConfig().setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true);
             dbUnitConn.getConfig().setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());

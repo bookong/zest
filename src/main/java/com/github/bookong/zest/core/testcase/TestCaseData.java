@@ -16,6 +16,7 @@ import org.junit.Assert;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.Connection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -26,41 +27,36 @@ import java.util.*;
 public class TestCaseData {
 
     /** 测试数据文件名称 */
-    private String                                         fileName;
+    private String                   fileName;
 
     /** 测试数据文件路径 */
-    private String                                         filePath;
+    private String                   filePath;
 
     /** 对于日期类型，在插入数据库时是否需要做偏移处理 */
-    private boolean                                        transferTime = false;
+    private boolean                  transferTime = false;
 
     /** 如果日期需要偏移处理，当前时间与测试用例上描述的时间相差多少毫秒 */
-    private long                                           currDbTimeDiff;
+    private long                     currDbTimeDiff;
 
     /** 描述 */
-    private String                                         description;
+    private String                   description;
 
     /** 测试参数 */
-    private ZestTestParam                                  testParam;
+    private ZestTestParam            testParam;
 
     /** 数据源描述 */
-    private List<TestCaseDataSource>                       dataSources  = new ArrayList<>();
+    private List<TestCaseDataSource> dataSources  = new ArrayList<>();
 
     /** 开始进行测试的时间 */
-    private long                                           startTime;
+    private long                     startTime;
 
     /** 测试结束的时间 */
-    private long                                           endTime;
-
-    /** 关系型数据库的 SqlType，第一层 key 是 TestDataSource 的 id, 第二层的 key 是表名，第三层的 key 是列名，不会并发处理，不考虑多线程问题 */
-    private Map<String, Map<String, Map<String, Integer>>> rmdbSqlTypes = new HashMap<>();
+    private long                     endTime;
 
     /**
      * 用 XML 数据初始化对象
-     *
-     * @param xmlData
      */
-    public void load(ZestWorker launcher, Data xmlData) {
+    public void load(ZestWorker worker, Data xmlData) {
         this.description = StringUtils.trimToEmpty(xmlData.getDescription());
         this.transferTime = StringUtils.isNotBlank(xmlData.getCurrDbTime());
         if (isTransferTime()) {
@@ -73,9 +69,9 @@ public class TestCaseData {
         load(xmlData.getTestParam());
         if (xmlData.getDataSources() != null) {
             for (DataSource xmlDataSource : xmlData.getDataSources().getDataSource()) {
-                dataSources.add(new TestCaseDataSource(this, xmlDataSource,
-                                                       launcher.getDataConverterMap().getOrDefault(xmlDataSource.getId(),
-                                                                                                   Collections.emptyList())));
+                List<AbstractDataConverter> dataConverterList = worker.getDataConverter(xmlDataSource.getId());
+                Connection conn = worker.getJdbcConn(xmlDataSource.getId());
+                dataSources.add(new TestCaseDataSource(xmlDataSource, dataConverterList, conn));
             }
         }
     }
@@ -247,36 +243,6 @@ public class TestCaseData {
         } else {
             throw new RuntimeException(Messages.parseParamSetTypes(xmlParamField, target));
         }
-    }
-
-    /**
-     * 获取指定数据源下指定表下各个列的 SqlType
-     *
-     * @param dataSourceId 数据源ID
-     * @param tableName 表名
-     * @return 返回一个 map，key 为列名，value 是 SqlType
-     */
-    public Map<String, Integer> getRmdbTableColSqlTypes(String dataSourceId, String tableName) {
-        dataSourceId = dataSourceId.toLowerCase();
-        tableName = tableName.toLowerCase();
-        Map<String, Map<String, Integer>> map1 = rmdbSqlTypes.computeIfAbsent(dataSourceId, o -> new HashMap<>());
-        return map1.computeIfAbsent(tableName, o -> new HashMap<>());
-    }
-
-    /**
-     * 设定指定数据源下指定表的 SqlType
-     *
-     * @param dataSourceId 数据源ID
-     * @param tableName 表名
-     * @param colName 列名
-     * @param sqlType 关系型数据库的 SqlType
-     */
-    public void putRmdbTableColSqlTypes(String dataSourceId, String tableName, String colName, Integer sqlType) {
-        dataSourceId = dataSourceId.toLowerCase();
-        tableName = tableName.toLowerCase();
-        colName = colName.toLowerCase();
-        Map<String, Map<String, Integer>> map1 = rmdbSqlTypes.computeIfAbsent(dataSourceId, o -> new HashMap<>());
-        map1.computeIfAbsent(tableName, o -> new HashMap<>()).put(colName, sqlType);
     }
 
     public String getFileName() {

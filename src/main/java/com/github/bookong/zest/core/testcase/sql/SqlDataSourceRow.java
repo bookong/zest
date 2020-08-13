@@ -24,13 +24,12 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
 
     private Map<String, Object> fields = new LinkedHashMap<>();
 
-    public SqlDataSourceRow(TestCaseData testCaseData, String dataSourceId, String tableName, int rowIdx, Row xmlRow,
-                            List<AbstractDataConverter> dataConverterList, boolean isTargetData){
-        Map<String, Integer> colSqlTypes = testCaseData.getRmdbTableColSqlTypes(dataSourceId, tableName);
-
+    public SqlDataSourceRow(String dataSourceId, String tableName, int rowIdx, Row xmlRow,
+                            List<AbstractDataConverter> dataConverterList, Map<String, Integer> sqlTypes,
+                            boolean isTargetData){
         for (Entry<QName, String> entry : xmlRow.getOtherAttributes().entrySet()) {
             String fieldName = entry.getKey().toString();
-            Object value = parseValue(tableName, fieldName, entry.getValue(), colSqlTypes, dataConverterList);
+            Object value = parseValue(tableName, fieldName, entry.getValue(), sqlTypes, dataConverterList);
             fields.put(fieldName, value);
         }
 

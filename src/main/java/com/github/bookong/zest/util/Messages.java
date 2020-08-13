@@ -89,6 +89,18 @@ public class Messages {
         return getString("parse.db.meta");
     }
 
+    public static String failRun() {
+        return getString("fail.run");
+    }
+
+    public static String noData() {
+        return getString("no.data");
+    }
+
+    public static String annotationConnection() {
+        return getString("annotation.connection");
+    }
+
     public static String initExecuter(String className) {
         return getString("init.executer", className);
     }
@@ -115,6 +127,10 @@ public class Messages {
 
     public static String initParam() {
         return getString("init.param");
+    }
+
+    public static String noAnnotationZest() {
+        return getString("no.annotation.zest");
     }
 
     public static String executerMatchSql() {

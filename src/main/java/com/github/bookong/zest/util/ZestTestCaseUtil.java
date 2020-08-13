@@ -4,6 +4,8 @@ import com.github.bookong.zest.core.ZestGlobalConstant;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,5 +74,9 @@ public class ZestTestCaseUtil {
                            .concat("data").concat(File.separator) //
                            .concat(testObjClass.getSimpleName()).concat(File.separator) //
                            .concat(methodName).concat(File.separator);
+    }
+
+    public static String getDir(TestClass testCase, FrameworkMethod frameworkMethod) {
+        return getDir(testCase.getJavaClass(), frameworkMethod.getName());
     }
 }

@@ -1,7 +1,7 @@
 package com.github.bookong.zest.runner.junit4;
 
 import com.github.bookong.zest.runner.ZestClassRunner;
-import com.github.bookong.zest.runner.junit4.annotation.ZestTest;
+import com.github.bookong.zest.annotation.ZestTest;
 import com.github.bookong.zest.runner.junit4.statement.ZestFilter;
 import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.NoTestsRemainException;

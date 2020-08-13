@@ -1,8 +1,11 @@
 package com.github.bookong.zest.runner.junit5;
 
+import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
+import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
-import com.github.bookong.zest.runner.junit4.annotation.ZestTest;
+import com.github.bookong.zest.annotation.ZestTest;
+import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestTestCaseUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -29,17 +32,16 @@ public class ZestJUnit5Worker extends ZestWorker {
     }
 
     public <T extends ZestTestParam> Stream<DynamicTest> test(Object testObj, Class<T> zestTestParamClass,
-                                                              Consumer<ZestInfo<T>> fun) {
-        return stream(iterator(testObj, zestTestParamClass), ZestInfo::getName, //
+                                                              Consumer<T> fun) {
+        return stream(iterator(testObj), ZestInfo::getName, //
                       info -> {
                           T param = before(info, zestTestParamClass);
-                          info.setTestParam(param);
-                          fun.accept(info);
-                          after(info);
+                          fun.accept(param);
+                          after();
                       });
     }
 
-    protected <T extends ZestTestParam> Iterator<ZestInfo<T>> iterator(Object testObj, Class<T> zestTestParamClass) {
+    private Iterator<ZestInfo> iterator(Object testObj) {
         try {
             String testMethodName = null;
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
@@ -49,38 +51,75 @@ public class ZestJUnit5Worker extends ZestWorker {
                 }
             }
 
+            loadTestObjectAnnotation(testObj);
             Method testMethodFiled = ZestReflectHelper.getMethod(testObj, testMethodName);
             ZestTest zestTest = testMethodFiled.getAnnotation(ZestTest.class);
-            String dir = ZestTestCaseUtil.getDir(testObj.getClass(), testMethodName);
-            String extName = ".".concat(zestTest.extName());
+            if (zestTest == null) {
+                throw new ZestException(Messages.noAnnotationZest());
+            }
 
-            List<ZestInfo<T>> list = new ArrayList<>();
+            String dir = ZestTestCaseUtil.getDir(testObj.getClass(), testMethodName);
+
+            List<ZestInfo> list = new ArrayList<>();
             if (StringUtils.isBlank(zestTest.value())) {
                 File searchDir = new File(dir);
                 File[] searchFiles = searchDir.listFiles();
                 if (searchFiles != null) {
                     for (File searchFile : searchFiles) {
-                        if (searchFile.isFile() && searchFile.getName().endsWith(extName)) {
-                            list.add(new ZestInfo<>(searchFile.getAbsolutePath()));
+                        if (searchFile.isFile() && searchFile.getName().endsWith(zestTest.extName())) {
+                            list.add(new ZestInfo(searchFile.getAbsolutePath()));
                         }
                     }
                 }
             } else {
-                list.add(new ZestInfo<>(dir.concat(zestTest.value()).concat(extName)));
+                list.add(new ZestInfo(dir.concat(zestTest.value()).concat(zestTest.extName())));
             }
 
+            if (list.isEmpty()) {
+                throw new ZestException(Messages.noData());
+            }
             return list.iterator();
+
+        } catch (ZestException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ZestException(Messages.failRun(), e);
         }
     }
 
-    protected <T extends ZestTestParam> T before(ZestInfo<T> info, Class<T> zestTestParamClass) {
-        return null;
+    private <T extends ZestTestParam> T before(ZestInfo info, Class<T> zestTestParamClass) {
+        try {
+            testCaseData = new TestCaseData();
+            T param = zestTestParamClass.newInstance();
+            loadTestParamAnnotation(param);
+            return param;
+        } catch (ZestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ZestException(Messages.failRun(), e);
+        }
     }
 
-    protected <T extends ZestTestParam> void after(ZestInfo<T> info) {
+    private void after() {
 
     }
 
+    private static class ZestInfo {
+
+        private String testCaseFileName;
+        private String testCaseFilePath;
+
+        public ZestInfo(String testCaseFilePath){
+            this.testCaseFilePath = testCaseFilePath;
+            this.testCaseFileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
+        }
+
+        public String getName() {
+            return String.format("[%s]", testCaseFileName);
+        }
+
+        public String getTestCaseFilePath() {
+            return testCaseFilePath;
+        }
+    }
 }
