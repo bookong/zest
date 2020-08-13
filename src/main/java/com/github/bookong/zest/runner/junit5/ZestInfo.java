@@ -9,13 +9,11 @@ import java.io.File;
  */
 public class ZestInfo<T extends ZestTestParam> {
 
-    private String testMethodName;
     private String testCaseFileName;
     private String testCaseFilePath;
     private T      testParam;
 
-    public ZestInfo(String testMethodName, String testCaseFilePath){
-        this.testMethodName = testMethodName;
+    public ZestInfo(String testCaseFilePath){
         this.testCaseFilePath = testCaseFilePath;
         this.testCaseFileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
     }

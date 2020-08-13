@@ -1,6 +1,6 @@
 package com.github.bookong.zest.runner.junit4.statement;
 
-import com.github.bookong.zest.runner.ZestLauncher;
+import com.github.bookong.zest.runner.ZestWorker;
 
 /**
  * @author jiangxu
@@ -9,7 +9,7 @@ public class ZestStatement extends AbstractStatement {
 
     private final ZestFrameworkMethod zestMethod;
 
-    public ZestStatement(ZestLauncher launcher, Object target, ZestFrameworkMethod zestMethod){
+    public ZestStatement(ZestWorker launcher, Object target, ZestFrameworkMethod zestMethod){
         super(launcher, target);
         this.zestMethod = zestMethod;
     }

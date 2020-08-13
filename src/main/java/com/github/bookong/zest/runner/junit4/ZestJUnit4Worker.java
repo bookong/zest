@@ -3,7 +3,7 @@ package com.github.bookong.zest.runner.junit4;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.ZestTestParam;
 import com.github.bookong.zest.runner.ZestClassRunner;
-import com.github.bookong.zest.runner.ZestLauncher;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit4.annotation.ZestDataSource;
 import com.github.bookong.zest.runner.junit4.annotation.ZestTest;
 import com.github.bookong.zest.runner.junit4.statement.ZestFrameworkMethod;
@@ -39,13 +39,13 @@ import java.util.List;
 /**
  * @author jiangxu
  */
-public class ZestJUnit4Launcher extends ZestLauncher {
+public class ZestJUnit4Worker extends ZestWorker {
 
     private TestClass       testClass;
 
     private ZestClassRunner zestClassRunner;
 
-    public ZestJUnit4Launcher(TestClass testClass, ZestClassRunner zestClassRunner){
+    public ZestJUnit4Worker(TestClass testClass, ZestClassRunner zestClassRunner){
         super();
         this.testClass = testClass;
         this.zestClassRunner = zestClassRunner;

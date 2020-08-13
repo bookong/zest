@@ -1,7 +1,7 @@
 package zest;
 
 import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.runner.ZestLauncher;
+import com.github.bookong.zest.runner.ZestWorker;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,12 +19,12 @@ import java.text.SimpleDateFormat;
  */
 public class XmlTestCaseDataLoaderTest {
 
-    private ZestLauncher zestLauncher;
+    private ZestWorker zestLauncher;
     private TestCaseData zestData;
 
     @Before
     public void setUp() throws Exception {
-        zestLauncher = new ZestLauncher() {
+        zestLauncher = new ZestWorker() {
 
             @Override
             protected Connection getConnection(DataSource dataSource) {

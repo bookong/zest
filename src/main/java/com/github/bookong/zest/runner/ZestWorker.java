@@ -5,16 +5,12 @@ import com.github.bookong.zest.core.executer.SqlExcuter;
 import com.github.bookong.zest.core.testcase.AbstractDataConverter;
 import com.github.bookong.zest.core.testcase.TestCaseData;
 import com.github.bookong.zest.core.testcase.TestCaseDataSource;
-import com.github.bookong.zest.runner.junit4.annotation.ZestDataSource;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
-import java.io.File;
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -26,9 +22,9 @@ import java.util.Map;
 /**
  * @author jiangxu
  */
-public abstract class ZestLauncher {
+public abstract class ZestWorker {
 
-    protected static Logger                            logger           = LoggerFactory.getLogger(ZestLauncher.class);
+    protected static Logger                            logger           = LoggerFactory.getLogger(ZestWorker.class);
 
     protected TestCaseData                             testCaseData;
 

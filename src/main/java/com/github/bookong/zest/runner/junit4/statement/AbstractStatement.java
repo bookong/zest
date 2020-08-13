@@ -2,7 +2,7 @@ package com.github.bookong.zest.runner.junit4.statement;
 
 import java.lang.annotation.Annotation;
 
-import com.github.bookong.zest.runner.ZestLauncher;
+import com.github.bookong.zest.runner.ZestWorker;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
@@ -15,10 +15,10 @@ import com.github.bookong.zest.core.testcase.ZestTestParam;
  */
 public abstract class AbstractStatement extends Statement {
 
-    private final ZestLauncher launcher;
+    private final ZestWorker launcher;
     private final Object       target;
 
-    public AbstractStatement(ZestLauncher launcher, Object target){
+    public AbstractStatement(ZestWorker launcher, Object target){
         this.launcher = launcher;
         this.target = target;
     }
@@ -38,7 +38,7 @@ public abstract class AbstractStatement extends Statement {
         return paramArrayOfObject;
     }
 
-    private Object genParamObject(ZestLauncher launcher, Class<?> paramClass,
+    private Object genParamObject(ZestWorker launcher, Class<?> paramClass,
                                   Annotation[] paramAnnotations) throws Exception {
         for (Annotation item : paramAnnotations) {
             if (item instanceof ZestJdbcConn) {
@@ -57,7 +57,7 @@ public abstract class AbstractStatement extends Statement {
 
     }
 
-    public ZestLauncher getLauncher() {
+    public ZestWorker getLauncher() {
         return launcher;
     }
 

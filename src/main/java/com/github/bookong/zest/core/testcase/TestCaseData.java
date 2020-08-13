@@ -1,6 +1,6 @@
 package com.github.bookong.zest.core.testcase;
 
-import com.github.bookong.zest.runner.ZestLauncher;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
 import com.github.bookong.zest.support.xml.data.DataSource;
 import com.github.bookong.zest.support.xml.data.ParamField;
@@ -12,8 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -62,7 +60,7 @@ public class TestCaseData {
      *
      * @param xmlData
      */
-    public void load(ZestLauncher launcher, Data xmlData) {
+    public void load(ZestWorker launcher, Data xmlData) {
         this.description = StringUtils.trimToEmpty(xmlData.getDescription());
         this.transferTime = StringUtils.isNotBlank(xmlData.getCurrDbTime());
         if (isTransferTime()) {

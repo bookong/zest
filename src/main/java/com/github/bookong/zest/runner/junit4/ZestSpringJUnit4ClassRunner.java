@@ -1,7 +1,6 @@
 package com.github.bookong.zest.runner.junit4;
 
 import com.github.bookong.zest.runner.ZestClassRunner;
-import com.github.bookong.zest.runner.ZestLauncher;
 import com.github.bookong.zest.runner.junit4.annotation.ZestTest;
 import com.github.bookong.zest.runner.junit4.statement.ZestFilter;
 import org.junit.runner.manipulation.Filter;
@@ -21,16 +20,16 @@ import java.util.List;
  */
 public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner implements ZestClassRunner {
 
-    private ZestJUnit4Launcher zestLauncher;
+    private ZestJUnit4Worker worker;
 
     public ZestSpringJUnit4ClassRunner(Class<?> clazz) throws InitializationError{
         super(clazz);
-        zestLauncher = new ZestJUnit4Launcher(getTestClass(), this);
+        worker = new ZestJUnit4Worker(getTestClass(), this);
     }
 
     @Override
     protected List<FrameworkMethod> computeTestMethods() {
-        return ZestJUnit4Launcher.computeTestMethods(getTestClass());
+        return ZestJUnit4Worker.computeTestMethods(getTestClass());
     }
 
     @Override
@@ -39,7 +38,7 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner impleme
         if (zest == null) {
             super.runChild(frameworkMethod, notifier);
         } else {
-            zestLauncher.runChild(frameworkMethod, notifier);
+            worker.runChild(frameworkMethod, notifier);
         }
     }
 

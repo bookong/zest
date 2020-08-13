@@ -2,7 +2,7 @@ package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.core.ZestGlobalConstant;
 import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.runner.ZestLauncher;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class ZestTestCaseUtil {
      * @param filePath 数据文件绝对路径
      * @param zestData
      */
-    public static void loadFromAbsolutePath(ZestLauncher launcher, String filePath, TestCaseData zestData) {
+    public static void loadFromAbsolutePath(ZestWorker launcher, String filePath, TestCaseData zestData) {
         FileInputStream fis = null;
         try {
             File file = new File(filePath);
