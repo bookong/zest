@@ -1,7 +1,7 @@
 package com.github.bookong.zest.util;
 
-import com.github.bookong.zest.core.ZestGlobalConstant;
-import com.github.bookong.zest.core.testcase.TestCaseData;
+import com.github.bookong.zest.common.ZestGlobalConstant;
+import com.github.bookong.zest.testcase.TestCaseData;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
 import org.junit.runners.model.FrameworkMethod;

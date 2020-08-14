@@ -1,4 +1,4 @@
-package com.github.bookong.zest.core.testcase;
+package com.github.bookong.zest.testcase;
 
 /**
  * 抽象数据源广义的“表中的行”

@@ -1,16 +1,12 @@
 package com.github.bookong.zest.runner.junit4.statement;
 
-import java.lang.annotation.Annotation;
-
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.util.Messages;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import com.github.bookong.zest.annotation.ZestConnection;
-import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.core.testcase.ZestTestParam;
+import com.github.bookong.zest.testcase.ZestTestParam;
 
 /**
  * @author jiangxu

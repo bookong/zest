@@ -1,6 +1,6 @@
 package zest.param;
 
-import com.github.bookong.zest.core.testcase.ZestTestParam;
+import com.github.bookong.zest.testcase.ZestTestParam;
 
 /**
  * @author jiangxu

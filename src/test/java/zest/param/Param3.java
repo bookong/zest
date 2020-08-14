@@ -3,7 +3,7 @@ package zest.param;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.bookong.zest.core.testcase.ZestTestParam;
+import com.github.bookong.zest.testcase.ZestTestParam;
 
 /**
  * @author jiangxu

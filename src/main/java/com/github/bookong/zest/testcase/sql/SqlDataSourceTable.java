@@ -1,8 +1,7 @@
-package com.github.bookong.zest.core.testcase.sql;
+package com.github.bookong.zest.testcase.sql;
 
-import com.github.bookong.zest.core.testcase.AbstractDataConverter;
-import com.github.bookong.zest.core.testcase.AbstractDataSourceTable;
-import com.github.bookong.zest.core.testcase.TestCaseData;
+import com.github.bookong.zest.testcase.AbstractDataConverter;
+import com.github.bookong.zest.testcase.AbstractDataSourceTable;
 import com.github.bookong.zest.support.xml.data.Row;
 import com.github.bookong.zest.support.xml.data.Table;
 import com.github.bookong.zest.util.Messages;

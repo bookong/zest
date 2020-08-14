@@ -1,4 +1,4 @@
-package com.github.bookong.zest.core;
+package com.github.bookong.zest.common;
 
 /**
  * @author jiangxu

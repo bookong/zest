@@ -3,7 +3,7 @@ package zest.param;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.bookong.zest.core.testcase.ZestTestParam;
+import com.github.bookong.zest.testcase.ZestTestParam;
 
 /**
  * @author jiangxu

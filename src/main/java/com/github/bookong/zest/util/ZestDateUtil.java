@@ -1,6 +1,6 @@
 package com.github.bookong.zest.util;
 
-import com.github.bookong.zest.core.testcase.TestCaseData;
+import com.github.bookong.zest.testcase.TestCaseData;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

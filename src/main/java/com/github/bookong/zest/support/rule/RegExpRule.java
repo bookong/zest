@@ -1,8 +1,8 @@
 package com.github.bookong.zest.support.rule;
 
-import com.github.bookong.zest.core.testcase.sql.SqlDataSourceTable;
-import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.core.testcase.TestCaseDataSource;
+import com.github.bookong.zest.testcase.sql.SqlDataSourceTable;
+import com.github.bookong.zest.testcase.TestCaseData;
+import com.github.bookong.zest.testcase.TestCaseDataSource;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
 import org.apache.commons.lang.StringUtils;

@@ -1,7 +1,7 @@
-package com.github.bookong.zest.core.executer;
+package com.github.bookong.zest.executer;
 
-import com.github.bookong.zest.core.testcase.TestCaseData;
-import com.github.bookong.zest.core.testcase.TestCaseDataSource;
+import com.github.bookong.zest.testcase.TestCaseData;
+import com.github.bookong.zest.testcase.TestCaseDataSource;
 import com.github.bookong.zest.thirdparty.dbunit.DbUnitDataSet;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;

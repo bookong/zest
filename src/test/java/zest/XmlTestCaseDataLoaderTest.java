@@ -1,6 +1,6 @@
 package zest;
 
-import com.github.bookong.zest.core.testcase.TestCaseData;
+import com.github.bookong.zest.testcase.TestCaseData;
 import com.github.bookong.zest.runner.ZestWorker;
 import org.junit.After;
 import org.junit.Assert;

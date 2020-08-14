@@ -1,4 +1,4 @@
-package com.github.bookong.zest.core.testcase;
+package com.github.bookong.zest.testcase;
 
 /**
  * @author jiangxu

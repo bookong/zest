@@ -1,6 +1,6 @@
 package com.github.bookong.zest.util;
 
-import com.github.bookong.zest.core.ZestGlobalConstant;
+import com.github.bookong.zest.common.ZestGlobalConstant;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

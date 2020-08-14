@@ -1,8 +1,8 @@
 package com.github.bookong.zest.annotation;
 
-import com.github.bookong.zest.core.executer.AbstractExcuter;
-import com.github.bookong.zest.core.executer.SqlExcuter;
-import com.github.bookong.zest.core.testcase.AbstractDataConverter;
+import com.github.bookong.zest.executer.AbstractExcuter;
+import com.github.bookong.zest.executer.SqlExcuter;
+import com.github.bookong.zest.testcase.AbstractDataConverter;
 
 import java.lang.annotation.*;
 
