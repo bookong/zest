@@ -8,43 +8,44 @@
 			yyyy-MM-dd HH:mm
 			yyyy-MM-dd HH
 			yyyy-MM-dd
+
+	In the following attributes, if it is the time format, it can be any of the following formats, and the time part that is not given defaults to 0
+			yyyy-MM-dd HH:mm:ss
+			yyyy-MM-dd HH:mm
+			yyyy-MM-dd HH
+			yyyy-MM-dd
 		]]></xsd:documentation>
     </xsd:annotation>
 
     <xsd:element name="Data">
-        <xsd:annotation>
-            <xsd:documentation>XML 的第一个元素</xsd:documentation>
-        </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element ref="data:Description" minOccurs="0"/>
-                <xsd:element ref="data:DataSources"/>
+                <xsd:element ref="data:Sources"/>
                 <xsd:element ref="data:TestParam"/>
             </xsd:sequence>
-            <xsd:attribute name="Version" type="xsd:float" default="1.0">
+            <xsd:attribute name="Version" type="xsd:float" default="1.0" />
+            <xsd:attribute name="currentTime" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:documentation>版本，默认为 1.0</xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
-            <xsd:attribute name="CurrDbTime" type="xsd:string">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        可选的当前数据库时间，如果设置这个值，所有时间类型内容在计算与当前时间的偏移量后使用
-                    </xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    可选的当前数据库时间，如果设置这个值，所有时间类型内容在计算与当前时间的偏移量后使用
+
+    Optional current database time. If this value is set, all time types are used after calculating the offset from the current time
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="Description" type="xsd:string">
-        <xsd:annotation>
-            <xsd:documentation>描述</xsd:documentation>
-        </xsd:annotation>
-    </xsd:element>
+    <xsd:element name="Description" type="xsd:string" />
 
     <xsd:element name="TestParam">
         <xsd:annotation>
-            <xsd:documentation>用于通过反射方式构造测试参数对象的值</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    用于构造测试参数对象的值
+
+    The value used to construct the test parameter object
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
@@ -55,7 +56,11 @@
 
     <xsd:element name="ParamField">
         <xsd:annotation>
-            <xsd:documentation>测试参数字段对应的值, 所映射的值必须与实际对象的属性一致，这个值的类型依赖于具体测试参数对象中的定义</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    测试参数属性对应的值，这个值的类型依赖于具体测试参数对象中的定义
+
+    The value corresponding to the test parameter attribute. The type of this value depends on the definition in the specific test parameter object
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:simpleContent>
@@ -70,16 +75,30 @@
 			对象属性是一个 Map 容器，冒号后为 key 值
 		fieldName4-
 		    对象属性是一个 List 容器，最后的减号是标识
-
 	属性可以为私有属性，如果属性是 Integer, Long, Boolean, Double, Float, String, Date 之一可以被自动创建对象。
 	容器的 key 值必须是 Integer, Long, Boolean, Double, Float, String, Date 之一，不会自动创建容器实例。
 	容器内容必须是 Integer, Long, Boolean, Double, Float, String, Date 之一
+
+	The path representation of the attribute:
+		fieldName1.fieldName2
+			Object properties are the basic properties of one of Integer, Long, Boolean, Double, Float, String, Date
+		fieldName3:mapKey
+			The object property is a Map container, after the colon is the key value
+		fieldName4-
+		    The object property is a List container, and the final minus sign is the identity
+	The property can be a private property. If the property is one of Integer, Long, Boolean, Double, Float, String, Date, the object can be automatically created.
+	The key value of the container must be one of Integer, Long, Boolean, Double, Float, String, Date, and no container instance will be created automatically.
+	The container content must be one of Integer, Long, Boolean, Double, Float, String, Date
 							]]></xsd:documentation>
                         </xsd:annotation>
                     </xsd:attribute>
                     <xsd:attribute name="Null" type="xsd:boolean" default="false">
                         <xsd:annotation>
-                            <xsd:documentation>是否给属性设置 NULL 值</xsd:documentation>
+                            <xsd:documentation><![CDATA[
+    是否给属性设置 NULL 值
+
+    Whether to set a NULL value for the attribute
+                            ]]></xsd:documentation>
                         </xsd:annotation>
                     </xsd:attribute>
                 </xsd:extension>
@@ -87,20 +106,21 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="DataSources">
-        <xsd:annotation>
-            <xsd:documentation>广义的支持自动验证的数据源集合</xsd:documentation>
-        </xsd:annotation>
+    <xsd:element name="Sources">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="data:DataSource" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element ref="data:Source" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="DataSource">
+    <xsd:element name="Source">
         <xsd:annotation>
-            <xsd:documentation>广义的支持自动验证的数据源</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    支持自动验证的数据来源
+
+    Data sources that support automatic verification
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
@@ -109,17 +129,26 @@
             </xsd:sequence>
             <xsd:attribute name="Id" type="xsd:NMTOKEN" use="required">
                 <xsd:annotation>
-                    <xsd:documentation>数据源 Id，在测试代码中要通过 @ZestDataSource 绑定到具体数据源上</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    数据源 Id，在测试代码中要通过 @ZestSource 绑定到具体 javax.sql.DataSource 对象上
+
+    Data source Id, which must be bound to a specific javax.sql.DataSource object through @ZestSource in the test code
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="Type" default="MySQL">
                 <xsd:annotation>
-                    <xsd:documentation>数据源的类型，默认是 MySQL</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    数据源的类型，默认是 MySQL
+
+    The type of data source, the default is MySQL
+                    ]]></xsd:documentation>
                 </xsd:annotation>
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:NMTOKEN">
                         <xsd:enumeration value="MySQL"/>
-                        <!-- TODO: Oracle SQLServer MongoDB -->
+                        <xsd:enumeration value="Oracle"/>
+                        <xsd:enumeration value="SQLServer"/>
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:attribute>
@@ -128,13 +157,16 @@
 
     <xsd:element name="Init">
         <xsd:annotation>
-            <xsd:documentation>数据源初始化状态</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    数据源初始化状态
+
+    Data source initialization state
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:choice>
                     <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
-                    <!-- TODO: MongoDB Collection -->
                 </xsd:choice>
             </xsd:sequence>
         </xsd:complexType>
@@ -142,23 +174,34 @@
 
     <xsd:element name="Target">
         <xsd:annotation>
-            <xsd:documentation>数据源在执行完待测试代码后的状态</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    数据源在执行完待测试代码后的状态
+
+    The state of the data source after executing the code to be tested
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:choice>
                     <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
-                    <!-- TODO: MongoDB Collection -->
                 </xsd:choice>
             </xsd:sequence>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
                 <xsd:annotation>
-                    <xsd:documentation>如果为 true 忽略执行完测试代码后数据源的状态</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    当被测试代码执行完后，如果为 true 则忽略验证
+
+    When the code under test is executed, if it is true, the verification is ignored
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="onlyCoreData" type="xsd:boolean" default="false">
                 <xsd:annotation>
-                    <xsd:documentation>如果为 true 只验证列出的关键数据</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    当被测试代码执行完后，如果为 true 只验证列出的关键数据
+
+    When the tested code is executed, if it is true, only the key data listed will be verified
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>
@@ -166,7 +209,11 @@
 
     <xsd:element name="Table">
         <xsd:annotation>
-            <xsd:documentation>数据库表</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    数据库表
+
+    Database Table
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
@@ -174,7 +221,10 @@
                     <xsd:annotation>
                         <xsd:documentation><![CDATA[
 	这个属性只有在 Target 下的 Table 中才有效。
-	查询用的语句 ，因为验证的表不一定是一个有序的主键，为了方便自动验证，就需要指定查询语句
+	这是一个查询用的语句 ，因为验证的表不一定是一个有序的主键，为了方便自动验证，就需要指定查询语句
+
+	This property is only valid in the Table under Target.
+    This is a query statement, because the validated table is not necessarily an ordered primary key. To facilitate automatic verification, you need to specify the query statement
 						]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
@@ -187,21 +237,26 @@
             </xsd:attribute>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
                 <xsd:annotation>
-                    <xsd:documentation>这个属性只有在 Target 下的 Table 中才有效。如果为 true 忽略执行完测试代码后数据库表的状态</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    这个属性只有在 Target 下的 Table 中才有效。
+    当被测试代码执行完后，如果为 true 忽略数据库表的验证
+
+    This property is only valid in the Table under Target.
+    When the tested code is executed, if it is true, ignore the verification of the database table
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="Query" type="xsd:string">
-        <xsd:annotation>
-            <xsd:documentation>查询用的语句</xsd:documentation>
-        </xsd:annotation>
-    </xsd:element>
+    <xsd:element name="Query" type="xsd:string" />
 
     <xsd:element name="Row">
         <xsd:annotation>
-            <xsd:documentation>表记录</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    数据库表一条记录
+    A record in a database table
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
@@ -209,7 +264,11 @@
             </xsd:sequence>
             <xsd:anyAttribute>
                 <xsd:annotation>
-                    <xsd:documentation>以 "field1"="value1" "field2"="value2" 的形式定义各个字段的值</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    以 "field1"="value1" "field2"="value2" 的形式定义各个字段的值
+
+    Define the value of each field in the form of "field1"="value1" "field2"="value2"
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:anyAttribute>
         </xsd:complexType>
@@ -217,7 +276,11 @@
 
     <xsd:element name="Field">
         <xsd:annotation>
-            <xsd:documentation>逻辑上的表记录的某一个字段</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    数据库记录的一个字段
+
+    A field of the database record
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
@@ -231,21 +294,29 @@
             </xsd:sequence>
             <xsd:attribute name="Name" type="xsd:string" use="required">
                 <xsd:annotation>
-                    <xsd:documentation>逻辑上的表记录的字段名</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    字段名字
+
+    Field name
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="Nullable" type="xsd:boolean" default="true">
                 <xsd:annotation>
-                    <xsd:documentation>
-                        是否可以为空值。但子元素为 Null 和 Value 时无效
-                    </xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    是否可以为空值。但子元素为 <Null> 和 <Value> 时无效
+
+    Whether it can be null. But it is invalid when the child elements are <Null> and <Value>
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="Trim" type="xsd:boolean" default="true">
                 <xsd:annotation>
-                    <xsd:documentation>
-                        当子元素为 Value 时，是否对内容进行 trim 操作
-                    </xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    当子元素为 <Value> 时，是否对内容进行 trim 操作
+
+    When the child element is <Value>, whether to trim the content
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>
@@ -253,30 +324,54 @@
 
     <xsd:element name="Null" type="xsd:string">
         <xsd:annotation>
-            <xsd:documentation>表示字段值一定是 null</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    表示字段值一定是 NULL 值
+
+    Indicates that the field value must be a NULL value
+            ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
 
     <xsd:element name="Value" type="xsd:string">
         <xsd:annotation>
-            <xsd:documentation>表示字段值</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    如果采用这种方式设置字段值，一般是因为内容比较复杂放在 XML 属性中产生太多转义字符等因素
+
+    If you use this method to set the field value, it is generally because the content is more complicated, and too many escape characters are generated in the XML attribute.
+            ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
 
     <xsd:element name="RegExp" type="xsd:string">
         <xsd:annotation>
-            <xsd:documentation>只能出现在 Target 部分。用正则表达式验证</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    只能出现在 Target 部分。
+    正则表达式
+
+    Can only appear in the Target section.
+    Regular expression
+            ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
 
     <xsd:element name="CurrentTime">
         <xsd:annotation>
-            <xsd:documentation>只能出现在 Target 部分。验证是否是当前时间</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    只能出现在 Target 部分。
+    验证是否是当前时间
+
+    Can only appear in the Target section.
+    Verify that it is the current time
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:attribute name="Offset" type="xsd:int" default="1000">
                 <xsd:annotation>
-                    <xsd:documentation>是代表容忍的误差的毫秒数，默认是 1 秒</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    时间可能产生多少毫秒的误差
+
+    How many milliseconds error may occur in time
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>
@@ -284,22 +379,40 @@
 
     <xsd:element name="FromCurrentTime">
         <xsd:annotation>
-            <xsd:documentation>只能出现在 Target 部分。验证是否是一个距离当前时间的范围</xsd:documentation>
+            <xsd:documentation><![CDATA[
+    只能出现在 Target 部分。
+    验证是否是一个距离当前时间(之前或之后)的时间范围
+
+    Can only appear in the Target section.
+    Verify whether it is a time range from the current time (before or after)
+            ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:attribute name="Min" type="xsd:int" use="required">
                 <xsd:annotation>
-                    <xsd:documentation>距离当前时间最近值</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    距离当前时间最近值（可以为负数）
+
+    The nearest value to the current time (can be negative)
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="Max" type="xsd:int" use="required">
                 <xsd:annotation>
-                    <xsd:documentation>距离当前时间最远值</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    距离当前时间最远值（可以为负数）
+
+    The farthest value from the current time (can be negative)
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="Unit" use="required">
                 <xsd:annotation>
-                    <xsd:documentation>取值的单位</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    时间单位
+
+    time unit
+                    ]]></xsd:documentation>
                 </xsd:annotation>
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:NMTOKEN">
@@ -312,7 +425,11 @@
             </xsd:attribute>
             <xsd:attribute name="Offset" type="xsd:int" default="1000">
                 <xsd:annotation>
-                    <xsd:documentation>是代表容忍的误差的毫秒数，默认是 1 秒</xsd:documentation>
+                    <xsd:documentation><![CDATA[
+    时间可能产生多少毫秒的误差
+
+    How many milliseconds error may occur in time
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>

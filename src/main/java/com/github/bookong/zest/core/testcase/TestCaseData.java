@@ -2,7 +2,7 @@ package com.github.bookong.zest.core.testcase;
 
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
-import com.github.bookong.zest.support.xml.data.DataSource;
+import com.github.bookong.zest.support.xml.data.Source;
 import com.github.bookong.zest.support.xml.data.ParamField;
 import com.github.bookong.zest.support.xml.data.TestParam;
 import com.github.bookong.zest.util.Messages;
@@ -58,17 +58,17 @@ public class TestCaseData {
      */
     public void load(ZestWorker worker, Data xmlData) {
         this.description = StringUtils.trimToEmpty(xmlData.getDescription());
-        this.transferTime = StringUtils.isNotBlank(xmlData.getCurrDbTime());
+        this.transferTime = StringUtils.isNotBlank(xmlData.getCurrentTime());
         if (isTransferTime()) {
-            Date currDbTime = ZestDateUtil.parseDate(xmlData.getCurrDbTime());
+            Date currDbTime = ZestDateUtil.parseDate(xmlData.getCurrentTime());
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.MILLISECOND, 0);
             currDbTimeDiff = cal.getTimeInMillis() - currDbTime.getTime();
         }
 
         load(xmlData.getTestParam());
-        if (xmlData.getDataSources() != null) {
-            for (DataSource xmlDataSource : xmlData.getDataSources().getDataSource()) {
+        if (xmlData.getSources() != null) {
+            for (Source xmlDataSource : xmlData.getSources().getSource()) {
                 List<AbstractDataConverter> dataConverterList = worker.getDataConverter(xmlDataSource.getId());
                 Connection conn = worker.getJdbcConn(xmlDataSource.getId());
                 dataSources.add(new TestCaseDataSource(xmlDataSource, dataConverterList, conn));

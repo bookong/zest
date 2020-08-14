@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface ZestDataSource {
+public @interface ZestSource {
 
     /** 数据源 ID */
     String value() default "";

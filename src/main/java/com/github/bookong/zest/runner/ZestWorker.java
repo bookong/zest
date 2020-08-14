@@ -1,7 +1,7 @@
 package com.github.bookong.zest.runner;
 
 import com.github.bookong.zest.annotation.ZestConnection;
-import com.github.bookong.zest.annotation.ZestDataSource;
+import com.github.bookong.zest.annotation.ZestSource;
 import com.github.bookong.zest.core.executer.AbstractExcuter;
 import com.github.bookong.zest.core.executer.SqlExcuter;
 import com.github.bookong.zest.core.testcase.AbstractDataConverter;
@@ -11,15 +11,12 @@ import com.github.bookong.zest.core.testcase.ZestTestParam;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
-import com.github.bookong.zest.util.ZestSqlHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.util.*;
 
 /**
@@ -43,7 +40,7 @@ public abstract class ZestWorker {
         Class<?> clazz = test.getClass();
         while (clazz != null) {
             for (Field f : clazz.getDeclaredFields()) {
-                ZestDataSource zestDataSource = f.getAnnotation(ZestDataSource.class);
+                ZestSource zestDataSource = f.getAnnotation(ZestSource.class);
                 if (zestDataSource != null) {
                     Object obj = ZestReflectHelper.getValue(test, f.getName());
                     if (obj instanceof DataSource) {
