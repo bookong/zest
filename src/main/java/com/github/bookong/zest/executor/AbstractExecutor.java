@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 抽象的执行器
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 public abstract class AbstractExecutor {
 

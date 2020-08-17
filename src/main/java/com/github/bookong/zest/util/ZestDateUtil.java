@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * 日期处理
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class ZestDateUtil {
 

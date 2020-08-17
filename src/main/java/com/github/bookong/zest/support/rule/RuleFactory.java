@@ -4,7 +4,7 @@ import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class RuleFactory {
 

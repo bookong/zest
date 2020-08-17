@@ -1,7 +1,7 @@
 package com.github.bookong.zest.testcase;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public interface ZestParam {
 

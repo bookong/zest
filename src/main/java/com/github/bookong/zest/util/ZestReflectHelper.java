@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 反射工具
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class ZestReflectHelper {
 

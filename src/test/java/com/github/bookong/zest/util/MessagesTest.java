@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.Locale;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  * @see Messages
  */
 public class MessagesTest {

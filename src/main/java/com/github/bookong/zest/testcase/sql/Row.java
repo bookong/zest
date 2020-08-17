@@ -1,6 +1,5 @@
 package com.github.bookong.zest.testcase.sql;
 
-import com.github.bookong.zest.executor.AbstractExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
@@ -15,7 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class Row {
 

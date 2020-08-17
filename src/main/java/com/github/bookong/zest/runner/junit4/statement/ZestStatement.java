@@ -4,7 +4,7 @@ import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.ZestData;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class ZestStatement extends AbstractStatement {
 

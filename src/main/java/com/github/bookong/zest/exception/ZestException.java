@@ -5,10 +5,6 @@ package com.github.bookong.zest.exception;
  */
 public class ZestException extends RuntimeException {
 
-    public ZestException(){
-        super();
-    }
-
     public ZestException(String message){
         super(message);
     }

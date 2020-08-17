@@ -8,7 +8,7 @@ import com.github.bookong.zest.util.Messages;
 import org.junit.Assert;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class CurrentTimeRule extends AbstractRule {
 
@@ -25,7 +25,7 @@ public class CurrentTimeRule extends AbstractRule {
         assertNullable(dataSource, table, rowIdx, columnName, value);
 
         long tmp = getActualDataTime(dataSource, table, rowIdx, columnName, value);
-        Assert.assertTrue(Messages.checkTableColdateCurrent(dataSource.getId(), table.getName(), rowIdx, columnName),
+        Assert.assertTrue(Messages.checkTableColDateCurrent(dataSource.getId(), table.getName(), rowIdx, columnName),
                           (tmp >= testCaseData.getStartTime() && tmp <= testCaseData.getEndTime() + offset));
 
     }

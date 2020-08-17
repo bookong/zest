@@ -10,7 +10,7 @@ import java.sql.*;
 /**
  * 辅助操作 SQL
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class ZestSqlHelper {
 

@@ -3,11 +3,14 @@ package com.github.bookong.zest.runner.junit4.statement;
 import org.junit.runner.Description;
 import org.junit.runner.manipulation.Filter;
 
+/**
+ * @author Jiang Xu
+ */
 public class ZestFilter extends Filter {
 
     private Filter filter;
 
-    public ZestFilter(Filter filter) {
+    public ZestFilter(Filter filter){
         this.filter = filter;
     }
 

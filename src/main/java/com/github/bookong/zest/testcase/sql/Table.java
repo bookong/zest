@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * 关系型数据库的表
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class Table extends AbstractTable {
 

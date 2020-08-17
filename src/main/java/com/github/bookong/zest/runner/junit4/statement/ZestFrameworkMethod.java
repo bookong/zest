@@ -5,7 +5,7 @@ import java.io.File;
 import org.junit.runners.model.FrameworkMethod;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class ZestFrameworkMethod extends FrameworkMethod {
 

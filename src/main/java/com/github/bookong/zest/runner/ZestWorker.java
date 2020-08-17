@@ -5,10 +5,8 @@ import com.github.bookong.zest.annotation.ZestSource;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.AbstractExecutor;
 import com.github.bookong.zest.executor.SqlExecutor;
-import com.github.bookong.zest.support.xml.data.Param;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
-import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public abstract class ZestWorker {
 

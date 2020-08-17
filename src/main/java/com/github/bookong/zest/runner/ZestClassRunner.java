@@ -5,7 +5,7 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  *
  */
 public interface ZestClassRunner {

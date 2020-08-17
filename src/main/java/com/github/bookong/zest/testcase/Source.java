@@ -3,7 +3,7 @@ package com.github.bookong.zest.testcase;
 import com.github.bookong.zest.runner.ZestWorker;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class Source {
 

@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * 简单的 Sql 的执行器
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class SqlExecutor extends AbstractExecutor {
 

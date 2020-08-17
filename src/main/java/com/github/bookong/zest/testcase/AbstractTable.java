@@ -5,7 +5,7 @@ import com.github.bookong.zest.support.xml.data.SqlTable;
 /**
  * 抽象的广义数据源广义的“表”
  * 
- * @author jiangxu
+ * @author Jiang Xu
  */
 public abstract class AbstractTable {
 

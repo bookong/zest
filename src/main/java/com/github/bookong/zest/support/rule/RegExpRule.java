@@ -11,7 +11,7 @@ import org.junit.Assert;
 import java.util.regex.Pattern;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class RegExpRule extends AbstractRule {
 

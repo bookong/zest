@@ -1,16 +1,14 @@
 package com.github.bookong.zest.runner.junit4.statement;
 
 import com.github.bookong.zest.exception.ZestException;
-import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.ZestData;
+import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.util.Messages;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-import com.github.bookong.zest.testcase.ZestParam;
-
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public abstract class AbstractStatement extends Statement {
 

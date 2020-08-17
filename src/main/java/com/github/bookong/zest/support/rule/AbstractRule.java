@@ -10,7 +10,7 @@ import org.junit.Assert;
 import java.util.Date;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public abstract class AbstractRule {
 

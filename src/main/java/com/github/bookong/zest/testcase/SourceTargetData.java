@@ -8,7 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class SourceTargetData extends AbstractSourceData {
 

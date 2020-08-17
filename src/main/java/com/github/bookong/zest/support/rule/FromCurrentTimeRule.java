@@ -10,7 +10,7 @@ import org.junit.Assert;
 import java.util.Calendar;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class FromCurrentTimeRule extends AbstractRule {
 

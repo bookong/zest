@@ -6,7 +6,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class Messages {
 
@@ -29,36 +29,12 @@ public class Messages {
         return getString("parse.date", value);
     }
 
-    public static String parseParamPath(ParamField xmlParamField) {
-        return getString("parse.param.path", xmlParamField.getName());
-    }
-
     public static String parseParamNull(ParamField xmlParamField) {
         return getString("parse.param.null", xmlParamField.getName());
     }
 
     public static String parseParamObj(ParamField xmlParamField) {
         return getString("parse.param.obj", xmlParamField.getName());
-    }
-
-    public static String parseParamSet(ParamField xmlParamField) {
-        return getString("parse.param.set", xmlParamField.getName());
-    }
-
-    public static String parseParamSetTypes(ParamField xmlParamField, Class<?> fieldClass) {
-        return getString("parse.param.set.types", xmlParamField.getName(), fieldClass.getName());
-    }
-
-    public static String parseParamSetGeneric(ParamField xmlParamField) {
-        return getString("parse.param.set.generic", xmlParamField.getName());
-    }
-
-    public static String parseParamSetContainerNull(ParamField xmlParamField) {
-        return getString("parse.param.set.container.null", xmlParamField.getName());
-    }
-
-    public static String parseParamSetContainer(ParamField xmlParamField) {
-        return getString("parse.param.set.container", xmlParamField.getName());
     }
 
     public static String parseDataSqlType(String tableName, String fieldName) {
@@ -169,7 +145,7 @@ public class Messages {
         return getString("check.table.col.date", dataSourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColdateCurrent(String dataSourceId, String tableName, int rowIdx,
+    public static String checkTableColDateCurrent(String dataSourceId, String tableName, int rowIdx,
                                                   String columnName) {
         return getString("check.table.col.date.current", dataSourceId, tableName, rowIdx, columnName);
     }

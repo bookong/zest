@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class SourceInitData extends AbstractSourceData {
 
