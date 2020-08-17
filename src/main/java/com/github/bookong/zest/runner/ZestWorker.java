@@ -56,11 +56,11 @@ public abstract class ZestWorker {
                 } else if (obj instanceof MongoOperations || obj instanceof RedisOperations) {
                     value = obj;
                 } else {
-                    throw new RuntimeException(Messages.parseOperation());
+                    throw new ZestException(Messages.parseOperation());
                 }
 
                 if (sourceOperations.containsKey(zestSource.value())) {
-                    throw new RuntimeException(Messages.duplicateOperation(zestSource.value()));
+                    throw new ZestException(Messages.duplicateOperation(zestSource.value()));
                 }
 
                 sourceOperations.put(zestSource.value(), value);

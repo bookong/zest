@@ -1,5 +1,6 @@
 package com.github.bookong.zest.executor;
 
+import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
@@ -31,7 +32,7 @@ public class SqlExecutor extends AbstractExecutor {
     @Override
     protected void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
         if (!(data instanceof Table)) {
-            throw new RuntimeException(Messages.executerMatchSql());
+            throw new ZestException(Messages.executerMatchSql());
         }
 
         Table table = (Table) data;
@@ -61,7 +62,7 @@ public class SqlExecutor extends AbstractExecutor {
     @Override
     protected void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
         if (!(data instanceof Table)) {
-            throw new RuntimeException(Messages.executerMatchSql());
+            throw new ZestException(Messages.executerMatchSql());
         }
 
         Table table = (Table) data;
@@ -119,8 +120,10 @@ public class SqlExecutor extends AbstractExecutor {
             sb.append(")");
             return sb.toString();
 
+        } catch (ZestException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ZestException("", e);
         }
     }
 
@@ -203,7 +206,7 @@ public class SqlExecutor extends AbstractExecutor {
         } catch (Exception e) {
             ZestSqlHelper.close(rs);
             ZestSqlHelper.close(stat);
-            throw new RuntimeException(e);
+            throw new ZestException("", e);
         }
     }
 

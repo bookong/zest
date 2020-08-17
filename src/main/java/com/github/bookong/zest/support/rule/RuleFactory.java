@@ -1,5 +1,6 @@
 package com.github.bookong.zest.support.rule;
 
+import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
 
@@ -20,7 +21,7 @@ public class RuleFactory {
             return new FromCurrentTimeRule(sourceId, tableName, rowIdx, fieldName, xmlField);
 
         } else {
-            throw new RuntimeException(Messages.parseDataFieldNone(tableName, fieldName));
+            throw new ZestException(Messages.parseDataFieldNone(tableName, fieldName));
         }
     }
 }

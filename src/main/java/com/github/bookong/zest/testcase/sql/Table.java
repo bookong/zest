@@ -1,5 +1,6 @@
 package com.github.bookong.zest.testcase.sql;
 
+import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.SqlTable;
 import com.github.bookong.zest.testcase.AbstractTable;
@@ -33,7 +34,7 @@ public class Table extends AbstractTable {
         loadSqlTypes(conn);
 
         if (StringUtils.isNotBlank(xmlTable.getQuery()) && !isTargetData) {
-            throw new RuntimeException(Messages.parseDataTableQuery());
+            throw new ZestException(Messages.parseDataTableQuery());
         }
         this.query = xmlTable.getQuery();
 
@@ -57,7 +58,7 @@ public class Table extends AbstractTable {
         try {
             dbMetaData = conn.getMetaData();
             List<String> tableNames = new ArrayList<>();
-            rs = dbMetaData.getTables(null, null, null, new String[] { "TABLE" });
+            rs = dbMetaData.getTables(null, null, null, new String[]{"TABLE"});
             while (rs.next()) {
                 tableNames.add(rs.getString("TABLE_NAME"));
             }
@@ -70,8 +71,11 @@ public class Table extends AbstractTable {
                 }
                 ZestSqlHelper.close(rs);
             }
+
+        } catch (ZestException e){
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException(Messages.parseDbMeta(), e);
+            throw new ZestException(Messages.parseDbMeta(), e);
         } finally {
             ZestSqlHelper.close(rs);
         }

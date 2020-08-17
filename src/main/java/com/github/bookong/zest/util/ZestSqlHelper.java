@@ -1,6 +1,7 @@
 package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.common.ZestGlobalConstant;
+import com.github.bookong.zest.exception.ZestException;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class ZestSqlHelper {
             stat = conn.createStatement();
             stat.executeUpdate(sql);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ZestException("", e);
         } finally {
             close(stat);
         }
@@ -82,7 +83,7 @@ public class ZestSqlHelper {
             }
             stat.execute();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ZestException("", e);
         } finally {
             close(stat);
         }

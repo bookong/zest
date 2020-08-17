@@ -1,5 +1,6 @@
 package com.github.bookong.zest.testcase.sql;
 
+import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
@@ -32,7 +33,7 @@ public class Row {
         for (Field xmlField : xmlRow.getField()) {
             String fieldName = xmlField.getName();
             if (fields.containsKey(xmlField.getName())) {
-                throw new RuntimeException(Messages.parseDataFieldDuplicate(tableName, fieldName));
+                throw new ZestException(Messages.parseDataFieldDuplicate(tableName, fieldName));
             }
 
             if (xmlField.getNull() != null) {
@@ -43,7 +44,7 @@ public class Row {
 
             } else {
                 if (!isTargetData) {
-                    throw new RuntimeException(Messages.parseDataFieldUnder(tableName, fieldName));
+                    throw new ZestException(Messages.parseDataFieldUnder(tableName, fieldName));
                 }
 
                 fields.put(fieldName, RuleFactory.createRule(sourceId, tableName, rowIdx, fieldName, xmlField));
@@ -55,7 +56,7 @@ public class Row {
                               Map<String, Integer> colSqlTypes) {
         Integer colSqlType = colSqlTypes.get(fieldName.toLowerCase());
         if (colSqlType == null) {
-            throw new RuntimeException(Messages.parseDataSqlType(tableName, fieldName));
+            throw new ZestException(Messages.parseDataSqlType(tableName, fieldName));
         }
 
         switch (colSqlType) {
@@ -88,7 +89,7 @@ public class Row {
                 return xmlFieldValue;
 
             default:
-                throw new RuntimeException(Messages.parseDataSqlTypeUnsupport(tableName, fieldName, colSqlType));
+                throw new ZestException(Messages.parseDataSqlTypeUnsupport(tableName, fieldName, colSqlType));
         }
     }
 

@@ -165,7 +165,7 @@ public class ZestData {
             }
             assertDateEquals(msg, sdf.parse(expect), sdf.parse(actual));
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new ZestException("", e);
         }
     }
 

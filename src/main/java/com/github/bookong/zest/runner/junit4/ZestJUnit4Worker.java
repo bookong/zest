@@ -103,8 +103,8 @@ public class ZestJUnit4Worker extends ZestWorker {
             eachNotifier.addFailure(e);
 
         } catch (Throwable e) {
-            eachNotifier.addFailure(new RuntimeException(Messages.statementEvaluate(frameworkMethod.getTestCaseFilePath()),
-                                                         e));
+            eachNotifier.addFailure(new ZestException(Messages.statementEvaluate(frameworkMethod.getTestCaseFilePath()),
+                                                      e));
         } finally {
             eachNotifier.fireTestFinished();
         }
@@ -145,12 +145,12 @@ public class ZestJUnit4Worker extends ZestWorker {
             ZestParam param;
 
             if (paramClasses.length > 1) {
-                throw new RuntimeException(Messages.initParam());
+                throw new ZestException(Messages.initParam());
             }
 
             Class<?> paramClass = paramClasses[0];
             if (!ZestParam.class.isAssignableFrom(paramClass)) {
-                throw new RuntimeException(Messages.initParam());
+                throw new ZestException(Messages.initParam());
             }
 
             zestData.setTestParam((ZestParam) paramClass.newInstance());
