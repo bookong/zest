@@ -83,7 +83,7 @@ public abstract class ZestWorker {
                     throw new ZestException(Messages.annotationConnection());
                 }
 
-                Connection conn = getSourceOperationConnection(ann.value(), Connection.class);
+                Connection conn = getSourceOperation(ann.value(), Connection.class);
                 ZestReflectHelper.setValue(zestData.getParam(), f.getName(), conn);
             }
         }
@@ -93,13 +93,8 @@ public abstract class ZestWorker {
         for (Source source : zestData.getSourceList()) {
             AbstractExecutor executer = executerMap.get(source.getId());
 
-            if (executer instanceof SqlExecutor) {
-                SqlExecutor jdbcExcuter = (SqlExecutor) executer;
-                Connection conn = getSourceOperationConnection(source.getId(), Connection.class);
-
-                jdbcExcuter.clearDatabase(conn, zestData, source);
-                jdbcExcuter.initDatabase(conn, zestData, source);
-            }
+            executer.clear(this, zestData, source);
+            executer.init(this, zestData, source);
         }
     }
 
@@ -107,16 +102,7 @@ public abstract class ZestWorker {
         for (Source source : zestData.getSourceList()) {
             AbstractExecutor executer = executerMap.get(source.getId());
 
-            if (executer instanceof SqlExecutor) {
-                SqlExecutor jdbcExcuter = (SqlExecutor) executer;
-                Connection conn = getSourceOperationConnection(source.getId(), Connection.class);
-
-                if (source.getTargetData().isIgnoreCheck()) {
-                    logger.info(Messages.ignoreTargetData(source.getId()));
-                } else {
-                    jdbcExcuter.checkTargetDatabase(conn, zestData, source);
-                }
-            }
+            executer.verify(this, zestData, source);
         }
     }
 
@@ -124,7 +110,7 @@ public abstract class ZestWorker {
         return sourceOperations.get(sourceId);
     }
 
-    public <T> T getSourceOperationConnection(String sourceId, Class<T> operationClass) {
+    public <T> T getSourceOperation(String sourceId, Class<T> operationClass) {
         Object operation = sourceOperations.get(sourceId);
         if (operationClass.isAssignableFrom(operation.getClass())) {
             return operationClass.cast(operation);
