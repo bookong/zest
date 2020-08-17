@@ -15,21 +15,22 @@ import java.util.Locale;
 public class MessagesTest {
 
     @Test
-    public void testZhCn() throws Exception {
+    public void testAll() throws Exception {
+        System.out.println("zh.CN:");
         Locale.setDefault(new Locale("zh", "CN"));
+        test();
+        System.out.println("=====================================================================");
+        System.out.println("en.US:");
+        Locale.setDefault(new Locale("en", "US"));
+        Messages.rebundle();
         test();
     }
 
-    @Test
-    public void testEnUS() throws Exception {
-        Locale.setDefault(new Locale("en", "US"));
-        test();
-    }
 
     private void test() throws Exception {
         for (Method m : Messages.class.getMethods()) {
             if (Modifier.isPublic(m.getModifiers()) && Modifier.isStatic(m.getModifiers())
-                && !"getString".equals(m.getName())) {
+                    && !"getString".equals(m.getName()) && !"rebundle".equals(m.getName())) {
 
                 System.out.println(m.getName().concat("()"));
 
@@ -62,7 +63,7 @@ public class MessagesTest {
                 String str = String.valueOf(m.invoke(null, params));
                 System.out.println("\t".concat(str));
                 Assert.assertFalse(m.getName().concat("() There is no corresponding content in the configuration file"),
-                                   str.startsWith("!") && str.endsWith("!"));
+                        str.startsWith("!") && str.endsWith("!"));
             }
         }
     }

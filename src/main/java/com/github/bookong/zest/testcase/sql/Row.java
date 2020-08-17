@@ -1,6 +1,7 @@
 package com.github.bookong.zest.testcase.sql;
 
 import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
@@ -23,10 +24,11 @@ public class Row {
 
     public Row(ZestWorker worker, String sourceId, String tableName, int rowIdx,
                com.github.bookong.zest.support.xml.data.Row xmlRow, Map<String, Integer> sqlTypes,
-               boolean isTargetData){
+               boolean isTargetData) {
+        SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
         for (Entry<QName, String> entry : xmlRow.getOtherAttributes().entrySet()) {
             String fieldName = entry.getKey().toString();
-            Object value = parseValue(tableName, fieldName, entry.getValue(), sqlTypes);
+            Object value = parseValue(sqlExecutor, tableName, fieldName, entry.getValue(), sqlTypes);
             fields.put(fieldName, value);
         }
 
@@ -52,11 +54,17 @@ public class Row {
         }
     }
 
-    private Object parseValue(String tableName, String fieldName, String xmlFieldValue,
+    private Object parseValue(SqlExecutor sqlExecutor, String tableName, String fieldName, String xmlFieldValue,
                               Map<String, Integer> colSqlTypes) {
         Integer colSqlType = colSqlTypes.get(fieldName.toLowerCase());
         if (colSqlType == null) {
             throw new ZestException(Messages.parseDataSqlType(tableName, fieldName));
+        }
+
+        try {
+            return sqlExecutor.parseRowValue(tableName, fieldName, colSqlType, xmlFieldValue);
+        } catch (UnsupportedOperationException e) {
+            // Ignore
         }
 
         switch (colSqlType) {
@@ -89,7 +97,7 @@ public class Row {
                 return xmlFieldValue;
 
             default:
-                throw new ZestException(Messages.parseDataSqlTypeUnsupport(tableName, fieldName, colSqlType));
+                throw new ZestException(Messages.parseDataSqlTypeUnsupported(tableName, fieldName, colSqlType));
         }
     }
 

@@ -48,11 +48,6 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner impleme
     }
 
     @Override
-    public Connection getConnection(DataSource dataSource) {
-        return DataSourceUtils.getConnection(dataSource);
-    }
-
-    @Override
     public Object createTest() throws Exception {
         return super.createTest();
     }

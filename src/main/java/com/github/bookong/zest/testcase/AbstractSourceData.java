@@ -69,7 +69,7 @@ public abstract class AbstractSourceData {
             }
 
         } else {
-            throw new ZestException(Messages.operationUnsupport(sourceId, operation.getClass().getName()));
+            throw new ZestException(Messages.operationUnsupported(sourceId, operation.getClass().getName()));
         }
 
         return list;

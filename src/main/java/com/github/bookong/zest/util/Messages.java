@@ -10,15 +10,35 @@ import java.util.ResourceBundle;
  */
 public class Messages {
 
-    private static final String         BUNDLE_NAME     = "com.github.bookong.zest.util.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "com.github.bookong.zest.util.messages"; //$NON-NLS-1$
 
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+    private static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-    private Messages(){
+    private Messages() {
+    }
+
+    public static void rebundle(){
+        RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+    }
+
+    public static String failRun() {
+        return getString("fail.run");
+    }
+
+    public static String noAnnotationZest() {
+        return getString("no.annotation.zest");
     }
 
     public static String fileNotFound(String filePath) {
         return getString("file.found", filePath);
+    }
+
+    public static String noData() {
+        return getString("no.data");
+    }
+
+    public static String annotationMatch(String annClassName, String matchClassName) {
+        return getString("annotation.match", annClassName, matchClassName);
     }
 
     public static String parseFile(String filePath) {
@@ -41,8 +61,8 @@ public class Messages {
         return getString("parse.data.sql.type", tableName, fieldName);
     }
 
-    public static String parseDataSqlTypeUnsupport(String tableName, String fieldName, Integer colSqlType) {
-        return getString("parse.data.sql.type.unsupport", tableName, fieldName, colSqlType);
+    public static String parseDataSqlTypeUnsupported(String tableName, String fieldName, Integer colSqlType) {
+        return getString("parse.data.sql.type.unsupported", tableName, fieldName, colSqlType);
     }
 
     public static String parseDataFieldDuplicate(String tableName, String fieldName) {
@@ -57,36 +77,52 @@ public class Messages {
         return getString("parse.data.field.none", tableName, fieldName);
     }
 
-    public static String statementEvaluate(String testCaseFilePath) {
-        return getString("statement.evaluate", testCaseFilePath);
+    public static String parseDataTableQuery() {
+        return getString("parse.data.table.query");
     }
 
     public static String parseDbMeta() {
         return getString("parse.db.meta");
     }
 
-    public static String failRun() {
-        return getString("fail.run");
-    }
-
-    public static String noData() {
-        return getString("no.data");
-    }
-
-    public static String annotationConnection() {
-        return getString("annotation.connection");
-    }
-
-    public static String initExecuter(String className) {
-        return getString("init.executer", className);
+    public static String parseOperation() {
+        return getString("parse.operation");
     }
 
     public static String duplicateOperation(String value) {
         return getString("duplicate.operation", value);
     }
 
-    public static String parseOperation() {
-        return getString("parse.operation");
+    public static String operationNull(String dataSourceId) {
+        return getString("operation.null", dataSourceId);
+    }
+
+    public static String operationUnsupported(String sourceId, String operationClass) {
+        return getString("operation.unsupported", sourceId, operationClass);
+    }
+
+    public static String operationMismatching(String dataSourceId, String nodeName) {
+        return getString("operation.mismatching", dataSourceId, nodeName);
+    }
+
+    public static String initExecutor(String className) {
+        return getString("init.executor", className);
+    }
+
+    public static String initParam() {
+        return getString("init.param");
+    }
+
+    public static String executorMatchSql() {
+        return getString("executor.match.sql");
+    }
+
+    public static String statementEvaluate(String testCaseFilePath) {
+        return getString("statement.evaluate", testCaseFilePath);
+    }
+
+    public static String statementRun(String desc) {
+        return getString("statement.run", desc);
     }
 
     public static String ignoreTargetData(String id) {
@@ -97,49 +133,22 @@ public class Messages {
         return getString("ignore.target.table", dataSourceId, tableName);
     }
 
-    public static String operationMismatching(String dataSourceId, String nodeName) {
-        return getString("operation.mismatching", dataSourceId, nodeName);
-    }
-
-    public static String operationNull(String dataSourceId) {
-        return getString("operation.null", dataSourceId);
-    }
-
-    public static String operationUnsupport(String sourceId, String operationClass) {
-        return getString("operation.unsupport", sourceId, operationClass);
-    }
-
-    public static String initParam() {
-        return getString("init.param");
-    }
-
-    public static String noAnnotationZest() {
-        return getString("no.annotation.zest");
-    }
-
-    public static String executerMatchSql() {
-        return getString("executer.match.sql");
-    }
-
-    public static String checkDs(String value) {
-        return getString("check.ds", value);
-    }
-
-    public static String statementRun(String desc) {
-        return getString("statement.run", desc);
+    public static String ignoreTargetColUnspecified(String dataSourceId, String tableName) {
+        return getString("ignore.target.col.unspecified", dataSourceId, tableName);
     }
 
     public static String startCheckTable(String dataSourceId, String tableName) {
         return getString("start.check.table", dataSourceId, tableName);
     }
 
+    public static String checkDs(String value) {
+        return getString("check.ds", value);
+    }
+
     public static String checkTableSize(String dataSourceId, String tableName) {
         return getString("check.table.size", dataSourceId, tableName);
     }
 
-    public static String ignoreTargetColUnspecified(String dataSourceId, String tableName) {
-        return getString("ignore.target.col.unspecified", dataSourceId, tableName);
-    }
 
     public static String checkTableColDate(String dataSourceId, String tableName, int rowIdx, String columnName) {
         return getString("check.table.col.date", dataSourceId, tableName, rowIdx, columnName);
@@ -150,12 +159,23 @@ public class Messages {
         return getString("check.table.col.date.current", dataSourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColNullable(String dataSourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.nullable", dataSourceId, tableName, rowIdx, columnName);
+
+    public static String checkTableColDateFromUnit(String dataSourceId, String tableName, int rowIdx, String columnName,
+                                                   String unit) {
+        return getString("check.table.col.date.from.unit", dataSourceId, tableName, rowIdx, columnName, unit);
     }
 
     public static String checkTableColDateFrom(String dataSourceId, String tableName, int rowIdx, String columnName) {
         return getString("check.table.col.date.from", dataSourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkTableColRegexp(String dataSourceId, String tableName, int rowIdx, String columnName,
+                                             String regExp) {
+        return getString("check.table.col.regexp", dataSourceId, tableName, rowIdx, columnName, regExp);
+    }
+
+    public static String checkTableColNullable(String dataSourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.nullable", dataSourceId, tableName, rowIdx, columnName);
     }
 
     public static String checkTableColNull(String dataSourceId, String tableName, int rowIdx, String columnName) {
@@ -168,20 +188,6 @@ public class Messages {
 
     public static String checkTableCol(String dataSourceId, String tableName, int rowIdx, String columnName) {
         return getString("check.table.col", dataSourceId, tableName, rowIdx, columnName);
-    }
-
-    public static String checkTableColRegexp(String dataSourceId, String tableName, int rowIdx, String columnName,
-                                             String regExp) {
-        return getString("check.table.col.regexp", dataSourceId, tableName, rowIdx, columnName, regExp);
-    }
-
-    public static String checkTableColDateFromUnit(String dataSourceId, String tableName, int rowIdx, String columnName,
-                                                   String unit) {
-        return getString("check.table.col.date.from.unit", dataSourceId, tableName, rowIdx, columnName, unit);
-    }
-
-    public static String parseDataTableQuery() {
-        return getString("parse.data.table.query");
     }
 
     private static String getString(String key) {

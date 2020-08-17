@@ -186,8 +186,4 @@ public class ZestJUnit4Worker extends ZestWorker {
         return afters.isEmpty() ? statement : new RunAfters(statement, afters, target);
     }
 
-    @Override
-    protected Connection getConnection(DataSource dataSource) {
-        return zestClassRunner.getConnection(dataSource);
-    }
 }

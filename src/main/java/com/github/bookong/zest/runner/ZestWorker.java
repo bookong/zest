@@ -1,10 +1,11 @@
 package com.github.bookong.zest.runner;
 
 import com.github.bookong.zest.annotation.ZestConnection;
+import com.github.bookong.zest.annotation.ZestMongo;
+import com.github.bookong.zest.annotation.ZestRedis;
 import com.github.bookong.zest.annotation.ZestSource;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.AbstractExecutor;
-import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
@@ -14,8 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.Collections;
@@ -27,18 +30,16 @@ import java.util.Map;
  */
 public abstract class ZestWorker {
 
-    protected static Logger                 logger           = LoggerFactory.getLogger(ZestWorker.class);
+    protected static Logger logger = LoggerFactory.getLogger(ZestWorker.class);
 
-    protected Map<String, AbstractExecutor> executerMap      = new HashMap<>();
+    protected Map<String, AbstractExecutor> executorMap = new HashMap<>();
     /**
      * value 放三种东西: <br>
      * javax.sql.DataSource <br>
      * org.springframework.data.mongodb.core.MongoOperations<br>
      * org.springframework.data.redis.core.RedisOperations
      */
-    private Map<String, Object>             sourceOperations = Collections.synchronizedMap(new HashMap<>());
-
-    protected abstract Connection getConnection(DataSource dataSource);
+    private Map<String, Object> sourceOperations = Collections.synchronizedMap(new HashMap<>());
 
     protected void loadAnnotation(Object test) {
         Class<?> clazz = test.getClass();
@@ -52,7 +53,7 @@ public abstract class ZestWorker {
                 Object value;
                 Object obj = ZestReflectHelper.getValue(test, f.getName());
                 if (obj instanceof DataSource) {
-                    value = getConnection((DataSource) obj);
+                    value = DataSourceUtils.getConnection((DataSource) obj);
                 } else if (obj instanceof MongoOperations || obj instanceof RedisOperations) {
                     value = obj;
                 } else {
@@ -65,9 +66,9 @@ public abstract class ZestWorker {
 
                 sourceOperations.put(zestSource.value(), value);
                 try {
-                    executerMap.put(zestSource.value(), zestSource.executorClass().newInstance());
+                    executorMap.put(zestSource.value(), zestSource.executorClass().newInstance());
                 } catch (Exception e) {
-                    throw new ZestException(Messages.initExecuter(zestSource.executorClass().getName()), e);
+                    throw new ZestException(Messages.initExecutor(zestSource.executorClass().getName()), e);
                 }
             }
 
@@ -77,32 +78,36 @@ public abstract class ZestWorker {
 
     protected void prepare(ZestData zestData) {
         for (Field f : zestData.getParam().getClass().getDeclaredFields()) {
-            ZestConnection ann = f.getAnnotation(ZestConnection.class);
-            if (ann != null) {
-                if (!Connection.class.getName().equals(f.getType().getName())) {
-                    throw new ZestException(Messages.annotationConnection());
-                }
+            prepare(zestData, f, ZestConnection.class, Connection.class);
+            prepare(zestData, f, ZestMongo.class, MongoOperations.class);
+            prepare(zestData, f, ZestRedis.class, RedisOperations.class);
+        }
+    }
 
-                Connection conn = getSourceOperation(ann.value(), Connection.class);
-                ZestReflectHelper.setValue(zestData.getParam(), f.getName(), conn);
+    private <T extends Annotation> void prepare(ZestData zestData, Field f, Class<T> annotationClass, Class<?> operationClass) {
+        T ann = f.getAnnotation(annotationClass);
+        if (ann != null) {
+            if (!operationClass.getName().equals(f.getType().getName())) {
+                throw new ZestException(Messages.annotationMatch(annotationClass.getSimpleName(), operationClass.getName()));
             }
+
+            String sourceId = String.valueOf(ZestReflectHelper.getValue(ann, "value"));
+            ZestReflectHelper.setValue(zestData.getParam(), f.getName(), getSourceOperation(sourceId));
         }
     }
 
     public void initDataSource(ZestData zestData) {
         for (Source source : zestData.getSourceList()) {
-            AbstractExecutor executer = executerMap.get(source.getId());
+            AbstractExecutor executor = executorMap.get(source.getId());
 
-            executer.clear(this, zestData, source);
-            executer.init(this, zestData, source);
+            executor.clear(this, zestData, source);
+            executor.init(this, zestData, source);
         }
     }
 
     public void checkTargetDataSource(ZestData zestData) {
         for (Source source : zestData.getSourceList()) {
-            AbstractExecutor executer = executerMap.get(source.getId());
-
-            executer.verify(this, zestData, source);
+            executorMap.get(source.getId()).verify(this, zestData, source);
         }
     }
 
@@ -119,4 +124,7 @@ public abstract class ZestWorker {
         throw new ZestException(Messages.operationNull(sourceId));
     }
 
+    public <E extends AbstractExecutor> E getExecutor(String sourceId, Class<E> executorClass) {
+        return executorClass.cast(executorMap.get(sourceId));
+    }
 }

@@ -31,11 +31,11 @@ public class ZestJUnit5Worker extends ZestWorker {
 
     public <T extends ZestParam> Stream<DynamicTest> test(Object testObj, Class<T> zestParamClass, Consumer<T> fun) {
         return stream(iterator(testObj), zestData -> String.format("[%s]", zestData.getFileName()), //
-                      zestData -> {
-                          T param = before(zestData, zestParamClass);
-                          fun.accept(param);
-                          after(zestData);
-                      });
+                zestData -> {
+                    T param = before(zestData, zestParamClass);
+                    fun.accept(param);
+                    after(zestData);
+                });
     }
 
     private Iterator<ZestData> iterator(Object testObj) {
@@ -109,10 +109,5 @@ public class ZestJUnit5Worker extends ZestWorker {
     private void after(ZestData zestData) {
         zestData.setEndTime(System.currentTimeMillis());
         checkTargetDataSource(zestData);
-    }
-
-    @Override
-    protected Connection getConnection(DataSource dataSource) {
-        return DataSourceUtils.getConnection(dataSource);
     }
 }
