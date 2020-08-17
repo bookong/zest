@@ -1,7 +1,8 @@
 package com.github.bookong.zest.runner.junit4;
 
-import com.github.bookong.zest.testcase.TestCaseData;
-import com.github.bookong.zest.testcase.ZestTestParam;
+import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.testcase.ZestData;
+import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.runner.ZestClassRunner;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.annotation.ZestTest;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class ZestJUnit4Worker extends ZestWorker {
 
@@ -109,7 +110,7 @@ public class ZestJUnit4Worker extends ZestWorker {
         }
     }
 
-    private Statement methodBlock(ZestFrameworkMethod method) throws Exception {
+    private Statement methodBlock(ZestFrameworkMethod method) {
         Object test;
         try {
             test = new ReflectiveCallable() {
@@ -123,15 +124,44 @@ public class ZestJUnit4Worker extends ZestWorker {
             return new Fail(e);
         }
 
-        testCaseData = new TestCaseData();
-        loadTestObjectAnnotation(test);
-        loadTestCaseData(method);
+        loadAnnotation(test);
 
-        ZestStatement zestStatement = new ZestStatement(this, test, method);
+        ZestData zestData = new ZestData(method.getTestCaseFilePath());
+        loadZestData(zestData, method);
+
+        ZestStatement zestStatement = new ZestStatement(this, zestData, test, method);
         Statement statement = withBefores(test, zestStatement);
         statement = withAfters(test, statement);
 
+        logger.info(Messages.statementRun(zestData.getDescription()));
+        logger.info(method.getTestCaseFilePath());
+
         return statement;
+    }
+
+    private void loadZestData(ZestData zestData, ZestFrameworkMethod method) {
+        try {
+            Class<?>[] paramClasses = method.getMethod().getParameterTypes();
+            ZestParam param;
+
+            if (paramClasses.length > 1) {
+                throw new RuntimeException(Messages.initParam());
+            }
+
+            Class<?> paramClass = paramClasses[0];
+            if (!ZestParam.class.isAssignableFrom(paramClass)) {
+                throw new RuntimeException(Messages.initParam());
+            }
+
+            zestData.setTestParam((ZestParam) paramClass.newInstance());
+            ZestTestCaseUtil.loadFromAbsolutePath(this, zestData);
+            prepare(zestData);
+
+        } catch (ZestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ZestException(Messages.failRun(), e);
+        }
     }
 
     private boolean ignoreTest() {
@@ -154,28 +184,6 @@ public class ZestJUnit4Worker extends ZestWorker {
     private Statement withAfters(Object target, Statement statement) {
         List<FrameworkMethod> afters = testClass.getAnnotatedMethods(After.class);
         return afters.isEmpty() ? statement : new RunAfters(statement, afters, target);
-    }
-
-    private void loadTestCaseData(ZestFrameworkMethod method) throws Exception {
-        Class<?>[] paramClasses = method.getMethod().getParameterTypes();
-        ZestTestParam param = null;
-
-        if (paramClasses.length > 1) {
-            throw new RuntimeException(Messages.initParam());
-        }
-
-        Class<?> paramClass = paramClasses[0];
-        if (!ZestTestParam.class.isAssignableFrom(paramClass)) {
-            throw new RuntimeException(Messages.initParam());
-        }
-
-        param = (ZestTestParam) paramClass.newInstance();
-        loadTestParamAnnotation(param);
-        testCaseData.setTestParam(param);
-        ZestTestCaseUtil.loadFromAbsolutePath(this, method.getTestCaseFilePath(), testCaseData);
-
-        logger.info(Messages.statementRun(testCaseData.getDescription()));
-        logger.info(method.getTestCaseFilePath());
     }
 
     @Override

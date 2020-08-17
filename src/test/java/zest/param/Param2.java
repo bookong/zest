@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.bookong.zest.testcase.ZestTestParam;
+import com.github.bookong.zest.testcase.ZestParam;
 
-public class Param2 implements ZestTestParam {
+public class Param2 implements ZestParam {
 
     private String               str         = null;
 

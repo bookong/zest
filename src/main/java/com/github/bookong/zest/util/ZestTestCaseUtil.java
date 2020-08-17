@@ -1,7 +1,8 @@
 package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.common.ZestGlobalConstant;
-import com.github.bookong.zest.testcase.TestCaseData;
+import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
 import org.junit.runners.model.FrameworkMethod;
@@ -25,12 +26,12 @@ public class ZestTestCaseUtil {
     /**
      * 从绝对路径加载 xml 文件
      */
-    public static void loadFromAbsolutePath(ZestWorker worker, String filePath, TestCaseData zestData) {
+    public static void loadFromAbsolutePath(ZestWorker worker, ZestData zestData) {
         FileInputStream fis = null;
         try {
-            File file = new File(filePath);
+            File file = new File(zestData.getFilePath());
             if (!file.exists()) {
-                throw new RuntimeException(Messages.fileNotFound(filePath));
+                throw new ZestException(Messages.fileNotFound(zestData.getFilePath()));
             }
 
             zestData.setFileName(file.getName());
@@ -41,8 +42,10 @@ public class ZestTestCaseUtil {
             Data data = (Data) unm.unmarshal(fis);
             zestData.load(worker, data);
 
+        }catch (ZestException e){
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException(Messages.parseFile(filePath), e);
+            throw new ZestException(Messages.parseFile(zestData.getFilePath()), e);
         } finally {
             if (fis != null) {
                 try {
@@ -51,18 +54,6 @@ public class ZestTestCaseUtil {
                     logger.warn("", e);
                 }
             }
-        }
-    }
-
-    /** 是不是关系型数据库 */
-    public static boolean isRmdb(String type) {
-        switch (type) {
-            case ZestGlobalConstant.DataSourceType.MySQL:
-            case ZestGlobalConstant.DataSourceType.Oracle:
-            case ZestGlobalConstant.DataSourceType.SQLServer:
-                return true;
-            default:
-                return false;
         }
     }
 

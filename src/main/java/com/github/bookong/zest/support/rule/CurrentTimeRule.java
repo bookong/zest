@@ -1,8 +1,8 @@
 package com.github.bookong.zest.support.rule;
 
-import com.github.bookong.zest.testcase.sql.SqlDataSourceTable;
-import com.github.bookong.zest.testcase.TestCaseData;
-import com.github.bookong.zest.testcase.TestCaseDataSource;
+import com.github.bookong.zest.testcase.ZestData;
+import com.github.bookong.zest.testcase.sql.Table;
+import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
 import org.junit.Assert;
@@ -20,7 +20,7 @@ public class CurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(TestCaseData testCaseData, TestCaseDataSource dataSource, SqlDataSourceTable table, int rowIdx,
+    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx,
                          String columnName, Object value) {
         assertNullable(dataSource, table, rowIdx, columnName, value);
 

@@ -1,11 +1,11 @@
 package zest.param;
 
-import com.github.bookong.zest.testcase.ZestTestParam;
+import com.github.bookong.zest.testcase.ZestParam;
 
 /**
  * @author jiangxu
  */
-public class Param0 implements ZestTestParam {
+public class Param0 implements ZestParam {
 
     private String superClassStr = null;
 

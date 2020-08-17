@@ -1,10 +1,9 @@
 package com.github.bookong.zest.testcase.sql;
 
-import com.github.bookong.zest.testcase.AbstractDataConverter;
-import com.github.bookong.zest.testcase.AbstractDataSourceRow;
+import com.github.bookong.zest.executor.AbstractExecutor;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
-import com.github.bookong.zest.support.xml.data.Row;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import org.apache.commons.lang.StringUtils;
@@ -12,23 +11,22 @@ import org.apache.commons.lang.StringUtils;
 import javax.xml.namespace.QName;
 import java.sql.Types;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
  * @author jiangxu
  */
-public class SqlDataSourceRow extends AbstractDataSourceRow {
+public class Row {
 
     private Map<String, Object> fields = new LinkedHashMap<>();
 
-    public SqlDataSourceRow(String dataSourceId, String tableName, int rowIdx, Row xmlRow,
-                            List<AbstractDataConverter> dataConverterList, Map<String, Integer> sqlTypes,
-                            boolean isTargetData){
+    public Row(ZestWorker worker, String sourceId, String tableName, int rowIdx,
+               com.github.bookong.zest.support.xml.data.Row xmlRow, Map<String, Integer> sqlTypes,
+               boolean isTargetData){
         for (Entry<QName, String> entry : xmlRow.getOtherAttributes().entrySet()) {
             String fieldName = entry.getKey().toString();
-            Object value = parseValue(tableName, fieldName, entry.getValue(), sqlTypes, dataConverterList);
+            Object value = parseValue(tableName, fieldName, entry.getValue(), sqlTypes);
             fields.put(fieldName, value);
         }
 
@@ -49,22 +47,16 @@ public class SqlDataSourceRow extends AbstractDataSourceRow {
                     throw new RuntimeException(Messages.parseDataFieldUnder(tableName, fieldName));
                 }
 
-                fields.put(fieldName, RuleFactory.createRule(dataSourceId, tableName, rowIdx, fieldName, xmlField));
+                fields.put(fieldName, RuleFactory.createRule(sourceId, tableName, rowIdx, fieldName, xmlField));
             }
         }
     }
 
     private Object parseValue(String tableName, String fieldName, String xmlFieldValue,
-                              Map<String, Integer> colSqlTypes, List<AbstractDataConverter> dataConverterList) {
+                              Map<String, Integer> colSqlTypes) {
         Integer colSqlType = colSqlTypes.get(fieldName.toLowerCase());
         if (colSqlType == null) {
             throw new RuntimeException(Messages.parseDataSqlType(tableName, fieldName));
-        }
-
-        for (AbstractDataConverter dataConverter : dataConverterList) {
-            if (dataConverter.applySqlType(colSqlType)) {
-                return dataConverter.sqlDataConvert(colSqlType, xmlFieldValue);
-            }
         }
 
         switch (colSqlType) {

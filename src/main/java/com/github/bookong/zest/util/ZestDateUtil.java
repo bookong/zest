@@ -1,6 +1,6 @@
 package com.github.bookong.zest.util;
 
-import com.github.bookong.zest.testcase.TestCaseData;
+import com.github.bookong.zest.testcase.ZestData;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,13 +61,13 @@ public class ZestDateUtil {
      * @param testCaseData 测试用例数据
      * @return 转换后的日期对象
      */
-    public static Date getDateInDB(Date date, TestCaseData testCaseData) {
+    public static Date getDateInZest(Date date, ZestData zestData) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.MILLISECOND, 0);
 
-        if (testCaseData.isTransferTime()) {
-            cal.setTimeInMillis(cal.getTimeInMillis() + testCaseData.getCurrDbTimeDiff());
+        if (zestData.isTransferTime()) {
+            cal.setTimeInMillis(cal.getTimeInMillis() + zestData.getCurrentTimeDiff());
         }
 
         return cal.getTime();

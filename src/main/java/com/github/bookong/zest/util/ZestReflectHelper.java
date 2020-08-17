@@ -1,5 +1,6 @@
 package com.github.bookong.zest.util;
 
+import com.github.bookong.zest.exception.ZestException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
@@ -38,36 +39,44 @@ public class ZestReflectHelper {
         return null;
     }
 
-    public static Object getValue(Object obj, String fieldName) throws IllegalAccessException {
+    public static Object getValue(Object obj, String fieldName) {
         return getValue(obj, getField(obj, fieldName));
     }
 
-    public static Object getValue(Object obj, Field field) throws IllegalAccessException {
-        Object value = null;
-        if (field != null) {
-            if (field.isAccessible()) {
-                value = field.get(obj);
-            } else {
-                field.setAccessible(true);
-                value = field.get(obj);
-                field.setAccessible(false);
+    public static Object getValue(Object obj, Field field) {
+        try {
+            Object value = null;
+            if (field != null) {
+                if (field.isAccessible()) {
+                    value = field.get(obj);
+                } else {
+                    field.setAccessible(true);
+                    value = field.get(obj);
+                    field.setAccessible(false);
+                }
             }
+            return value;
+        } catch (Exception e) {
+            throw new ZestException("", e);
         }
-        return value;
     }
 
-    public static void setValue(Object obj, String fieldName, Object value) throws IllegalAccessException {
+    public static void setValue(Object obj, String fieldName, Object value) {
         Field field = getField(obj, fieldName);
         if (field == null) {
             return;
         }
 
-        if (field.isAccessible()) {
-            field.set(obj, value);
-        } else {
-            field.setAccessible(true);
-            field.set(obj, value);
-            field.setAccessible(false);
+        try {
+            if (field.isAccessible()) {
+                field.set(obj, value);
+            } else {
+                field.setAccessible(true);
+                field.set(obj, value);
+                field.setAccessible(false);
+            }
+        } catch (Exception e) {
+            throw new ZestException("", e);
         }
     }
 

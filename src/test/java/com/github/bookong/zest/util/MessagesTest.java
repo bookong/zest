@@ -38,7 +38,7 @@ public class MessagesTest {
                 for (Class<?> c : m.getParameterTypes()) {
                     if (ParamField.class.isAssignableFrom(c)) {
                         ParamField obj = new ParamField();
-                        obj.setPath("path");
+                        obj.setName("name");
                         params[idx++] = obj;
 
                     } else if (Class.class.isAssignableFrom(c)) {

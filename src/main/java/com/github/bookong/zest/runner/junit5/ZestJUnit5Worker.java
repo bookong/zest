@@ -1,7 +1,7 @@
 package com.github.bookong.zest.runner.junit5;
 
-import com.github.bookong.zest.testcase.TestCaseData;
-import com.github.bookong.zest.testcase.ZestTestParam;
+import com.github.bookong.zest.testcase.ZestData;
+import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.annotation.ZestTest;
@@ -24,25 +24,24 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.DynamicTest.stream;
 
+/**
+ * @author Jiang Xu
+ */
 public class ZestJUnit5Worker extends ZestWorker {
 
-    @Override
-    protected Connection getConnection(DataSource dataSource) {
-        return DataSourceUtils.getConnection(dataSource);
-    }
-
-    public <T extends ZestTestParam> Stream<DynamicTest> test(Object testObj, Class<T> zestTestParamClass,
-                                                              Consumer<T> fun) {
-        return stream(iterator(testObj), ZestInfo::getName, //
-                      info -> {
-                          T param = before(info, zestTestParamClass);
+    public <T extends ZestParam> Stream<DynamicTest> test(Object testObj, Class<T> zestParamClass, Consumer<T> fun) {
+        return stream(iterator(testObj), zestData -> String.format("[%s]", zestData.getFileName()), //
+                      zestData -> {
+                          T param = before(zestData, zestParamClass);
                           fun.accept(param);
-                          after();
+                          after(zestData);
                       });
     }
 
-    private Iterator<ZestInfo> iterator(Object testObj) {
+    private Iterator<ZestData> iterator(Object testObj) {
         try {
+            loadAnnotation(testObj);
+
             String testMethodName = null;
             for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
                 if (testObj.getClass().getName().equals(ste.getClassName())) {
@@ -51,7 +50,6 @@ public class ZestJUnit5Worker extends ZestWorker {
                 }
             }
 
-            loadTestObjectAnnotation(testObj);
             Method testMethodFiled = ZestReflectHelper.getMethod(testObj, testMethodName);
             ZestTest zestTest = testMethodFiled.getAnnotation(ZestTest.class);
             if (zestTest == null) {
@@ -60,19 +58,19 @@ public class ZestJUnit5Worker extends ZestWorker {
 
             String dir = ZestTestCaseUtil.getDir(testObj.getClass(), testMethodName);
 
-            List<ZestInfo> list = new ArrayList<>();
+            List<ZestData> list = new ArrayList<>();
             if (StringUtils.isBlank(zestTest.value())) {
                 File searchDir = new File(dir);
                 File[] searchFiles = searchDir.listFiles();
                 if (searchFiles != null) {
                     for (File searchFile : searchFiles) {
                         if (searchFile.isFile() && searchFile.getName().endsWith(zestTest.extName())) {
-                            list.add(new ZestInfo(searchFile.getAbsolutePath()));
+                            list.add(new ZestData(searchFile.getAbsolutePath()));
                         }
                     }
                 }
             } else {
-                list.add(new ZestInfo(dir.concat(zestTest.value()).concat(zestTest.extName())));
+                list.add(new ZestData(dir.concat(zestTest.value()).concat(zestTest.extName())));
             }
 
             if (list.isEmpty()) {
@@ -87,18 +85,17 @@ public class ZestJUnit5Worker extends ZestWorker {
         }
     }
 
-    private <T extends ZestTestParam> T before(ZestInfo info, Class<T> zestTestParamClass) {
+    private <T extends ZestParam> T before(ZestData zestData, Class<T> zestParamClass) {
         try {
-            testCaseData = new TestCaseData();
-            T param = zestTestParamClass.newInstance();
-            loadTestParamAnnotation(param);
-            testCaseData.setTestParam(param);
-            ZestTestCaseUtil.loadFromAbsolutePath(this, info.getTestCaseFilePath(), testCaseData);
+            T param = zestParamClass.newInstance();
+            zestData.setTestParam(param);
+            ZestTestCaseUtil.loadFromAbsolutePath(this, zestData);
+            prepare(zestData);
 
-            logger.info(Messages.statementRun(testCaseData.getDescription()));
-            logger.info(info.getTestCaseFilePath());
-            initDataSource();
-            getTestCaseData().setStartTime(System.currentTimeMillis());
+            logger.info(Messages.statementRun(zestData.getDescription()));
+            logger.info(zestData.getFilePath());
+            initDataSource(zestData);
+            zestData.setStartTime(System.currentTimeMillis());
 
             return param;
 
@@ -109,27 +106,13 @@ public class ZestJUnit5Worker extends ZestWorker {
         }
     }
 
-    private void after() {
-        getTestCaseData().setEndTime(System.currentTimeMillis());
-        checkTargetDataSource();
+    private void after(ZestData zestData) {
+        zestData.setEndTime(System.currentTimeMillis());
+        checkTargetDataSource(zestData);
     }
 
-    private static class ZestInfo {
-
-        private String testCaseFileName;
-        private String testCaseFilePath;
-
-        public ZestInfo(String testCaseFilePath){
-            this.testCaseFilePath = testCaseFilePath;
-            this.testCaseFileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
-        }
-
-        public String getName() {
-            return String.format("[%s]", testCaseFileName);
-        }
-
-        public String getTestCaseFilePath() {
-            return testCaseFilePath;
-        }
+    @Override
+    protected Connection getConnection(DataSource dataSource) {
+        return DataSourceUtils.getConnection(dataSource);
     }
 }

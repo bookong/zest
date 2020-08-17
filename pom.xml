@@ -112,6 +112,24 @@
 			<version>${springframework-version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+			<version>3.0.2.RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>2.3.2.RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.21</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- XML -->
 		<!-- mvn exec:java -Dexec.mainClass="com.sun.tools.xjc.XJCFacade" -Dexec.args="-p xml -d ./tmp ./schema/data.xsd" -->
 		<dependency>

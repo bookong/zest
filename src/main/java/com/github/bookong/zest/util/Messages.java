@@ -30,35 +30,35 @@ public class Messages {
     }
 
     public static String parseParamPath(ParamField xmlParamField) {
-        return getString("parse.param.path", xmlParamField.getPath());
+        return getString("parse.param.path", xmlParamField.getName());
     }
 
     public static String parseParamNull(ParamField xmlParamField) {
-        return getString("parse.param.null", xmlParamField.getPath());
+        return getString("parse.param.null", xmlParamField.getName());
     }
 
     public static String parseParamObj(ParamField xmlParamField) {
-        return getString("parse.param.obj", xmlParamField.getPath());
+        return getString("parse.param.obj", xmlParamField.getName());
     }
 
     public static String parseParamSet(ParamField xmlParamField) {
-        return getString("parse.param.set", xmlParamField.getPath());
+        return getString("parse.param.set", xmlParamField.getName());
     }
 
     public static String parseParamSetTypes(ParamField xmlParamField, Class<?> fieldClass) {
-        return getString("parse.param.set.types", xmlParamField.getPath(), fieldClass.getName());
+        return getString("parse.param.set.types", xmlParamField.getName(), fieldClass.getName());
     }
 
     public static String parseParamSetGeneric(ParamField xmlParamField) {
-        return getString("parse.param.set.generic", xmlParamField.getPath());
+        return getString("parse.param.set.generic", xmlParamField.getName());
     }
 
     public static String parseParamSetContainerNull(ParamField xmlParamField) {
-        return getString("parse.param.set.container.null", xmlParamField.getPath());
+        return getString("parse.param.set.container.null", xmlParamField.getName());
     }
 
     public static String parseParamSetContainer(ParamField xmlParamField) {
-        return getString("parse.param.set.container", xmlParamField.getPath());
+        return getString("parse.param.set.container", xmlParamField.getName());
     }
 
     public static String parseDataSqlType(String tableName, String fieldName) {
@@ -105,16 +105,12 @@ public class Messages {
         return getString("init.executer", className);
     }
 
-    public static String duplicateDs(String value) {
-        return getString("duplicate.ds", value);
+    public static String duplicateOperation(String value) {
+        return getString("duplicate.operation", value);
     }
 
-    public static String parseDs() {
-        return getString("parse.ds");
-    }
-
-    public static String initDc(String className) {
-        return getString("init.dc", className);
+    public static String parseOperation() {
+        return getString("parse.operation");
     }
 
     public static String ignoreTargetData(String id) {
@@ -123,6 +119,18 @@ public class Messages {
 
     public static String ignoreTargetTable(String dataSourceId, String tableName) {
         return getString("ignore.target.table", dataSourceId, tableName);
+    }
+
+    public static String operationMismatching(String dataSourceId, String nodeName) {
+        return getString("operation.mismatching", dataSourceId, nodeName);
+    }
+
+    public static String operationNull(String dataSourceId) {
+        return getString("operation.null", dataSourceId);
+    }
+
+    public static String operationUnsupport(String sourceId, String operationClass) {
+        return getString("operation.unsupport", sourceId, operationClass);
     }
 
     public static String initParam() {

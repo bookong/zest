@@ -24,7 +24,10 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="Offset" type="{http://www.w3.org/2001/XMLSchema}int" default="1000" />
+ *       &lt;sequence>
+ *       &lt;/sequence>
+ *       &lt;attribute name="Key" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="Ignore" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -34,38 +37,64 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-@XmlRootElement(name = "CurrentTime")
-public class CurrentTime {
+@XmlRootElement(name = "RedisData")
+public class RedisData {
 
-    @XmlAttribute(name = "Offset")
-    protected Integer offset;
+    @XmlAttribute(name = "Key", required = true)
+    protected String key;
+    @XmlAttribute(name = "Ignore")
+    protected Boolean ignore;
 
     /**
-     * Gets the value of the offset property.
+     * Gets the value of the key property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public int getOffset() {
-        if (offset == null) {
-            return  1000;
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Sets the value of the key property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setKey(String value) {
+        this.key = value;
+    }
+
+    /**
+     * Gets the value of the ignore property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public boolean isIgnore() {
+        if (ignore == null) {
+            return false;
         } else {
-            return offset;
+            return ignore;
         }
     }
 
     /**
-     * Sets the value of the offset property.
+     * Sets the value of the ignore property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link Boolean }
      *     
      */
-    public void setOffset(Integer value) {
-        this.offset = value;
+    public void setIgnore(Boolean value) {
+        this.ignore = value;
     }
 
 }

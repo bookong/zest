@@ -3,6 +3,6 @@ package com.github.bookong.zest.testcase;
 /**
  * @author jiangxu
  */
-public interface ZestTestParam {
+public interface ZestParam {
 
 }

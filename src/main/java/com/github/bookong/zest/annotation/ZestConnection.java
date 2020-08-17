@@ -1,9 +1,10 @@
 package com.github.bookong.zest.annotation;
 
 import java.lang.annotation.*;
+import java.sql.Connection;
 
 /**
- * 指定某个参数是 JDBC 的连接对象 {@link java.sql.Connection}
+ * 指定某个参数是 JDBC 的连接对象 {@link Connection}
  *
  * @author Jiang Xu
  */

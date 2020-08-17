@@ -9,12 +9,11 @@ public interface ZestGlobalConstant {
     String DATA_XML_CODE_PACKAGE = "com.github.bookong.zest.support.xml.data"; //$NON-NLS-1$
 
     /** 数据源类型 */
-    interface DataSourceType {
+    interface SourceType {
 
-        String MySQL     = "MySQL";     // $NON-NLS-1$
-        String Oracle    = "Oracle";    // $NON-NLS-1$
-        String SQLServer = "SQLServer"; // $NON-NLS-1$
-        String MongoDB   = "MongoDB";   // $NON-NLS-1$
+        String MySQL = "SQL";   // $NON-NLS-1$
+        String Mongo = "Mongo"; // $NON-NLS-1$
+        String Redis = "Redis"; // $NON-NLS-1$
     }
 
     interface Logger {

@@ -1,6 +1,7 @@
 package com.github.bookong.zest.runner.junit4.statement;
 
 import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.testcase.ZestData;
 
 /**
  * @author jiangxu
@@ -8,18 +9,22 @@ import com.github.bookong.zest.runner.ZestWorker;
 public class ZestStatement extends AbstractStatement {
 
     private final ZestFrameworkMethod zestMethod;
+    private ZestWorker                worker;
+    private ZestData                  zestData;
 
-    public ZestStatement(ZestWorker launcher, Object target, ZestFrameworkMethod zestMethod){
-        super(launcher, target);
+    public ZestStatement(ZestWorker worker, ZestData zestData, Object target, ZestFrameworkMethod zestMethod){
+        super(target);
+        this.worker = worker;
         this.zestMethod = zestMethod;
+        this.zestData = zestData;
     }
 
     @Override
     public void evaluate() throws Throwable {
-        getWorker().initDataSource();
-        getWorker().getTestCaseData().setStartTime(System.currentTimeMillis());
-        invokeMethod(zestMethod);
-        getWorker().getTestCaseData().setEndTime(System.currentTimeMillis());
-        getWorker().checkTargetDataSource();
+        worker.initDataSource(zestData);
+        zestData.setStartTime(System.currentTimeMillis());
+        invokeMethod(zestMethod, zestData);
+        zestData.setEndTime(System.currentTimeMillis());
+        worker.checkTargetDataSource(zestData);
     }
 }

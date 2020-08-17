@@ -1,9 +1,8 @@
 package com.github.bookong.zest.testcase.sql;
 
-import com.github.bookong.zest.testcase.AbstractDataConverter;
-import com.github.bookong.zest.testcase.AbstractDataSourceTable;
-import com.github.bookong.zest.support.xml.data.Row;
-import com.github.bookong.zest.support.xml.data.Table;
+import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.support.xml.data.SqlTable;
+import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.apache.commons.lang.StringUtils;
@@ -11,29 +10,25 @@ import org.apache.commons.lang.StringUtils;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 关系型数据库的表
  * 
  * @author jiangxu
  */
-public class SqlDataSourceTable extends AbstractDataSourceTable<SqlDataSourceRow> {
+public class Table extends AbstractTable {
 
     /** 排序的依据 */
-    private String                 query;
+    private String               query;
 
     /** 关系型数据库相关数据 */
-    private List<SqlDataSourceRow> rowDataList = new ArrayList<>();
+    private List<Row>            rowDataList = Collections.synchronizedList(new ArrayList<>());
 
     /** 关系型数据库的 SqlType */
-    private Map<String, Integer>   sqlTypes    = new HashMap<>();
+    private Map<String, Integer> sqlTypes    = Collections.synchronizedMap(new HashMap<>());
 
-    public SqlDataSourceTable(String dataSourceId, Table xmlTable, List<AbstractDataConverter> dataConverterList,
-                              Connection conn, boolean isTargetData){
+    public Table(ZestWorker worker, String sourceId, SqlTable xmlTable, Connection conn, boolean isTargetData){
         super(xmlTable);
         loadSqlTypes(conn);
 
@@ -43,14 +38,12 @@ public class SqlDataSourceTable extends AbstractDataSourceTable<SqlDataSourceRow
         this.query = xmlTable.getQuery();
 
         int rowIdx = 1;
-        for (Row xmlRow : xmlTable.getRow()) {
-            rowDataList.add(new SqlDataSourceRow(dataSourceId, getName(), rowIdx++, xmlRow, dataConverterList, sqlTypes,
-                                                 isTargetData));
+        for (com.github.bookong.zest.support.xml.data.Row xmlRow : xmlTable.getRow()) {
+            rowDataList.add(new Row(worker, sourceId, getName(), rowIdx++, xmlRow, sqlTypes, isTargetData));
         }
     }
 
-    @Override
-    public List<SqlDataSourceRow> getRowDataList() {
+    public List<Row> getRowDataList() {
         return rowDataList;
     }
 

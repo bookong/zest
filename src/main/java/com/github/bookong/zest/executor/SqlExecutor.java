@@ -1,13 +1,13 @@
-package com.github.bookong.zest.executer;
+package com.github.bookong.zest.executor;
 
-import com.github.bookong.zest.testcase.sql.SqlDataSourceRow;
-import com.github.bookong.zest.testcase.sql.SqlDataSourceTable;
+import com.github.bookong.zest.testcase.AbstractTable;
+import com.github.bookong.zest.testcase.Source;
+import com.github.bookong.zest.testcase.sql.Row;
+import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.support.rule.CurrentTimeRule;
 import com.github.bookong.zest.support.rule.FromCurrentTimeRule;
 import com.github.bookong.zest.support.rule.RegExpRule;
-import com.github.bookong.zest.testcase.AbstractDataSourceTable;
-import com.github.bookong.zest.testcase.TestCaseData;
-import com.github.bookong.zest.testcase.TestCaseDataSource;
+import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestSqlHelper;
@@ -25,7 +25,7 @@ import java.util.*;
  * 
  * @author jiangxu
  */
-public class SqlExcuter extends AbstractExcuter {
+public class SqlExecutor extends AbstractExecutor {
 
     /**
      * 初始化数据库中数据
@@ -34,14 +34,14 @@ public class SqlExcuter extends AbstractExcuter {
      * @param testCaseData
      * @param dataSource
      */
-    public void initDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource) {
-        for (AbstractDataSourceTable<?> item : dataSource.getInitData().getInitDataList()) {
-            if (!(item instanceof SqlDataSourceTable)) {
+    public void initDatabase(Connection conn, ZestData zestData, Source dataSource) {
+        for (AbstractTable item : dataSource.getInitData().getInitDataList()) {
+            if (!(item instanceof Table)) {
                 throw new RuntimeException(Messages.executerMatchSql());
             }
 
-            SqlDataSourceTable table = (SqlDataSourceTable) item;
-            List<SqlDataSourceRow> rowList = table.getRowDataList();
+            Table table = (Table) item;
+            List<Row> rowList = table.getRowDataList();
             if (rowList.isEmpty()) {
                 return;
             }
@@ -52,7 +52,7 @@ public class SqlExcuter extends AbstractExcuter {
             }
 
             for (int i = 0; i < table.getRowDataList().size(); i++) {
-                SqlDataSourceRow row = table.getRowDataList().get(i);
+                Row row = table.getRowDataList().get(i);
                 String sql = genInsertSql(columnNames, table);
                 Object[] params = new Object[columnNames.size()];
                 int idx = 0;
@@ -71,21 +71,21 @@ public class SqlExcuter extends AbstractExcuter {
      * @param testCaseData
      * @param dataSource
      */
-    public void checkTargetDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource) {
+    public void checkTargetDatabase(Connection conn, ZestData testCaseData, Source dataSource) {
         try {
             if (dataSource.getTargetData().isIgnoreCheck()) {
                 logger.info(Messages.ignoreTargetData(dataSource.getId()));
                 return;
             }
 
-            for (AbstractDataSourceTable<?> table : dataSource.getTargetData().getTargetDataMap().values()) {
+            for (AbstractTable table : dataSource.getTargetData().getTargetDataMap().values()) {
                 if (table.isIgnoreCheckTarget()) {
                     logger.info(Messages.ignoreTargetTable(dataSource.getId(), table.getName()));
                     continue;
                 }
 
                 logger.info(Messages.startCheckTable(dataSource.getId(), table.getName()));
-                verifyTable(conn, testCaseData, dataSource, (SqlDataSourceTable) table);
+                verifyTable(conn, testCaseData, dataSource, (Table) table);
             }
 
         } catch (AssertionError e) {
@@ -102,7 +102,7 @@ public class SqlExcuter extends AbstractExcuter {
      * @param testCaseData
      * @param dataSource
      */
-    public void clearDatabase(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource) {
+    public void clearDatabase(Connection conn, ZestData zestData, Source dataSource) {
         Set<String> tableNames = new LinkedHashSet<>();
         dataSource.getInitData().getInitDataList().forEach(table -> tableNames.add(table.getName()));
         dataSource.getTargetData().getTargetDataMap().values().forEach(table -> tableNames.add(table.getName()));
@@ -112,15 +112,15 @@ public class SqlExcuter extends AbstractExcuter {
         }
     }
 
-    protected Set<String> getColumnNames(SqlDataSourceTable table) {
+    protected Set<String> getColumnNames(Table table) {
         Set<String> columnNames = new LinkedHashSet<>(table.getRowDataList().get(0).getFields().size() + 1);
-        for (SqlDataSourceRow row : table.getRowDataList()) {
+        for (Row row : table.getRowDataList()) {
             columnNames.addAll(row.getFields().keySet());
         }
         return columnNames;
     }
 
-    protected String genInsertSql(Set<String> columnNames, SqlDataSourceTable table) {
+    protected String genInsertSql(Set<String> columnNames, Table table) {
         try {
             StringBuilder sb = new StringBuilder(128);
             sb.append("insert into ").append("`").append(table.getName()).append("`(");
@@ -156,20 +156,20 @@ public class SqlExcuter extends AbstractExcuter {
         ZestSqlHelper.execute(conn, sql, params);
     }
 
-    protected void verifyTable(Connection conn, TestCaseData testCaseData, TestCaseDataSource dataSource,
-                               SqlDataSourceTable table) {
+    protected void verifyTable(Connection conn, ZestData testCaseData, Source dataSource,
+                               Table table) {
         List<Map<String, Object>> dataInDb = findDatas(conn, table);
         Assert.assertEquals(Messages.checkTableSize(dataSource.getId(), table.getName()), table.getRowDataList().size(),
                             dataInDb.size());
         for (int i = 0; i < table.getRowDataList().size(); i++) {
-            SqlDataSourceRow expected = table.getRowDataList().get(i);
+            Row expected = table.getRowDataList().get(i);
             Map<String, Object> actual = dataInDb.get(i);
             verifyRow(testCaseData, dataSource, table, i + 1, expected, actual);
         }
     }
 
-    protected void verifyRow(TestCaseData testCaseData, TestCaseDataSource dataSource, SqlDataSourceTable table,
-                             int rowIdx, SqlDataSourceRow expectedRow, Map<String, Object> actualRow) {
+    protected void verifyRow(ZestData testCaseData, Source dataSource, Table table,
+                             int rowIdx, Row expectedRow, Map<String, Object> actualRow) {
         List<String> columnNames = new ArrayList<>(actualRow.size() + 1);
         if (dataSource.getTargetData().isOnlyCheckCoreData()) {
             logger.info(Messages.ignoreTargetColUnspecified(dataSource.getId(), table.getName()));
@@ -199,7 +199,7 @@ public class SqlExcuter extends AbstractExcuter {
                 Assert.assertTrue(Messages.checkTableColDateType(dataSource.getId(), table.getName(), rowIdx,
                                                                  columnName),
                                   (actual instanceof Date));
-                String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInDB((Date) expected,
+                String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInZest((Date) expected,
                                                                                              testCaseData));
                 String actualDate = ZestDateUtil.formatDateNormal((Date) actual);
                 Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName),
@@ -212,7 +212,7 @@ public class SqlExcuter extends AbstractExcuter {
         }
     }
 
-    protected List<Map<String, Object>> findDatas(Connection conn, SqlDataSourceTable table) {
+    protected List<Map<String, Object>> findDatas(Connection conn, Table table) {
         String sql = String.format("select * from `%s`", table.getName());
         if (StringUtils.isNotBlank(table.getQuery())) {
             sql = table.getQuery();

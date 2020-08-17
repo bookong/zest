@@ -16,7 +16,7 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * @author jiangxu
+ * @author Jiang Xu
  */
 public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner implements ZestClassRunner {
 

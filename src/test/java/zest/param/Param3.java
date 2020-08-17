@@ -3,12 +3,12 @@ package zest.param;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.bookong.zest.testcase.ZestTestParam;
+import com.github.bookong.zest.testcase.ZestParam;
 
 /**
  * @author jiangxu
  */
-public class Param3 implements ZestTestParam {
+public class Param3 implements ZestParam {
 
     private List<Param0> list = new ArrayList<>();
 
