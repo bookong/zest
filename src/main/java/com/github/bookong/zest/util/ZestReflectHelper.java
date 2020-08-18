@@ -57,7 +57,7 @@ public class ZestReflectHelper {
             }
             return value;
         } catch (Exception e) {
-            throw new ZestException("", e);
+            throw new ZestException(e);
         }
     }
 
@@ -76,7 +76,7 @@ public class ZestReflectHelper {
                 field.setAccessible(false);
             }
         } catch (Exception e) {
-            throw new ZestException("", e);
+            throw new ZestException(e);
         }
     }
 

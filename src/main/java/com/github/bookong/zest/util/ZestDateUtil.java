@@ -25,7 +25,7 @@ public class ZestDateUtil {
         } catch (ZestException e) {
             throw e;
         } catch (Exception e) {
-            throw new ZestException("", e);
+            throw new ZestException(e);
         }
     }
 

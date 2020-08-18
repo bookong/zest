@@ -137,7 +137,7 @@ public class SqlExecutor extends AbstractExecutor {
         } catch (ZestException e) {
             throw e;
         } catch (Exception e) {
-            throw new ZestException("", e);
+            throw new ZestException(e);
         }
     }
 
@@ -220,7 +220,7 @@ public class SqlExecutor extends AbstractExecutor {
         } catch (Exception e) {
             ZestSqlHelper.close(rs);
             ZestSqlHelper.close(stat);
-            throw new ZestException("", e);
+            throw new ZestException(e);
         }
     }
 

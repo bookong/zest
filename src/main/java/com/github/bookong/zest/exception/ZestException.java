@@ -12,4 +12,8 @@ public class ZestException extends RuntimeException {
     public ZestException(String message, Throwable cause){
         super(message.concat("\n").concat(cause.getMessage()), cause);
     }
+
+    public ZestException(Throwable cause){
+        super(cause.getMessage(), cause);
+    }
 }

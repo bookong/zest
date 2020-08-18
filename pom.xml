@@ -130,6 +130,13 @@
 			<version>1.21</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>bson</artifactId>
+			<version>4.1.0</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- XML -->
 		<!-- mvn exec:java -Dexec.mainClass="com.sun.tools.xjc.XJCFacade" -Dexec.args="-p xml -d ./tmp ./schema/data.xsd" -->
 		<dependency>

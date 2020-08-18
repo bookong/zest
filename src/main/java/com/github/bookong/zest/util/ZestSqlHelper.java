@@ -44,7 +44,7 @@ public class ZestSqlHelper {
             stat = conn.createStatement();
             stat.executeUpdate(sql);
         } catch (Exception e) {
-            throw new ZestException("", e);
+            throw new ZestException(e);
         } finally {
             close(stat);
         }
@@ -83,7 +83,7 @@ public class ZestSqlHelper {
             }
             stat.execute();
         } catch (Exception e) {
-            throw new ZestException("", e);
+            throw new ZestException(e);
         } finally {
             close(stat);
         }
