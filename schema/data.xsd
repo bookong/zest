@@ -67,9 +67,14 @@
                 <xsd:extension base="xsd:string">
                     <xsd:annotation>
                         <xsd:documentation><![CDATA[
-    对具体的测试参数属性对象进行赋值。属性必须是一个非基本类型的对象，使用 Yaml 进行配置
+    对具体的测试参数属性对象进行赋值。
+    如果属性是 Integer、 Long、 Boolean、 Double、 Float、 String 或 Date 类型，这里为具体值。
+    如果属性是一个复杂的对象，这里是 json 字符串
 
-    Assign values to specific test parameter attribute objects. The attribute must be a non-basic type of object, use Yaml to configure
+    Assign values to specific test parameter attribute objects.
+    If the property is of type Integer, Long, Boolean, Double, Float, String or Date, here is the specific value.
+    If the attribute is a complex object, here is the json string
+
                         ]]></xsd:documentation>
                     </xsd:annotation>
                     <xsd:attribute name="Name" type="xsd:string" use="required">
@@ -79,15 +84,6 @@
 
 	Attribute name of test parameter
 							]]></xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:attribute>
-                    <xsd:attribute name="Null" type="xsd:boolean" default="false">
-                        <xsd:annotation>
-                            <xsd:documentation><![CDATA[
-    是否给属性设置 NULL 值
-
-    Whether to set a NULL value for the attribute
-                            ]]></xsd:documentation>
                         </xsd:annotation>
                     </xsd:attribute>
                 </xsd:extension>

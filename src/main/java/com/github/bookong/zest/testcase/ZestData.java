@@ -3,14 +3,14 @@ package com.github.bookong.zest.testcase;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
+import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.support.xml.data.ParamField;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
+import com.github.bookong.zest.util.ZestJsonUtil;
 import com.github.bookong.zest.util.ZestReflectHelper;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.text.ParseException;
@@ -80,17 +80,28 @@ public class ZestData {
 
     private void load(ParamField xmlParamField) {
         try {
-            if (xmlParamField.isNull() && StringUtils.isBlank(xmlParamField.getValue())) {
-                throw new ZestException(Messages.parseParamNull(xmlParamField));
-            }
+            String fieldName = StringUtils.trimToEmpty(xmlParamField.getName());
+            String value = StringUtils.trimToEmpty(xmlParamField.getValue());
+            Class<?> fieldClass = ZestReflectHelper.getField(param, fieldName).getType();
 
-            String fieldName = xmlParamField.getName();
-            if (xmlParamField.isNull()) {
-                ZestReflectHelper.setValue(param, fieldName, null);
+            if (Integer.class.isAssignableFrom(fieldClass) || "int".equals(fieldClass.getName())) { //$NON-NLS-1$
+                ZestReflectHelper.setValue(param, fieldName, Integer.valueOf(value.trim()));
+            } else if (Long.class.isAssignableFrom(fieldClass) || "long".equals(fieldClass.getName())) { //$NON-NLS-1$
+                ZestReflectHelper.setValue(param, fieldName, Long.valueOf(value.trim()));
+            } else if (Boolean.class.isAssignableFrom(fieldClass) || "boolean".equals(fieldClass.getName())) { //$NON-NLS-1$
+                ZestReflectHelper.setValue(param, fieldName, Boolean.valueOf(value.trim()));
+            } else if (Double.class.isAssignableFrom(fieldClass) || "double".equals(fieldClass.getName())) { //$NON-NLS-1$
+                ZestReflectHelper.setValue(param, fieldName, Double.valueOf(value.trim()));
+            } else if (Float.class.isAssignableFrom(fieldClass) || "float".equals(fieldClass.getName())) { //$NON-NLS-1$
+                ZestReflectHelper.setValue(param, fieldName, Float.valueOf(value.trim()));
+            } else if (String.class.isAssignableFrom(fieldClass)) {
+                ZestReflectHelper.setValue(param, fieldName, value);
+            } else if (Date.class.isAssignableFrom(fieldClass)) {
+                ZestReflectHelper.setValue(param, fieldName, ZestDateUtil.parseDate(value));
+            } else if (List.class.isAssignableFrom(fieldClass)) {
+                ZestReflectHelper.setValue(param, fieldName, ZestJsonUtil.fromJsonArray(value, fieldClass));
             } else {
-                Object valueInParam = ZestReflectHelper.getValue(param, fieldName);
-                Object valueInXml = new Yaml().load(xmlParamField.getValue());
-                BeanUtils.copyProperties(valueInParam, valueInXml);
+                ZestReflectHelper.setValue(param, fieldName, ZestJsonUtil.fromJson(value, fieldClass));
             }
         } catch (ZestException e) {
             throw e;

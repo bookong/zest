@@ -49,10 +49,6 @@ public class Messages {
         return getString("parse.date", value);
     }
 
-    public static String parseParamNull(ParamField xmlParamField) {
-        return getString("parse.param.null", xmlParamField.getName());
-    }
-
     public static String parseParamObj(ParamField xmlParamField) {
         return getString("parse.param.obj", xmlParamField.getName());
     }

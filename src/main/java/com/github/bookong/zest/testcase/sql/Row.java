@@ -7,7 +7,7 @@ import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.namespace.QName;
 import java.sql.Types;

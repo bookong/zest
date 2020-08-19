@@ -5,7 +5,7 @@ import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
 import java.util.regex.Pattern;

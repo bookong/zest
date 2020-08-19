@@ -6,7 +6,7 @@ import com.github.bookong.zest.support.xml.data.SqlTable;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
