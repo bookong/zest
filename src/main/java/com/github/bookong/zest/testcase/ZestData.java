@@ -3,7 +3,6 @@ package com.github.bookong.zest.testcase;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
-import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.support.xml.data.ParamField;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;

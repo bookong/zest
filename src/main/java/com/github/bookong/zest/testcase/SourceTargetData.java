@@ -37,7 +37,9 @@ public class SourceTargetData extends AbstractSourceData {
 
         for (AbstractTable table : createTables(worker, sourceId, xmlInit, true)) {
             // 验证全部数据时，即使 Target 部分没有写，也要验证是否与 Init 部分一致
-            targetDataMap.put(table.getName(), table);
+            if (!targetDataMap.containsKey(table.getName())) {
+                targetDataMap.put(table.getName(), table);
+            }
         }
 
     }

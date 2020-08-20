@@ -1,21 +1,18 @@
 package com.github.bookong.zest.runner.junit5;
 
-import com.github.bookong.zest.testcase.ZestData;
-import com.github.bookong.zest.testcase.ZestParam;
+import com.github.bookong.zest.annotation.ZestTest;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
-import com.github.bookong.zest.annotation.ZestTest;
+import com.github.bookong.zest.testcase.ZestData;
+import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestTestCaseUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DynamicTest;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.lang.reflect.Method;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

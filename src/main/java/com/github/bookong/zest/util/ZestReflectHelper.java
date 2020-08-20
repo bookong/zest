@@ -39,6 +39,14 @@ public class ZestReflectHelper {
         return null;
     }
 
+    public static Object invokeMethod(Object obj, String methodName, Object... args) {
+        try {
+            return getMethod(obj, methodName).invoke(obj, args);
+        } catch (Exception e) {
+            throw new ZestException(e);
+        }
+    }
+
     public static Object getValue(Object obj, String fieldName) {
         return getValue(obj, getField(obj, fieldName));
     }

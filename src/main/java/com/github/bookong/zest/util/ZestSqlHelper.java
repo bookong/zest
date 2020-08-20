@@ -89,35 +89,34 @@ public class ZestSqlHelper {
         }
     }
 
-    /**
-     * 在控制台显示查询到的结果内容
-     *
-     * @param conn 数据库连接
-     * @param sql 待查询 SQL
-     */
-    public static void showResultInConsole(Connection conn, String sql) {
+    public static String query(Connection conn, String sql) {
         Statement stat = null;
         ResultSet rs = null;
+        StringBuilder sb = new StringBuilder();
         try {
             stat = conn.createStatement();
             rs = stat.executeQuery(sql);
 
             while (rs.next()) {
-                logger.info("-------------------------------------------"); //$NON-NLS-1$
+                sb.append("-------------------------------------------\r\n"); //$NON-NLS-1$
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                     String colName = rs.getMetaData().getColumnName(i);
                     Object colValue = rs.getObject(i);
                     String colType = (colValue == null ? "UNKNOWN" : colValue.getClass().getName()); //$NON-NLS-1$
-                    logger.info("{} ({}) : {}", colName, colType, colValue == null ? "NULL" : parseValue(colValue)); //$NON-NLS-1$
+                    colValue = colValue == null ? "NULL" : parseValue(colValue);
+                    sb.append(String.format("%s (%s) : %s", colName, colType, //$NON-NLS-1$
+                                            colValue)).append("\r\n"); // $NON-NLS-1$
                 }
             }
-            logger.info("==========================================="); //$NON-NLS-1$
+            sb.append("==========================================="); //$NON-NLS-1$
 
         } catch (Exception e) {
             logger.error("", e);
             close(rs);
             close(stat);
         }
+
+        return sb.toString();
     }
 
     private static String parseValue(Object value) {

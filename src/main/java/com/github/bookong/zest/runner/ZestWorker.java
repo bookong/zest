@@ -30,16 +30,16 @@ import java.util.Map;
  */
 public abstract class ZestWorker {
 
-    protected static Logger logger = LoggerFactory.getLogger(ZestWorker.class);
+    protected static Logger                 logger           = LoggerFactory.getLogger(ZestWorker.class);
 
-    protected Map<String, AbstractExecutor> executorMap = new HashMap<>();
+    protected Map<String, AbstractExecutor> executorMap      = new HashMap<>();
     /**
      * value 放三种东西: <br>
      * javax.sql.DataSource <br>
      * org.springframework.data.mongodb.core.MongoOperations<br>
      * org.springframework.data.redis.core.RedisOperations
      */
-    private Map<String, Object> sourceOperations = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, Object>             sourceOperations = Collections.synchronizedMap(new HashMap<>());
 
     protected void loadAnnotation(Object test) {
         Class<?> clazz = test.getClass();
@@ -77,21 +77,28 @@ public abstract class ZestWorker {
     }
 
     protected void prepare(ZestData zestData) {
-        for (Field f : zestData.getParam().getClass().getDeclaredFields()) {
-            prepare(zestData, f, ZestConnection.class, Connection.class);
-            prepare(zestData, f, ZestMongo.class, MongoOperations.class);
-            prepare(zestData, f, ZestRedis.class, RedisOperations.class);
+        Class<?> clazz = zestData.getParam().getClass();
+        while (!StringUtils.equals(Object.class.getName(), clazz.getName())) {
+            for (Field f : clazz.getDeclaredFields()) {
+                prepare(zestData, f, ZestConnection.class, Connection.class);
+                prepare(zestData, f, ZestMongo.class, MongoOperations.class);
+                prepare(zestData, f, ZestRedis.class, RedisOperations.class);
+            }
+
+            clazz = clazz.getSuperclass();
         }
     }
 
-    private <T extends Annotation> void prepare(ZestData zestData, Field f, Class<T> annotationClass, Class<?> operationClass) {
+    private <T extends Annotation> void prepare(ZestData zestData, Field f, Class<T> annotationClass,
+                                                Class<?> operationClass) {
         T ann = f.getAnnotation(annotationClass);
         if (ann != null) {
             if (!operationClass.getName().equals(f.getType().getName())) {
-                throw new ZestException(Messages.annotationMatch(annotationClass.getSimpleName(), operationClass.getName()));
+                throw new ZestException(Messages.annotationMatch(annotationClass.getSimpleName(),
+                                                                 operationClass.getName()));
             }
 
-            String sourceId = String.valueOf(ZestReflectHelper.getValue(ann, "value"));
+            String sourceId = String.valueOf(ZestReflectHelper.invokeMethod(ann, "value"));
             ZestReflectHelper.setValue(zestData.getParam(), f.getName(), getSourceOperation(sourceId));
         }
     }
