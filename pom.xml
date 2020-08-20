@@ -6,7 +6,7 @@
     <groupId>com.github.bookong</groupId>
     <artifactId>zest</artifactId>
     <name>DB Unit Testing toolkit - ZEST!</name>
-    <version>0.2.25-SNAPSHOT</version>
+    <version>0.2.26-SNAPSHOT</version>
 
     <description>An easy-to-use database unit testing toolkit, support for Spring.</description>
     <url>https://github.com/bookong/zest</url>
@@ -33,7 +33,7 @@
         <slf4j-version>1.7.9</slf4j-version>
         <log4j-version>2.1</log4j-version>
         <springframework-version>4.3.14.RELEASE</springframework-version>
-        <jackson-version>2.9.7</jackson-version>
+        <jackson-version>2.11.2</jackson-version>
     </properties>
 
     <dependencies>
@@ -114,7 +114,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13</version>
-            <optional>true</optional>
         </dependency>
 
         <!-- Junit 5 support -->
@@ -122,7 +121,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.6.2</version>
-            <optional>true</optional>
         </dependency>
 
         <!-- JSON -->
