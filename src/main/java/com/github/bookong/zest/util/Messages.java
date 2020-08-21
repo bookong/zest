@@ -109,8 +109,8 @@ public class Messages {
         return getString("init.param");
     }
 
-    public static String executorMatchSql() {
-        return getString("executor.match.sql");
+    public static String executorMatch() {
+        return getString("executor.match");
     }
 
     public static String statementEvaluate(String testCaseFilePath) {
@@ -181,6 +181,10 @@ public class Messages {
 
     public static String checkTableCol(String sourceId, String tableName, int rowIdx, String columnName) {
         return getString("check.table.col", sourceId, tableName, rowIdx, columnName);
+    }
+
+    public static String checkDocSize(String sourceId, String tableName) {
+        return getString("check.doc.size", sourceId, tableName);
     }
 
     private static String getString(String key) {

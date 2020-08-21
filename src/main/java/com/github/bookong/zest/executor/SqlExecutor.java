@@ -32,7 +32,7 @@ public class SqlExecutor extends AbstractExecutor {
     @Override
     protected void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
         if (!(data instanceof Table)) {
-            throw new ZestException(Messages.executorMatchSql());
+            throw new ZestException(Messages.executorMatch());
         }
 
         Table table = (Table) data;
@@ -62,14 +62,14 @@ public class SqlExecutor extends AbstractExecutor {
     @Override
     protected void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
         if (!(data instanceof Table)) {
-            throw new ZestException(Messages.executorMatchSql());
+            throw new ZestException(Messages.executorMatch());
         }
 
         Table table = (Table) data;
         Connection conn = worker.getSourceOperation(source.getId(), Connection.class);
         List<Map<String, Object>> dataInDb = findData(conn, table);
         Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getRowDataList().size(),
-                dataInDb.size());
+                            dataInDb.size());
         for (int i = 0; i < table.getRowDataList().size(); i++) {
             Row expected = table.getRowDataList().get(i);
             Map<String, Object> actual = dataInDb.get(i);
@@ -79,9 +79,7 @@ public class SqlExecutor extends AbstractExecutor {
 
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
-        Set<String> tableNames = new LinkedHashSet<>();
-        source.getInitData().getInitDataList().forEach(table -> tableNames.add(table.getName()));
-        source.getTargetData().getTargetDataMap().values().forEach(table -> tableNames.add(table.getName()));
+        Set<String> tableNames = findAllTableNames(source);
         Connection conn = worker.getSourceOperation(source.getId(), Connection.class);
 
         for (String tableName : tableNames) {
@@ -99,7 +97,8 @@ public class SqlExecutor extends AbstractExecutor {
      * @return
      * @throws UnsupportedOperationException
      */
-    public Object parseRowValue(String tableName, String fieldName, Integer colSqlType, String xmlFieldValue) throws UnsupportedOperationException {
+    public Object parseRowValue(String tableName, String fieldName, Integer colSqlType,
+                                String xmlFieldValue) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
@@ -165,7 +164,7 @@ public class SqlExecutor extends AbstractExecutor {
 
             if (expected == null) {
                 Assert.assertNull(Messages.checkTableColNull(dataSource.getId(), table.getName(), rowIdx, columnName),
-                        actual);
+                                  actual);
 
             } else if (expected instanceof CurrentTimeRule) {
                 ((CurrentTimeRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
@@ -178,17 +177,17 @@ public class SqlExecutor extends AbstractExecutor {
 
             } else if (expected instanceof Date) {
                 Assert.assertTrue(Messages.checkTableColDateType(dataSource.getId(), table.getName(), rowIdx,
-                        columnName),
-                        (actual instanceof Date));
+                                                                 columnName),
+                                  (actual instanceof Date));
                 String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInZest((Date) expected,
-                        testCaseData));
+                                                                                               testCaseData));
                 String actualDate = ZestDateUtil.formatDateNormal((Date) actual);
                 Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName),
-                        expectedDate, actualDate);
+                                    expectedDate, actualDate);
 
             } else {
                 Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName),
-                        String.valueOf(expected), String.valueOf(actual));
+                                    String.valueOf(expected), String.valueOf(actual));
             }
         }
     }

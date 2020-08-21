@@ -38,12 +38,12 @@ public class Collection extends AbstractTable {
             for (int i = 1; i < xmlCollection.getSorts().getSort().size(); i++) {
                 mongoSort.and(getSort(xmlCollection.getSorts().getSort().get(i)));
             }
+        }
 
-            try {
-                entityClass = Class.forName(xmlCollection.getEntityClass());
-            } catch (Exception e) {
-                throw new ZestException(e);
-            }
+        try {
+            entityClass = Class.forName(xmlCollection.getEntityClass());
+        } catch (Exception e) {
+            throw new ZestException(e);
         }
 
         int rowIdx = 1;
@@ -71,5 +71,9 @@ public class Collection extends AbstractTable {
 
     public Class<?> getEntityClass() {
         return entityClass;
+    }
+
+    public List<Object> getDocuments() {
+        return documents;
     }
 }

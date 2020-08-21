@@ -8,6 +8,9 @@ import com.github.bookong.zest.util.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * 抽象的执行器
  * 
@@ -23,6 +26,7 @@ public abstract class AbstractExecutor {
 
     /**
      * 清除数据
+     * 
      * @param worker
      * @param zestData
      * @param source
@@ -70,6 +74,13 @@ public abstract class AbstractExecutor {
                 throw new AssertionError(Messages.checkDs(source.getId()), e);
             }
         }
+    }
+
+    protected Set<String> findAllTableNames(Source source) {
+        Set<String> tableNames = new LinkedHashSet<>();
+        source.getInitData().getInitDataList().forEach(table -> tableNames.add(table.getName()));
+        source.getTargetData().getTargetDataMap().values().forEach(table -> tableNames.add(table.getName()));
+        return tableNames;
     }
 
 }
