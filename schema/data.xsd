@@ -256,6 +256,13 @@
 						]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
+                <xsd:element ref="data:Rules" >
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+	这个属性只有在 <Target> 元素下的 <MongoCollection> 元素中才有效。指定验证规则
+						]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
                 <xsd:element ref="data:Document" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
             <xsd:attribute name="Name" type="xsd:string" use="required">
@@ -414,6 +421,50 @@
     当子元素为 <Value> 时，是否对内容进行 trim 操作
 
     When the child element is <Value>, whether to trim the content
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Rules">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+    验证用的规则列表
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:Rule" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Rule">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+    验证用的规则
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:choice>
+                    <xsd:element ref="data:RegExp"/>
+                    <xsd:element ref="data:CurrentTime"/>
+                    <xsd:element ref="data:FromCurrentTime"/>
+                </xsd:choice>
+            </xsd:sequence>
+            <xsd:attribute name="Path" type="xsd:string" use="required">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+    类似 field1.field 这样的属性路径
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="Nullable" type="xsd:boolean" default="true">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+    是否可以为空值
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>

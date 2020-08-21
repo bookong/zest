@@ -27,16 +27,13 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;choice>
- *           &lt;element ref="{https://www.bookong.net/schema/zest/data}Null"/>
- *           &lt;element ref="{https://www.bookong.net/schema/zest/data}Value"/>
  *           &lt;element ref="{https://www.bookong.net/schema/zest/data}RegExp"/>
  *           &lt;element ref="{https://www.bookong.net/schema/zest/data}CurrentTime"/>
  *           &lt;element ref="{https://www.bookong.net/schema/zest/data}FromCurrentTime"/>
  *         &lt;/choice>
  *       &lt;/sequence>
- *       &lt;attribute name="Name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="Path" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="Nullable" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" />
- *       &lt;attribute name="Trim" type="{http://www.w3.org/2001/XMLSchema}boolean" default="true" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -46,79 +43,23 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "_null",
-    "value",
     "regExp",
     "currentTime",
     "fromCurrentTime"
 })
-@XmlRootElement(name = "Field")
-public class Field {
+@XmlRootElement(name = "Rule")
+public class Rule {
 
-    @XmlElement(name = "Null")
-    protected String _null;
-    @XmlElement(name = "Value")
-    protected String value;
     @XmlElement(name = "RegExp")
     protected String regExp;
     @XmlElement(name = "CurrentTime")
     protected CurrentTime currentTime;
     @XmlElement(name = "FromCurrentTime")
     protected FromCurrentTime fromCurrentTime;
-    @XmlAttribute(name = "Name", required = true)
-    protected String name;
+    @XmlAttribute(name = "Path", required = true)
+    protected String path;
     @XmlAttribute(name = "Nullable")
     protected Boolean nullable;
-    @XmlAttribute(name = "Trim")
-    protected Boolean trim;
-
-    /**
-     * Gets the value of the null property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNull() {
-        return _null;
-    }
-
-    /**
-     * Sets the value of the null property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNull(String value) {
-        this._null = value;
-    }
-
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     /**
      * Gets the value of the regExp property.
@@ -193,27 +134,27 @@ public class Field {
     }
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the path property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getName() {
-        return name;
+    public String getPath() {
+        return path;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the path property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
+    public void setPath(String value) {
+        this.path = value;
     }
 
     /**
@@ -242,34 +183,6 @@ public class Field {
      */
     public void setNullable(Boolean value) {
         this.nullable = value;
-    }
-
-    /**
-     * Gets the value of the trim property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public boolean isTrim() {
-        if (trim == null) {
-            return true;
-        } else {
-            return trim;
-        }
-    }
-
-    /**
-     * Sets the value of the trim property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setTrim(Boolean value) {
-        this.trim = value;
     }
 
 }

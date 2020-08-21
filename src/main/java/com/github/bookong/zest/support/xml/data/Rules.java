@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{https://www.bookong.net/schema/zest/data}ParamField" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{https://www.bookong.net/schema/zest/data}Rule" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "paramField"
+    "rule"
 })
-@XmlRootElement(name = "Param")
-public class Param {
+@XmlRootElement(name = "Rules")
+public class Rules {
 
-    @XmlElement(name = "ParamField")
-    protected List<ParamField> paramField;
+    @XmlElement(name = "Rule", required = true)
+    protected List<Rule> rule;
 
     /**
-     * Gets the value of the paramField property.
+     * Gets the value of the rule property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the paramField property.
+     * This is why there is not a <CODE>set</CODE> method for the rule property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getParamField().add(newItem);
+     *    getRule().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ParamField }
+     * {@link Rule }
      * 
      * 
      */
-    public List<ParamField> getParamField() {
-        if (paramField == null) {
-            paramField = new ArrayList<ParamField>();
+    public List<Rule> getRule() {
+        if (rule == null) {
+            rule = new ArrayList<Rule>();
         }
-        return this.paramField;
+        return this.rule;
     }
 
 }
