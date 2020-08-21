@@ -73,8 +73,8 @@ public class Messages {
         return getString("parse.data.field.none", tableName, fieldName);
     }
 
-    public static String parseDataTableQuery() {
-        return getString("parse.data.table.query");
+    public static String parseDataTableSort() {
+        return getString("parse.data.table.sort");
     }
 
     public static String parseDbMeta() {

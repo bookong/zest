@@ -24,7 +24,7 @@
                 <xsd:element ref="data:Sources"/>
                 <xsd:element ref="data:Param"/>
             </xsd:sequence>
-            <xsd:attribute name="Version" type="xsd:float" default="1.0" />
+            <xsd:attribute name="Version" type="xsd:float" default="1.0"/>
             <xsd:attribute name="currentTime" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
@@ -37,7 +37,7 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="Description" type="xsd:string" />
+    <xsd:element name="Description" type="xsd:string"/>
 
     <xsd:element name="Param">
         <xsd:annotation>
@@ -199,14 +199,14 @@
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="Query" type="xsd:string" minOccurs="0">
+                <xsd:element ref="data:Sort" minOccurs="0">
                     <xsd:annotation>
                         <xsd:documentation><![CDATA[
 	这个属性只有在 <Target> 元素下的 <SqlTable> 元素中才有效。
-	这是一个查询用的语句 ，因为验证的表不一定是一个有序的主键，为了方便自动验证，就需要指定查询语句
+	因为验证的表不一定是一个有序的主键，为了方便自动验证，就需要指定排序规则
 
 	This attribute is only valid in the <SqlTable> element under the <Target> element.
-    This is a query statement, because the validated table is not necessarily an ordered primary key. To facilitate automatic verification, you need to specify the query statement
+    Because the verified table is not necessarily an ordered primary key, in order to facilitate automatic verification, you need to specify the sorting rules
 						]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
@@ -238,22 +238,42 @@
     <xsd:element name="MongoCollection">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
-    MongoDB 的集合，当 @ZestSource 注解了测试对象的 org.springframework.data.mongodb.core.MongoOperations 属性时有效
+    MongoDB 的 Collection，当 @ZestSource 注解了测试对象的 org.springframework.data.mongodb.core.MongoOperations 属性时有效
 
-    MongoDB collection, valid when @ZestSource annotates the org.springframework.data.mongodb.core.MongoOperations property of the test object
+    MongoDB's Collection, valid when @ZestSource annotates the org.springframework.data.mongodb.core.MongoOperations property of the test object
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
-                <!-- TODO -->
+                <xsd:element ref="data:Sort" >
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+	这个属性只有在 <Target> 元素下的 <MongoCollection> 元素中才有效。
+	指定排序的规则
+
+	This attribute is only valid in the <SqlTable> element under the <Target> element.
+    Specify the sorting rules
+						]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element ref="data:Document" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
             <xsd:attribute name="Name" type="xsd:string" use="required">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
-    集合名
+    Collection 名称
 
     Collection name
                     ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="EntityClass" type="xsd:string" use="required">
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+    Document 的实体对象类名
+
+    The entity object class name of the Document
+                        ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
@@ -326,6 +346,29 @@
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:anyAttribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Document">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+    MongoDB 的一条 Document 记录
+
+    A Document record in MongoDB
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation><![CDATA[
+    构造 Document 对象用的 Json 内容
+
+    Json content used to construct Document object
+                        ]]></xsd:documentation>
+                    </xsd:annotation>
+                </xsd:extension>
+            </xsd:simpleContent>
         </xsd:complexType>
     </xsd:element>
 
@@ -480,6 +523,42 @@
     How many milliseconds error may occur in time
                     ]]></xsd:documentation>
                 </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Sort">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[
+    排序规则
+
+    Sorting rules
+            ]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="Field" type="xsd:string" >
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+    排序的字段
+
+    Sorted field
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="Direction" default="asc" >
+                <xsd:annotation>
+                    <xsd:documentation><![CDATA[
+    排序的方向
+
+    Sorting direction
+                    ]]></xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:NMTOKEN">
+                        <xsd:enumeration value="asc"/>
+                        <xsd:enumeration value="desc"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
             </xsd:attribute>
         </xsd:complexType>
     </xsd:element>

@@ -10,62 +10,65 @@ package com.github.bookong.zest.support.xml.data;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 
 
 /**
+ * 
+ *     构造 Document 对象用的 Json 内容
+ * 
+ *     Json content used to construct Document object
+ *                         
+ * 
  * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType>
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="Offset" type="{http://www.w3.org/2001/XMLSchema}int" default="1000" />
- *     &lt;/restriction>
- *   &lt;/complexContent>
+ *   &lt;simpleContent>
+ *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema>string">
+ *     &lt;/extension>
+ *   &lt;/simpleContent>
  * &lt;/complexType>
  * </pre>
  * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "")
-@XmlRootElement(name = "CurrentTime")
-public class CurrentTime {
+@XmlType(name = "", propOrder = {
+    "value"
+})
+@XmlRootElement(name = "Document")
+public class Document {
 
-    @XmlAttribute(name = "Offset")
-    protected Integer offset;
+    @XmlValue
+    protected String value;
 
     /**
-     * Gets the value of the offset property.
+     * Gets the value of the value property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public int getOffset() {
-        if (offset == null) {
-            return  1000;
-        } else {
-            return offset;
-        }
+    public String getValue() {
+        return value;
     }
 
     /**
-     * Sets the value of the offset property.
+     * Sets the value of the value property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
-    public void setOffset(Integer value) {
-        this.offset = value;
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

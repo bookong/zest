@@ -21,7 +21,7 @@ import java.util.*;
 public class Table extends AbstractTable {
 
     /** 排序的依据 */
-    private String               query;
+    private String               sort;
 
     /** 关系型数据库相关数据 */
     private List<Row>            rowDataList = Collections.synchronizedList(new ArrayList<>());
@@ -33,10 +33,14 @@ public class Table extends AbstractTable {
         super(xmlTable);
         loadSqlTypes(conn);
 
-        if (StringUtils.isNotBlank(xmlTable.getQuery()) && !isTargetData) {
-            throw new ZestException(Messages.parseDataTableQuery());
+        if (xmlTable.getSort() != null) {
+            if (!isTargetData) {
+                throw new ZestException(Messages.parseDataTableSort());
+            }
+
+            this.sort = String.format(" order by %s %s", xmlTable.getSort().getField(),
+                                      xmlTable.getSort().getDirection());
         }
-        this.query = xmlTable.getQuery();
 
         int rowIdx = 1;
         for (com.github.bookong.zest.support.xml.data.Row xmlRow : xmlTable.getRow()) {
@@ -48,8 +52,8 @@ public class Table extends AbstractTable {
         return rowDataList;
     }
 
-    public String getQuery() {
-        return query;
+    public String getSort() {
+        return sort;
     }
 
     private void loadSqlTypes(Connection conn) {
@@ -58,7 +62,7 @@ public class Table extends AbstractTable {
         try {
             dbMetaData = conn.getMetaData();
             List<String> tableNames = new ArrayList<>();
-            rs = dbMetaData.getTables(null, null, null, new String[]{"TABLE"});
+            rs = dbMetaData.getTables(null, null, null, new String[] { "TABLE" });
             while (rs.next()) {
                 tableNames.add(rs.getString("TABLE_NAME"));
             }
@@ -72,7 +76,7 @@ public class Table extends AbstractTable {
                 ZestSqlHelper.close(rs);
             }
 
-        } catch (ZestException e){
+        } catch (ZestException e) {
             throw e;
         } catch (Exception e) {
             throw new ZestException(Messages.parseDbMeta(), e);

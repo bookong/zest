@@ -138,7 +138,7 @@
         </dependency>
 
         <!-- XML -->
-        <!-- data.xsd to code : -->
+        <!-- data.xsd to java code : -->
         <!-- mvn exec:java -Dexec.mainClass="com.sun.tools.xjc.XJCFacade" -Dexec.args="-p xml -d ./tmp ./schema/data.xsd" -->
         <dependency>
             <groupId>com.sun.xml.bind</groupId>

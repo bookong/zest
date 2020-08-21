@@ -195,8 +195,8 @@ public class SqlExecutor extends AbstractExecutor {
 
     protected List<Map<String, Object>> findData(Connection conn, Table table) {
         String sql = String.format("select * from `%s`", table.getName());
-        if (StringUtils.isNotBlank(table.getQuery())) {
-            sql = table.getQuery();
+        if (StringUtils.isNotBlank(table.getSort())) {
+            sql = sql.concat(table.getSort());
         }
 
         Statement stat = null;

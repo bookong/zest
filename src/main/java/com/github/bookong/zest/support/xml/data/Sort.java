@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -24,10 +26,15 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *       &lt;/sequence>
- *       &lt;attribute name="Key" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="Ignore" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
+ *       &lt;attribute name="Field" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="Direction" default="asc">
+ *         &lt;simpleType>
+ *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}NMTOKEN">
+ *             &lt;enumeration value="asc"/>
+ *             &lt;enumeration value="desc"/>
+ *           &lt;/restriction>
+ *         &lt;/simpleType>
+ *       &lt;/attribute>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -37,64 +44,65 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
-@XmlRootElement(name = "RedisData")
-public class RedisData {
+@XmlRootElement(name = "Sort")
+public class Sort {
 
-    @XmlAttribute(name = "Key", required = true)
-    protected String key;
-    @XmlAttribute(name = "Ignore")
-    protected Boolean ignore;
+    @XmlAttribute(name = "Field")
+    protected String field;
+    @XmlAttribute(name = "Direction")
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    protected String direction;
 
     /**
-     * Gets the value of the key property.
+     * Gets the value of the field property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getKey() {
-        return key;
+    public String getField() {
+        return field;
     }
 
     /**
-     * Sets the value of the key property.
+     * Sets the value of the field property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setKey(String value) {
-        this.key = value;
+    public void setField(String value) {
+        this.field = value;
     }
 
     /**
-     * Gets the value of the ignore property.
+     * Gets the value of the direction property.
      * 
      * @return
      *     possible object is
-     *     {@link Boolean }
+     *     {@link String }
      *     
      */
-    public boolean isIgnore() {
-        if (ignore == null) {
-            return false;
+    public String getDirection() {
+        if (direction == null) {
+            return "asc";
         } else {
-            return ignore;
+            return direction;
         }
     }
 
     /**
-     * Sets the value of the ignore property.
+     * Sets the value of the direction property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Boolean }
+     *     {@link String }
      *     
      */
-    public void setIgnore(Boolean value) {
-        this.ignore = value;
+    public void setDirection(String value) {
+        this.direction = value;
     }
 
 }
