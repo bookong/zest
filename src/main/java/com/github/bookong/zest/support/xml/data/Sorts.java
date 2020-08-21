@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{https://www.bookong.net/schema/zest/data}ParamField" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{https://www.bookong.net/schema/zest/data}Sort" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,41 +38,41 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "paramField"
+    "sort"
 })
-@XmlRootElement(name = "Param")
-public class Param {
+@XmlRootElement(name = "Sorts")
+public class Sorts {
 
-    @XmlElement(name = "ParamField")
-    protected List<ParamField> paramField;
+    @XmlElement(name = "Sort")
+    protected List<Sort> sort;
 
     /**
-     * Gets the value of the paramField property.
+     * Gets the value of the sort property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the paramField property.
+     * This is why there is not a <CODE>set</CODE> method for the sort property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getParamField().add(newItem);
+     *    getSort().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ParamField }
+     * {@link Sort }
      * 
      * 
      */
-    public List<ParamField> getParamField() {
-        if (paramField == null) {
-            paramField = new ArrayList<ParamField>();
+    public List<Sort> getSort() {
+        if (sort == null) {
+            sort = new ArrayList<Sort>();
         }
-        return this.paramField;
+        return this.sort;
     }
 
 }

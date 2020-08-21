@@ -10,14 +10,14 @@ import java.util.ResourceBundle;
  */
 public class Messages {
 
-    private static final String BUNDLE_NAME = "com.github.bookong.zest.util.messages"; //$NON-NLS-1$
+    private static final String   BUNDLE_NAME     = "com.github.bookong.zest.util.messages"; //$NON-NLS-1$
 
     private static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-    private Messages() {
+    private Messages(){
     }
 
-    public static void rebundle(){
+    public static void reBundle() {
         RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
     }
 
@@ -35,10 +35,6 @@ public class Messages {
 
     public static String noData() {
         return getString("no.data");
-    }
-
-    public static String annotationMatch(String annClassName, String matchClassName) {
-        return getString("annotation.match", annClassName, matchClassName);
     }
 
     public static String parseFile(String filePath) {
@@ -77,6 +73,10 @@ public class Messages {
         return getString("parse.data.table.sort");
     }
 
+    public static String parseDocObj(String sourceId, String collectionId, int rowIdx) {
+        return getString("parse.doc.obj", sourceId, collectionId, rowIdx);
+    }
+
     public static String parseDbMeta() {
         return getString("parse.db.meta");
     }
@@ -89,16 +89,16 @@ public class Messages {
         return getString("duplicate.operation", value);
     }
 
-    public static String operationNull(String dataSourceId) {
-        return getString("operation.null", dataSourceId);
+    public static String operationNull(String sourceId) {
+        return getString("operation.null", sourceId);
     }
 
     public static String operationUnsupported(String sourceId, String operationClass) {
         return getString("operation.unsupported", sourceId, operationClass);
     }
 
-    public static String operationMismatching(String dataSourceId, String nodeName) {
-        return getString("operation.mismatching", dataSourceId, nodeName);
+    public static String operationMismatching(String sourceId, String nodeName) {
+        return getString("operation.mismatching", sourceId, nodeName);
     }
 
     public static String initExecutor(String className) {
@@ -125,65 +125,62 @@ public class Messages {
         return getString("ignore.target.data", id);
     }
 
-    public static String ignoreTargetTable(String dataSourceId, String tableName) {
-        return getString("ignore.target.table", dataSourceId, tableName);
+    public static String ignoreTargetTable(String sourceId, String tableName) {
+        return getString("ignore.target.table", sourceId, tableName);
     }
 
-    public static String ignoreTargetColUnspecified(String dataSourceId, String tableName) {
-        return getString("ignore.target.col.unspecified", dataSourceId, tableName);
+    public static String ignoreTargetColUnspecified(String sourceId, String tableName) {
+        return getString("ignore.target.col.unspecified", sourceId, tableName);
     }
 
-    public static String startCheckTable(String dataSourceId, String tableName) {
-        return getString("start.check.table", dataSourceId, tableName);
+    public static String startCheckTable(String sourceId, String tableName) {
+        return getString("start.check.table", sourceId, tableName);
     }
 
     public static String checkDs(String value) {
         return getString("check.ds", value);
     }
 
-    public static String checkTableSize(String dataSourceId, String tableName) {
-        return getString("check.table.size", dataSourceId, tableName);
+    public static String checkTableSize(String sourceId, String tableName) {
+        return getString("check.table.size", sourceId, tableName);
     }
 
-
-    public static String checkTableColDate(String dataSourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.date", dataSourceId, tableName, rowIdx, columnName);
+    public static String checkTableColDate(String sourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.date", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColDateCurrent(String dataSourceId, String tableName, int rowIdx,
-                                                  String columnName) {
-        return getString("check.table.col.date.current", dataSourceId, tableName, rowIdx, columnName);
+    public static String checkTableColDateCurrent(String sourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.date.current", sourceId, tableName, rowIdx, columnName);
     }
 
-
-    public static String checkTableColDateFromUnit(String dataSourceId, String tableName, int rowIdx, String columnName,
+    public static String checkTableColDateFromUnit(String sourceId, String tableName, int rowIdx, String columnName,
                                                    String unit) {
-        return getString("check.table.col.date.from.unit", dataSourceId, tableName, rowIdx, columnName, unit);
+        return getString("check.table.col.date.from.unit", sourceId, tableName, rowIdx, columnName, unit);
     }
 
-    public static String checkTableColDateFrom(String dataSourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.date.from", dataSourceId, tableName, rowIdx, columnName);
+    public static String checkTableColDateFrom(String sourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.date.from", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColRegexp(String dataSourceId, String tableName, int rowIdx, String columnName,
+    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName,
                                              String regExp) {
-        return getString("check.table.col.regexp", dataSourceId, tableName, rowIdx, columnName, regExp);
+        return getString("check.table.col.regexp", sourceId, tableName, rowIdx, columnName, regExp);
     }
 
-    public static String checkTableColNullable(String dataSourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.nullable", dataSourceId, tableName, rowIdx, columnName);
+    public static String checkTableColNullable(String sourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.nullable", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColNull(String dataSourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.null", dataSourceId, tableName, rowIdx, columnName);
+    public static String checkTableColNull(String sourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.null", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColDateType(String dataSourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.date.type", dataSourceId, tableName, rowIdx, columnName);
+    public static String checkTableColDateType(String sourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col.date.type", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableCol(String dataSourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col", dataSourceId, tableName, rowIdx, columnName);
+    public static String checkTableCol(String sourceId, String tableName, int rowIdx, String columnName) {
+        return getString("check.table.col", sourceId, tableName, rowIdx, columnName);
     }
 
     private static String getString(String key) {

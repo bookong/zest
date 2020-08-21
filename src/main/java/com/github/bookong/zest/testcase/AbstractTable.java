@@ -1,5 +1,6 @@
 package com.github.bookong.zest.testcase;
 
+import com.github.bookong.zest.support.xml.data.MongoCollection;
 import com.github.bookong.zest.support.xml.data.SqlTable;
 
 /**
@@ -18,7 +19,11 @@ public abstract class AbstractTable {
     public AbstractTable(SqlTable xmlTable){
         this.name = xmlTable.getName();
         this.ignoreCheckTarget = xmlTable.isIgnore();
+    }
 
+    public AbstractTable(MongoCollection xmlCollection){
+        this.name = xmlCollection.getName();
+        this.ignoreCheckTarget = xmlCollection.isIgnore();
     }
 
     public String getName() {

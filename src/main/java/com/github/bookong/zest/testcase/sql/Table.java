@@ -2,6 +2,7 @@ package com.github.bookong.zest.testcase.sql;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.support.xml.data.Sort;
 import com.github.bookong.zest.support.xml.data.SqlTable;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
@@ -33,13 +34,17 @@ public class Table extends AbstractTable {
         super(xmlTable);
         loadSqlTypes(conn);
 
-        if (xmlTable.getSort() != null) {
+        if (xmlTable.getSorts() != null && !xmlTable.getSorts().getSort().isEmpty()) {
             if (!isTargetData) {
                 throw new ZestException(Messages.parseDataTableSort());
             }
 
-            this.sort = String.format(" order by %s %s", xmlTable.getSort().getField(),
-                                      xmlTable.getSort().getDirection());
+            StringBuilder sb = new StringBuilder();
+            sb.append(" order by");
+            for (Sort item : xmlTable.getSorts().getSort()) {
+                sb.append(" ").append(item.getField()).append(" ").append(item.getDirection());
+            }
+            this.sort = sb.toString();
         }
 
         int rowIdx = 1;

@@ -3,6 +3,7 @@ package com.github.bookong.zest.testcase;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.*;
+import com.github.bookong.zest.testcase.mongo.Collection;
 import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
 import org.apache.commons.collections.CollectionUtils;
@@ -25,7 +26,7 @@ public abstract class AbstractSourceData {
         }
 
         List<SqlTable> sqlTableList;
-        List<MongoCollection> mongoCollectionList;
+        List<com.github.bookong.zest.support.xml.data.MongoCollection> mongoCollectionList;
         List<RedisData> redisDataList;
 
         String nodeName = "<Target>";
@@ -56,7 +57,7 @@ public abstract class AbstractSourceData {
             }
 
             for (MongoCollection mongoCollection : mongoCollectionList) {
-                // TODO
+                list.add(new Collection(worker, sourceId, mongoCollection, (MongoOperations) operation, isTargetData));
             }
 
         } else if (operation instanceof RedisOperations) {

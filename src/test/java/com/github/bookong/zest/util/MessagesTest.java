@@ -22,7 +22,7 @@ public class MessagesTest {
         System.out.println("=====================================================================");
         System.out.println("en.US:");
         Locale.setDefault(new Locale("en", "US"));
-        Messages.rebundle();
+        Messages.reBundle();
         test();
     }
 
@@ -30,7 +30,7 @@ public class MessagesTest {
     private void test() throws Exception {
         for (Method m : Messages.class.getMethods()) {
             if (Modifier.isPublic(m.getModifiers()) && Modifier.isStatic(m.getModifiers())
-                    && !"getString".equals(m.getName()) && !"rebundle".equals(m.getName())) {
+                    && !"getString".equals(m.getName()) && !"reBundle".equals(m.getName())) {
 
                 System.out.println(m.getName().concat("()"));
 
@@ -49,7 +49,7 @@ public class MessagesTest {
                         params[idx++] = 6;
 
                     } else if (String.class.isAssignableFrom(c)) {
-                        params[idx++] = "6";
+                        params[idx++] = "X";
 
                     } else if ("int".equals(c.getName())) {
                         params[idx++] = 6;
