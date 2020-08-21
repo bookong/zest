@@ -98,14 +98,14 @@ public class ZestSqlHelper {
             rs = stat.executeQuery(sql);
 
             while (rs.next()) {
-                sb.append("-------------------------------------------\r\n"); //$NON-NLS-1$
+                sb.append("-------------------------------------------\n"); //$NON-NLS-1$
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                    String colName = rs.getMetaData().getColumnName(i);
+                    String colName = rs.getMetaData().getColumnName(i).toLowerCase();
                     Object colValue = rs.getObject(i);
                     String colType = (colValue == null ? "UNKNOWN" : colValue.getClass().getName()); //$NON-NLS-1$
                     colValue = colValue == null ? "NULL" : parseValue(colValue);
                     sb.append(String.format("%s (%s) : %s", colName, colType, //$NON-NLS-1$
-                                            colValue)).append("\r\n"); // $NON-NLS-1$
+                                            colValue)).append("\n"); // $NON-NLS-1$
                 }
             }
             sb.append("==========================================="); //$NON-NLS-1$
