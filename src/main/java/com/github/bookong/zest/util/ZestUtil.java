@@ -5,6 +5,7 @@ import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.data.Data;
+import com.github.bookong.zest.testcase.ZestParam;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 import org.slf4j.Logger;
@@ -19,9 +20,9 @@ import java.io.IOException;
 /**
  * @author Jiang Xu
  */
-public class ZestTestCaseUtil {
+public class ZestUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(ZestTestCaseUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(ZestUtil.class);
 
     /**
      * 从绝对路径加载 xml 文件
@@ -42,7 +43,7 @@ public class ZestTestCaseUtil {
             Data data = (Data) unm.unmarshal(fis);
             zestData.load(worker, data);
 
-        }catch (ZestException e){
+        } catch (ZestException e) {
             throw e;
         } catch (Exception e) {
             throw new ZestException(Messages.parseFile(zestData.getFilePath()), e);

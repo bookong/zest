@@ -8,7 +8,7 @@ import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.annotation.ZestTest;
 import com.github.bookong.zest.runner.junit4.statement.ZestFrameworkMethod;
 import com.github.bookong.zest.runner.junit4.statement.ZestStatement;
-import com.github.bookong.zest.util.ZestTestCaseUtil;
+import com.github.bookong.zest.util.ZestUtil;
 import com.github.bookong.zest.util.Messages;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
@@ -27,9 +27,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 
-import javax.sql.DataSource;
 import java.io.File;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class ZestJUnit4Worker extends ZestWorker {
 
         for (FrameworkMethod method : testCase.getAnnotatedMethods(ZestTest.class)) {
             ZestTest zestTest = method.getAnnotation(ZestTest.class);
-            String dir = ZestTestCaseUtil.getDir(testCase, method);
+            String dir = ZestUtil.getDir(testCase, method);
 
             if (StringUtils.isBlank(zestTest.value())) {
                 File searchDir = new File(dir);
@@ -142,7 +140,6 @@ public class ZestJUnit4Worker extends ZestWorker {
     private void loadZestData(ZestData zestData, ZestFrameworkMethod method) {
         try {
             Class<?>[] paramClasses = method.getMethod().getParameterTypes();
-            ZestParam param;
 
             if (paramClasses.length > 1) {
                 throw new ZestException(Messages.initParam());
@@ -154,8 +151,7 @@ public class ZestJUnit4Worker extends ZestWorker {
             }
 
             zestData.setTestParam((ZestParam) paramClass.newInstance());
-            ZestTestCaseUtil.loadFromAbsolutePath(this, zestData);
-            prepare(zestData);
+            ZestUtil.loadFromAbsolutePath(this, zestData);
 
         } catch (ZestException e) {
             throw e;

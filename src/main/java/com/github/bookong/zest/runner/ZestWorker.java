@@ -1,8 +1,5 @@
 package com.github.bookong.zest.runner;
 
-import com.github.bookong.zest.annotation.ZestConnection;
-import com.github.bookong.zest.annotation.ZestMongo;
-import com.github.bookong.zest.annotation.ZestRedis;
 import com.github.bookong.zest.annotation.ZestSource;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.AbstractExecutor;
@@ -18,9 +15,7 @@ import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,33 +68,6 @@ public abstract class ZestWorker {
             }
 
             clazz = clazz.getSuperclass();
-        }
-    }
-
-    protected void prepare(ZestData zestData) {
-        Class<?> clazz = zestData.getParam().getClass();
-        while (!StringUtils.equals(Object.class.getName(), clazz.getName())) {
-            for (Field f : clazz.getDeclaredFields()) {
-                prepare(zestData, f, ZestConnection.class, Connection.class);
-                prepare(zestData, f, ZestMongo.class, MongoOperations.class);
-                prepare(zestData, f, ZestRedis.class, RedisOperations.class);
-            }
-
-            clazz = clazz.getSuperclass();
-        }
-    }
-
-    private <T extends Annotation> void prepare(ZestData zestData, Field f, Class<T> annotationClass,
-                                                Class<?> operationClass) {
-        T ann = f.getAnnotation(annotationClass);
-        if (ann != null) {
-            if (!operationClass.getName().equals(f.getType().getName())) {
-                throw new ZestException(Messages.annotationMatch(annotationClass.getSimpleName(),
-                                                                 operationClass.getName()));
-            }
-
-            String sourceId = String.valueOf(ZestReflectHelper.invokeMethod(ann, "value"));
-            ZestReflectHelper.setValue(zestData.getParam(), f.getName(), getSourceOperation(sourceId));
         }
     }
 

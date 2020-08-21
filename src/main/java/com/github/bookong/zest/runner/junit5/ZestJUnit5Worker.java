@@ -7,7 +7,7 @@ import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
-import com.github.bookong.zest.util.ZestTestCaseUtil;
+import com.github.bookong.zest.util.ZestUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DynamicTest;
 
@@ -54,7 +54,7 @@ public class ZestJUnit5Worker extends ZestWorker {
                 throw new ZestException(Messages.noAnnotationZest());
             }
 
-            String dir = ZestTestCaseUtil.getDir(testObj.getClass(), testMethodName);
+            String dir = ZestUtil.getDir(testObj.getClass(), testMethodName);
 
             List<ZestData> list = new ArrayList<>();
             if (StringUtils.isBlank(zestTest.value())) {
@@ -87,8 +87,7 @@ public class ZestJUnit5Worker extends ZestWorker {
         try {
             T param = zestParamClass.newInstance();
             zestData.setTestParam(param);
-            ZestTestCaseUtil.loadFromAbsolutePath(this, zestData);
-            prepare(zestData);
+            ZestUtil.loadFromAbsolutePath(this, zestData);
 
             logger.info(Messages.statementRun(zestData.getDescription()));
             logger.info(zestData.getFilePath());
