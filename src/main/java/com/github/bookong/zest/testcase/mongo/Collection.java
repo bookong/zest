@@ -2,6 +2,7 @@ package com.github.bookong.zest.testcase.mongo;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.support.xml.data.Document;
 import com.github.bookong.zest.support.xml.data.MongoCollection;
 import com.github.bookong.zest.testcase.AbstractTable;
@@ -10,23 +11,22 @@ import com.github.bookong.zest.util.ZestJsonUtil;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jiang Xu
  */
 public class Collection extends AbstractTable {
 
-    private Sort         mongoSort;
+    private Sort                      mongoSort;
 
-    private Class<?>     entityClass;
+    private Class<?>                  entityClass;
 
-    private List<Object> documents = Collections.synchronizedList(new ArrayList<>());
+    private Map<String, AbstractRule> ruleMap   = Collections.synchronizedMap(new LinkedHashMap<>());
 
-    public Collection(ZestWorker worker, String sourceId, MongoCollection xmlCollection,
-                      MongoOperations mongoOperations, boolean isTargetData){
+    private List<Object>              documents = Collections.synchronizedList(new ArrayList<>());
+
+    public Collection(ZestWorker worker, String sourceId, MongoCollection xmlCollection, MongoOperations mongoOperations, boolean isTargetData){
         super(xmlCollection);
 
         if (xmlCollection.getSorts() != null && !xmlCollection.getSorts().getSort().isEmpty()) {
@@ -39,6 +39,8 @@ public class Collection extends AbstractTable {
                 mongoSort.and(getSort(xmlCollection.getSorts().getSort().get(i)));
             }
         }
+
+        // TODO rules
 
         try {
             entityClass = Class.forName(xmlCollection.getEntityClass());

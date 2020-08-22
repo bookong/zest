@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010-2020 the original author or authors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<xsd:schema targetNamespace="https://www.bookong.net/schema/zest/data" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:data="https://www.bookong.net/schema/zest/data" elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+    <xsd:annotation>
+        <xsd:documentation><![CDATA[
+	In the following attributes, if the time format expressed in a string can be any of the following.
+	(The time part that is not given defaults to 0)
+			yyyy-MM-dd HH:mm:ss
+			yyyy-MM-dd HH:mm
+			yyyy-MM-dd HH
+			yyyy-MM-dd
+		]]></xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="Zest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Description" type="xsd:string" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The description information of the unit test case
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element ref="data:Sources"/>
+                <xsd:element ref="data:Param"/>
+            </xsd:sequence>
+            <xsd:attribute name="Version" type="xsd:float" default="1.0"/>
+            <xsd:attribute name="CurrentTime" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Optional current data source time. If this value is set, all time type content will undergo a
+                        conversion during the initialization and automatic verification of the data source.
+                        This is done to be able to test the logic related to the current time.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Sources">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:Source" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Param">
+        <xsd:annotation>
+            <xsd:documentation>
+                Used to construct the test method parameters, the program is responsible for automatically loading the
+                data onto them.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:ParamField" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Source">
+        <xsd:annotation>
+            <xsd:documentation>
+                Data sources that can be automatically verified. Currently, two data sources are supported:
+                1. Relational database supporting SQL.
+                2. MongoDB database.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:Init"/>
+                <xsd:element ref="data:Verify"/>
+            </xsd:sequence>
+            <xsd:attribute name="Id" type="xsd:NMTOKEN" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The Id of the data source should be bound to the specific javax.sql.DataSource or
+                        org.springframework.data.mongodb.core.MongoOperations type attribute on the test object through
+                        the @ZestSource annotation
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ParamField">
+        <xsd:annotation>
+            <xsd:documentation>
+                The attribute value of the test parameter, the specific data type depends on the definition in the code
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Assign values to specific test parameter attribute objects.
+                            If the attribute type of the test parameter is basic type, Integer, Long, Boolean, Double,
+                            Float, String, then assign value directly.
+                            If it is a Date type, it will determine whether to perform the assignment after conversion
+                            according to whether the CurrentTime property is set before.
+                            In other cases, treat the content here as a JSON string and use it to construct the property
+                            object.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:attribute name="Name" type="xsd:string" use="required">
+                        <xsd:annotation>
+                            <xsd:documentation>
+                                Field name of test parameter
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:extension>
+            </xsd:simpleContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Init">
+        <xsd:annotation>
+            <xsd:documentation>
+                The initial state of the data source: the program will automatically use the following data to
+                initialize the data source.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The data content in the data source is mutually exclusive. Which one to use must match the
+                        object bound by the @ZestSource annotation.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:choice>
+                    <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element ref="data:Collection" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:choice>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Verify">
+        <xsd:annotation>
+            <xsd:documentation>
+                The data source is to be verified after executing the code to be tested: the program will automatically
+                verify the data source with the following data.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The data content in the data source is mutually exclusive. Which one to use must match the
+                        object bound by the @ZestSource annotation.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:choice>
+                    <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element ref="data:Collection" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:choice>
+            </xsd:sequence>
+            <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        If true, the result verification will be ignored after the code under test is executed.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="onlyCoreData" type="xsd:boolean" default="false">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        If true, only the key data listed will be verified after the code under test is executed.
+                        If it is false, other unwritten data will also be treated as a NULL value for verification.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Table">
+        <xsd:annotation>
+            <xsd:documentation>
+                SQL Table is valid when @ZestSource annotates the javax.sql.DataSource property of the test object.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:Sorts" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Because the primary key of the table to be verified is not necessarily in order, you need to
+                            specify the collation of the query.
+                            This attribute is only valid in the Table element under the Verify element.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element ref="data:Data" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Table record list of relational database supporting SQL.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="Name" type="xsd:string" use="required"/>
+            <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        If true, ignore the verification of this database table after the code under test is executed.
+                        This attribute is only valid in the Table element under the Verify element.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Collection">
+        <xsd:annotation>
+            <xsd:documentation>
+                MongoDB Collection is valid when @ZestSource annotates the
+                org.springframework.data.mongodb.core.MongoOperations property of the test object.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:Sorts">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Generally, the primary key of MongoDB is a uuid string, so you need to specify the sorting
+                            rules of the query.
+                            This attribute is only valid in the Collection element under the Verify element.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element ref="data:Data" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            MongoDB Document list.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="Name" type="xsd:string" use="required"/>
+            <xsd:attribute name="EntityClass" type="xsd:string" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The entity object class name of the Document. Used for conversion from JSON data to objects
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        If true, ignore the verification of this Collection after the code under test is executed.
+                        This attribute is only valid in the Table element under the Verify element.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Sorts">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:Sort" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Sort">
+        <xsd:annotation>
+            <xsd:documentation>
+                Sorting rules
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="Field" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Sorted field
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="Direction" default="asc">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Sorting direction
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:NMTOKEN">
+                        <xsd:enumeration value="asc"/>
+                        <xsd:enumeration value="desc"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Data">
+        <xsd:annotation>
+            <xsd:documentation>
+                It can be a table record in a relational database that supports SQL, or a Document in MongoDB. It
+                depends on the definition of the superior node.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:Rules" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Specify data validation rules. For MongoDB Document, no matter how it is set, the entity
+                            object field marked by @Id will not be verified.
+                            This attribute is only valid in the Table or Collection element under the Verify element.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Value" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The specific value represented by the JSON content. If the content contains the Date type,
+                            it will determine whether to perform the assignment after conversion according to whether
+                            the CurrentTime property is set before.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Rules">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data:Rule" maxOccurs="unbounded"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Rule">
+        <xsd:annotation>
+            <xsd:documentation>
+                Rules for verification
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:choice>
+                    <xsd:element ref="data:RegExp"/>
+                    <xsd:element ref="data:CurrentTime"/>
+                    <xsd:element ref="data:FromCurrentTime"/>
+                </xsd:choice>
+            </xsd:sequence>
+            <xsd:attribute name="Path" type="xsd:string" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        A path representation of an attribute. For example: field1.field2.filed3
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="Nullable" type="xsd:boolean" default="true">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Whether to allow null values
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="RegExp" type="xsd:string">
+        <xsd:annotation>
+            <xsd:documentation>
+                Verify with regular expressions
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+    <xsd:element name="CurrentTime">
+        <xsd:annotation>
+            <xsd:documentation>
+                Verify that it is the current time
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="Offset" type="xsd:int" default="1000">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        How many milliseconds error may occur in time
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="FromCurrentTime">
+        <xsd:annotation>
+            <xsd:documentation>
+                Verify whether it is a time range before (or after) the current time
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="Min" type="xsd:int" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The nearest value to the current time (can be negative)
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="Max" type="xsd:int" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The farthest value from the current time (can be negative)
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="Unit" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        time unit
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:NMTOKEN">
+                        <xsd:enumeration value="day"/>
+                        <xsd:enumeration value="hour"/>
+                        <xsd:enumeration value="minute"/>
+                        <xsd:enumeration value="second"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="Offset" type="xsd:int" default="1000">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        How many milliseconds error may occur in time
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

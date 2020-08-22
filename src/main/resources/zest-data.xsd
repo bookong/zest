@@ -8,19 +8,13 @@
 			yyyy-MM-dd HH:mm
 			yyyy-MM-dd HH
 			yyyy-MM-dd
-
-	In the following attributes, if it is the time format, it can be any of the following formats, and the time part that is not given defaults to 0
-			yyyy-MM-dd HH:mm:ss
-			yyyy-MM-dd HH:mm
-			yyyy-MM-dd HH
-			yyyy-MM-dd
 		]]></xsd:documentation>
     </xsd:annotation>
 
     <xsd:element name="Data">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="data:Description" minOccurs="0"/>
+                <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
                 <xsd:element ref="data:Sources"/>
                 <xsd:element ref="data:Param"/>
             </xsd:sequence>
@@ -29,22 +23,16 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     可选的当前数据库时间，如果设置这个值，所有时间类型内容在计算与当前时间的偏移量后使用
-
-    Optional current database time. If this value is set, all time types are used after calculating the offset from the current time
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="Description" type="xsd:string"/>
-
     <xsd:element name="Param">
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     构造测试参数的值
-
-    Construct the value of the test parameter
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -58,8 +46,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     测试参数的属性值，具体类型依赖于代码中的定义
-
-    The attribute value of the test parameter, the specific type depends on the definition in the code
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -70,19 +56,12 @@
     对具体的测试参数属性对象进行赋值。
     如果属性是 Integer、 Long、 Boolean、 Double、 Float、 String 或 Date 类型，这里为具体值。
     如果属性是一个复杂的对象，这里是 json 字符串
-
-    Assign values to specific test parameter attribute objects.
-    If the property is of type Integer, Long, Boolean, Double, Float, String or Date, here is the specific value.
-    If the attribute is a complex object, here is the json string
-
                         ]]></xsd:documentation>
                     </xsd:annotation>
                     <xsd:attribute name="Name" type="xsd:string" use="required">
                         <xsd:annotation>
                             <xsd:documentation><![CDATA[
     测试参数的属性名
-
-	Attribute name of test parameter
 							]]></xsd:documentation>
                         </xsd:annotation>
                     </xsd:attribute>
@@ -103,8 +82,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     支持自动验证的数据来源
-
-    Data sources that support automatic verification
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -117,9 +94,6 @@
                     <xsd:documentation><![CDATA[
     数据源 Id，在测试对象上中要通过 @ZestSource 注解绑定到具体 javax.sql.DataSource, org.springframework.data.mongodb.core.MongoOperations
     或 org.springframework.data.redis.core.RedisOperations 类型属性上
-
-    The data source Id must be bound to the specific javax.sql.DataSource, org.springframework.data.mongodb.core.MongoOperations
-    or org.springframework.data.redis.core.RedisOperations type attribute on the test object through the @ZestSource annotation
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -130,8 +104,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     数据源的初始化状态
-
-    The initialization state of the data source
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -140,13 +112,10 @@
                     <xsd:annotation>
                         <xsd:documentation><![CDATA[
     数据源内的数据内容，他们是互斥关系。具体使用哪种，必须与 @ZestSource 注解绑定的对象属性匹配
-
-    The data content in the data source is mutually exclusive. Which one to use must match the object attribute bound by the @ZestSource annotation
                         ]]></xsd:documentation>
                     </xsd:annotation>
                     <xsd:element ref="data:SqlTable" minOccurs="0" maxOccurs="unbounded"/>
                     <xsd:element ref="data:MongoCollection" minOccurs="0" maxOccurs="unbounded"/>
-                    <xsd:element ref="data:RedisData" minOccurs="0" maxOccurs="unbounded"/>
                 </xsd:choice>
             </xsd:sequence>
         </xsd:complexType>
@@ -156,8 +125,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     数据源在执行完待测试代码后的状态
-
-    The state of the data source after executing the code to be tested
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -165,15 +132,12 @@
                 <xsd:choice>
                     <xsd:element ref="data:SqlTable" minOccurs="0" maxOccurs="unbounded"/>
                     <xsd:element ref="data:MongoCollection" minOccurs="0" maxOccurs="unbounded"/>
-                    <xsd:element ref="data:RedisData" minOccurs="0" maxOccurs="unbounded"/>
                 </xsd:choice>
             </xsd:sequence>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     如果为 true 当被测试代码执行完后忽略结果验证
-
-    If true, the result verification is ignored after the code under test is executed
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -181,8 +145,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     如果为 true 当被测试代码执行完后只验证列出的关键数据
-
-    If true, only the key data listed will be verified after the code under test is executed
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -193,8 +155,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     支持 SQL 的关系型数据库的表，当 @ZestSource 注解了测试对象的 javax.sql.DataSource 属性时有效
-
-    Tables of relational databases that support SQL are valid when @ZestSource annotates the javax.sql.DataSource property of the test object
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -204,10 +164,7 @@
                         <xsd:documentation><![CDATA[
 	这个属性只有在 <Target> 元素下的 <SqlTable> 元素中才有效。
 	因为验证的表不一定是一个有序的主键，为了方便自动验证，就需要指定排序规则
-
-	This attribute is only valid in the <SqlTable> element under the <Target> element.
-    Because the verified table is not necessarily an ordered primary key, in order to facilitate automatic verification, you need to specify the sorting rules
-						]]></xsd:documentation>
+                        ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element ref="data:Row" minOccurs="0" maxOccurs="unbounded"/>
@@ -216,8 +173,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     表名
-
-    Table Name
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -226,9 +181,6 @@
                     <xsd:documentation><![CDATA[
     这个属性只有在 <Target> 元素下的 <SqlTable> 元素中才有效。
     如果为 true 当被测试代码执行完后忽略数据库表的验证
-
-    This attribute is only valid in the <SqlTable> element under the <Target> element.
-    If true, ignore the verification of the database table after the code under test is executed
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -239,27 +191,14 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     MongoDB 的 Collection，当 @ZestSource 注解了测试对象的 org.springframework.data.mongodb.core.MongoOperations 属性时有效
-
-    MongoDB's Collection, valid when @ZestSource annotates the org.springframework.data.mongodb.core.MongoOperations property of the test object
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="data:Sorts" >
+                <xsd:element ref="data:Sorts" minOccurs="0">
                     <xsd:annotation>
                         <xsd:documentation><![CDATA[
-	这个属性只有在 <Target> 元素下的 <MongoCollection> 元素中才有效。
-	指定排序的规则
-
-	This attribute is only valid in the <SqlTable> element under the <Target> element.
-    Specify the sorting rules
-						]]></xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element ref="data:Rules" >
-                    <xsd:annotation>
-                        <xsd:documentation><![CDATA[
-	这个属性只有在 <Target> 元素下的 <MongoCollection> 元素中才有效。指定验证规则
+	这个属性只有在 <Target> 元素下的 <MongoCollection> 元素中才有效。指定排序的规则
 						]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
@@ -269,8 +208,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     Collection 名称
-
-    Collection name
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -278,54 +215,13 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     Document 的实体对象类名
-
-    The entity object class name of the Document
                         ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
-    这个属性只有在 <Target> 元素下的 <MongoCollection> 元素中才有效。
-    如果为 true 当被测试代码执行完后忽略集合的验证
-
-    This attribute is only valid in the <MongoCollection> element under the <Target> element.
-    If true, ignore the verification of the collection after the code under test is executed
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:element name="RedisData">
-        <xsd:annotation>
-            <xsd:documentation><![CDATA[
-    Redis 的键值，当 @ZestSource 注解了测试对象的 org.springframework.data.redis.core.RedisOperations 属性时有效
-
-    Redis key value, valid when @ZestSource annotates the org.springframework.data.redis.core.RedisOperations property of the test object
-            ]]></xsd:documentation>
-        </xsd:annotation>
-        <xsd:complexType>
-            <xsd:sequence>
-                <!-- TODO -->
-            </xsd:sequence>
-            <xsd:attribute name="Key" type="xsd:string" use="required">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-    键值
-
-    Key
-                    ]]></xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
-            <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
-                <xsd:annotation>
-                    <xsd:documentation><![CDATA[
-    这个属性只有在 <Target> 元素下的 <RedisData> 元素中才有效。
-    如果为 true 当被测试代码执行完后忽略数据的验证
-
-    This attribute is only valid in the <RedisData> element under the <Target> element.
-    If true, ignore data verification after the code under test is executed
+    这个属性只有在 <Target> 元素下的 <MongoCollection> 元素中才有效。如果为 true 当被测试代码执行完后忽略集合的验证
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -336,8 +232,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     表的一条记录
-
-    A record of the table
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -348,8 +242,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     在元素中以 "field1"="value1" "field2"="value2" 的形式定义各个字段的值
-
-    Define the value of each field in the element in the form of "field1"="value1" "field2"="value2"
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:anyAttribute>
@@ -360,22 +252,19 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     MongoDB 的一条 Document 记录
-
-    A Document record in MongoDB
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:simpleContent>
-                <xsd:extension base="xsd:string">
+            <xsd:sequence>
+                <xsd:element ref="data:Rules" minOccurs="0">
                     <xsd:annotation>
                         <xsd:documentation><![CDATA[
-    构造 Document 对象用的 Json 内容
-
-    Json content used to construct Document object
-                        ]]></xsd:documentation>
+        这个属性只有在 <Target> 元素下的 <MongoCollection> 元素中才有效。指定验证规则
+                            ]]></xsd:documentation>
                     </xsd:annotation>
-                </xsd:extension>
-            </xsd:simpleContent>
+                </xsd:element>
+                <xsd:element ref="data:Value"/>
+            </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
 
@@ -383,8 +272,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     数据库记录的一个字段
-
-    A field of the database record
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -401,8 +288,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     字段名字
-
-    Field name
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -410,8 +295,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     是否可以为空值。但子元素为 <Null> 和 <Value> 时无效
-
-    Whether it can be null. But it is invalid when the child elements are <Null> and <Value>
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -419,8 +302,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     当子元素为 <Value> 时，是否对内容进行 trim 操作
-
-    When the child element is <Value>, whether to trim the content
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -475,8 +356,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     表示字段值一定是 NULL 值
-
-    Indicates that the field value must be a NULL value
             ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
@@ -485,8 +364,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     如果采用这种方式设置字段值，一般是因为内容比较复杂放在 XML 属性中产生太多转义字符等因素
-
-    If you use this method to set the field value, it is generally because the content is more complicated, and too many escape characters are generated in the XML attribute.
             ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
@@ -495,8 +372,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     只能出现在 Target 部分。正则表达式
-
-    Can only appear in the Target section. Regular expression
             ]]></xsd:documentation>
         </xsd:annotation>
     </xsd:element>
@@ -505,8 +380,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     只能出现在 Target 部分。验证是否是当前时间
-
-    Can only appear in the Target section. Verify that it is the current time
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -514,8 +387,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     时间可能产生多少毫秒的误差
-
-    How many milliseconds error may occur in time
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -526,8 +397,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     只能出现在 Target 部分。验证是否是一个距离当前时间(之前或之后)的时间范围
-
-    Can only appear in the Target section. Verify whether it is a time range from the current time (before or after)
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -535,8 +404,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     距离当前时间最近值（可以为负数）
-
-    The nearest value to the current time (can be negative)
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -544,8 +411,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     距离当前时间最远值（可以为负数）
-
-    The farthest value from the current time (can be negative)
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -553,8 +418,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     时间单位
-
-    time unit
                     ]]></xsd:documentation>
                 </xsd:annotation>
                 <xsd:simpleType>
@@ -570,8 +433,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     时间可能产生多少毫秒的误差
-
-    How many milliseconds error may occur in time
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -582,8 +443,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     排序规则列表
-
-    Sorting rule list
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -597,8 +456,6 @@
         <xsd:annotation>
             <xsd:documentation><![CDATA[
     排序规则
-
-    Sorting rules
             ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -606,8 +463,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     排序的字段
-
-    Sorted field
                     ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -615,8 +470,6 @@
                 <xsd:annotation>
                     <xsd:documentation><![CDATA[
     排序的方向
-
-    Sorting direction
                     ]]></xsd:documentation>
                 </xsd:annotation>
                 <xsd:simpleType>

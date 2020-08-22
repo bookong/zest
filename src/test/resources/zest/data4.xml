@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Data xmlns="https://www.bookong.net/schema/zest/data">
+<Data xmlns="zest-data.xsd">
 	<Description>Map 的 Value 对象类型不支持</Description>
 	<DataSources></DataSources>
 	<TestParam>

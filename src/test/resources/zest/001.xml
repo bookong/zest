@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Data xmlns="https://www.bookong.net/schema/zest/data" CurrDbTime="2020-07-27">
+<Data xmlns="zest-data.xsd" CurrDbTime="2020-07-27">
     <Description>描述信息</Description>
     <DataSources>
         <DataSource Id="db1" Type="SQL">
