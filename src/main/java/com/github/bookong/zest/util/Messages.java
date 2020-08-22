@@ -37,16 +37,68 @@ public class Messages {
         return getString("no.data");
     }
 
-    public static String parseFile(String filePath) {
-        return getString("parse.file", filePath);
+    public static String parse(String filePath) {
+        return getString("parse", filePath);
+    }
+
+    public static String parseCommonAttr(String nodeName, String attrName) {
+        return getString("parse.common.attr", nodeName, attrName);
+    }
+
+    public static String parseCommonAttrUnknown(String nodeName, String attrNames) {
+        return getString("parse.common.attr.unknown", nodeName, attrNames);
+    }
+
+    public static String parseZest() {
+        return getString("parse.zest");
+    }
+
+    public static String parseZestNecessary() {
+        return getString("parse.zest.necessary");
+    }
+
+    public static String parseSourcesType() {
+        return getString("parse.sources.type");
+    }
+
+    public static String parseSourceNecessary() {
+        return getString("parse.source.necessary");
+    }
+
+    public static String parseSourceIdEmpty() {
+        return getString("parse.source.id.empty");
+    }
+
+    public static String parseSourceIdDuplicate(String sourceId) {
+        return getString("parse.source.id.duplicate", sourceId);
+    }
+
+    public static String parseParamType() {
+        return getString("parse.param.type");
+    }
+
+    public static String parseParamNameEmpty() {
+        return getString("parse.param.name.empty");
+    }
+
+    public static String parseParamNameDuplicate(String fieldName) {
+        return getString("parse.param.name.duplicate", fieldName);
+    }
+
+    public static String parseParamNone(String fieldName) {
+        return getString("parse.param.none", fieldName);
+    }
+
+    public static String parseParamContainerNonsupport() {
+        return getString("parse.param.container.nonsupport");
+    }
+
+    public static String parseParamObjLoad(String fieldName) {
+        return getString("parse.param.obj.load", fieldName);
     }
 
     public static String parseDate(String value) {
         return getString("parse.date", value);
-    }
-
-    public static String parseParamObj(ParamField xmlParamField) {
-        return getString("parse.param.obj", xmlParamField.getName());
     }
 
     public static String parseDataSqlType(String tableName, String fieldName) {
@@ -153,8 +205,7 @@ public class Messages {
         return getString("check.table.col.date.current", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColDateFromUnit(String sourceId, String tableName, int rowIdx, String columnName,
-                                                   String unit) {
+    public static String checkTableColDateFromUnit(String sourceId, String tableName, int rowIdx, String columnName, String unit) {
         return getString("check.table.col.date.from.unit", sourceId, tableName, rowIdx, columnName, unit);
     }
 
@@ -162,8 +213,7 @@ public class Messages {
         return getString("check.table.col.date.from", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName,
-                                             String regExp) {
+    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName, String regExp) {
         return getString("check.table.col.regexp", sourceId, tableName, rowIdx, columnName, regExp);
     }
 

@@ -58,19 +58,6 @@ public class ZestJsonUtil {
         }
     }
 
-    public static <T> List<T> fromJsonArray(String content, Class<T> valueType) {
-        if (StringUtils.isBlank(content)) {
-            return Collections.emptyList();
-        }
-
-        try {
-            return getObjectMapper().readValue(content, new TypeReference<List<T>>() {
-            });
-        } catch (Exception e) {
-            throw new ZestException(e);
-        }
-    }
-
     private static ObjectMapper getObjectMapper() {
         ObjectMapper objectMapper = OBJECT_MAPPER_CACHE.get();
         if (objectMapper == null) {

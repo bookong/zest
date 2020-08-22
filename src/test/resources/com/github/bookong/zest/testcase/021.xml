@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="https://www.bookong.net/schema/zest/data file://zest-data-1.0.xsd">
+    <Description>test case description</Description>
+    <Sources/>
+    <Param>
+        <ParamField Name="listObj"><![CDATA[
+[
+    {
+        "str": "1: param1 str",
+        "obj2": {
+            "str": "1: param2 str"
+        }
+    },
+    {
+        "str": "2: param1 str",
+        "obj2": {
+            "str": "2: param2 str"
+        }
+    }
+]
+        ]]></ParamField>
+    </Param>
+</Zest>

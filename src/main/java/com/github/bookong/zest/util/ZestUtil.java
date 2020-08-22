@@ -41,12 +41,12 @@ public class ZestUtil {
             Unmarshaller unm = cxt.createUnmarshaller();
             fis = new FileInputStream(file);
             Data data = (Data) unm.unmarshal(fis);
-            zestData.load(worker, data);
+//            zestData.load(worker, data); TODO
 
         } catch (ZestException e) {
             throw e;
         } catch (Exception e) {
-            throw new ZestException(Messages.parseFile(zestData.getFilePath()), e);
+            throw new ZestException(Messages.parse(zestData.getFilePath()), e);
         } finally {
             if (fis != null) {
                 try {

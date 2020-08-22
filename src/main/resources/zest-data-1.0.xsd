@@ -34,7 +34,7 @@
     <xsd:element name="Zest">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="Description" type="xsd:string" minOccurs="0">
+                <xsd:element name="Description" type="xsd:string" >
                     <xsd:annotation>
                         <xsd:documentation>
                             The description information of the unit test case

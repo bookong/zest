@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="https://www.bookong.net/schema/zest/data file://zest-data-1.0.xsd">
+    <Description>test case description</Description>
+    <Sources/>
+    <Param>
+        <ParamField Name="intValue">1</ParamField>
+        <ParamField Name="intObjValue">2</ParamField>
+        <ParamField Name="longValue">3</ParamField>
+        <ParamField Name="longObjValue">4</ParamField>
+        <ParamField Name="boolValue">true</ParamField>
+        <ParamField Name="boolObjValue">true</ParamField>
+        <ParamField Name="doubleValue">5.5</ParamField>
+        <ParamField Name="doubleObjValue">6.5</ParamField>
+        <ParamField Name="floatValue">7.5</ParamField>
+        <ParamField Name="floatObjValue">8.5</ParamField>
+        <ParamField Name="strValue">hello</ParamField>
+        <ParamField Name="date1">2020-08-10 13:14:15</ParamField>
+        <ParamField Name="date2">2020-08-10 13:14</ParamField>
+        <ParamField Name="date3">2020-08-10 13</ParamField>
+        <ParamField Name="date4">2020-08-10</ParamField>
+        <ParamField Name="obj"><![CDATA[
+{
+    "str": "param1 str",
+    "obj2": {
+        "str": "param2 str"
+    }
+}
+        ]]></ParamField>
+    </Param>
+</Zest>
