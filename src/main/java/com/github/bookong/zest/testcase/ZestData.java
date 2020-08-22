@@ -53,9 +53,15 @@ public class ZestData {
         this.fileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
     }
 
+
+    public void load(ZestWorker worker) {
+
+    }
+
     /**
      * 用 XML 数据初始化对象
      */
+    @Deprecated
     public void load(ZestWorker worker, Data xmlData) {
         this.description = StringUtils.trimToEmpty(xmlData.getDescription());
         this.transferTime = StringUtils.isNotBlank(xmlData.getCurrentTime());
