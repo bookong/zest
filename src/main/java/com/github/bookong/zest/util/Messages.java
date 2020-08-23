@@ -89,8 +89,8 @@ public class Messages {
         return getString("parse.param.none", fieldName);
     }
 
-    public static String parseParamContainerNonsupport() {
-        return getString("parse.param.container.nonsupport");
+    public static String parseParamNonsupportMap() {
+        return getString("parse.param.nonsupport.map");
     }
 
     public static String parseParamObjLoad(String fieldName) {

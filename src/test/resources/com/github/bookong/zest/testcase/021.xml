@@ -4,21 +4,6 @@
     <Description>test case description</Description>
     <Sources/>
     <Param>
-        <ParamField Name="listObj"><![CDATA[
-[
-    {
-        "str": "1: param1 str",
-        "obj2": {
-            "str": "1: param2 str"
-        }
-    },
-    {
-        "str": "2: param1 str",
-        "obj2": {
-            "str": "2: param2 str"
-        }
-    }
-]
-        ]]></ParamField>
+        <ParamField Name="nonsupportMapObj"/>
     </Param>
 </Zest>

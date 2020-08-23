@@ -46,6 +46,18 @@ public class ZestJsonUtil {
         }
     }
 
+    public static <T> List<T> fromJsonArray(String content, Class<T> valueType) {
+        if (StringUtils.isBlank(content)) {
+            return Collections.emptyList();
+        }
+
+        try {
+            return getObjectMapper().readValue(content, getObjectMapper().getTypeFactory().constructParametricType(List.class, valueType));
+        } catch (Exception e) {
+            throw new ZestException(e);
+        }
+    }
+
     public static <T> T fromJson(String content, Class<T> valueType) {
         if (StringUtils.isBlank(content)) {
             return null;

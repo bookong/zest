@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jiang Xu
@@ -132,7 +133,7 @@ public class ZestDataTest {
 
     @Test
     public void testLoad021() {
-        testLoadError("021.xml", Messages.parseParamObjLoad("listObj"), Messages.parseParamContainerNonsupport());
+        testLoadError("021.xml", Messages.parseParamObjLoad("nonsupportMapObj"), Messages.parseParamNonsupportMap());
     }
 
     @Test
@@ -155,8 +156,15 @@ public class ZestDataTest {
         Assert.assertEquals("2020-08-10 13:00:00", DateFormatUtils.format(param.date3, "yyyy-MM-dd HH:mm:ss"));
         Assert.assertEquals("2020-08-10 00:00:00", DateFormatUtils.format(param.date4, "yyyy-MM-dd HH:mm:ss"));
 
-        Assert.assertEquals("param1 str", param.obj.str);
-        Assert.assertEquals("param2 str", param.obj.obj2.str);
+        Assert.assertEquals(2, param.listObj.size());
+        Assert.assertEquals("1: param1 str", param.listObj.get(0).getStr());
+        Assert.assertEquals("1: param2 str", param.listObj.get(0).getObj2().getStr());
+
+        Assert.assertEquals("2: param1 str", param.listObj.get(1).getStr());
+        Assert.assertEquals("2: param2 str", param.listObj.get(1).getObj2().getStr());
+
+        Assert.assertEquals("param1 str", param.obj.getStr());
+        Assert.assertEquals("param2 str", param.obj.getObj2().getStr());
     }
 
     private void testLoadError(String filename, String... errorMessages) {
@@ -189,33 +197,58 @@ public class ZestDataTest {
 
     public static class Param implements ZestParam {
 
-        private int          intValue;
-        private Integer      intObjValue;
-        private long         longValue;
-        private Long         longObjValue;
-        private boolean      boolValue;
-        private Boolean      boolObjValue;
-        private double       doubleValue;
-        private Double       doubleObjValue;
-        private float        floatValue;
-        private Float        floatObjValue;
-        private String       strValue;
-        private Date         date1;
-        private Date         date2;
-        private Date         date3;
-        private Date         date4;
-        private List<Param1> listObj;
-        private Param1       obj;
+        private int                 intValue;
+        private Integer             intObjValue;
+        private long                longValue;
+        private Long                longObjValue;
+        private boolean             boolValue;
+        private Boolean             boolObjValue;
+        private double              doubleValue;
+        private Double              doubleObjValue;
+        private float               floatValue;
+        private Float               floatObjValue;
+        private String              strValue;
+        private Date                date1;
+        private Date                date2;
+        private Date                date3;
+        private Date                date4;
+        private List<Param1>        listObj;
+        private Param1              obj;
+        private Map<String, String> nonsupportMapObj;
     }
 
     public static class Param1 {
 
-        public String str;
-        public Param2 obj2;
+        private String str;
+        private Param2 obj2;
+
+        public String getStr() {
+            return str;
+        }
+
+        public void setStr(String str) {
+            this.str = str;
+        }
+
+        public Param2 getObj2() {
+            return obj2;
+        }
+
+        public void setObj2(Param2 obj2) {
+            this.obj2 = obj2;
+        }
     }
 
     public static class Param2 {
 
-        public String str;
+        private String str;
+
+        public String getStr() {
+            return str;
+        }
+
+        public void setStr(String str) {
+            this.str = str;
+        }
     }
 }

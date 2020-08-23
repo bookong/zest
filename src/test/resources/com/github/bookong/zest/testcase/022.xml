@@ -19,6 +19,22 @@
         <ParamField Name="date2">2020-08-10 13:14</ParamField>
         <ParamField Name="date3">2020-08-10 13</ParamField>
         <ParamField Name="date4">2020-08-10</ParamField>
+        <ParamField Name="listObj"><![CDATA[
+[
+    {
+        "str": "1: param1 str",
+        "obj2": {
+            "str": "1: param2 str"
+        }
+    },
+    {
+        "str": "2: param1 str",
+        "obj2": {
+            "str": "2: param2 str"
+        }
+    }
+]
+        ]]></ParamField>
         <ParamField Name="obj"><![CDATA[
 {
     "str": "param1 str",

@@ -16,6 +16,9 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -150,13 +153,14 @@ public class ZestData {
         }
         fieldNames.add(fieldName);
 
-        if (ZestReflectHelper.getField(param, fieldName) == null) {
+        Field field = ZestReflectHelper.getField(param, fieldName);
+        if (field == null) {
             throw new ZestException(Messages.parseParamNone(fieldName));
         }
 
         try {
             String value = ZestXmlUtil.getValue(paramFieldNode);
-            Class<?> fieldClass = ZestReflectHelper.getField(param, fieldName).getType();
+            Class<?> fieldClass = field.getType();
 
             if (Integer.class.isAssignableFrom(fieldClass) || "int".equals(fieldClass.getName())) { //$NON-NLS-1$
                 ZestReflectHelper.setValue(param, fieldName, Integer.valueOf(value.trim()));
@@ -172,8 +176,11 @@ public class ZestData {
                 ZestReflectHelper.setValue(param, fieldName, value);
             } else if (Date.class.isAssignableFrom(fieldClass)) {
                 ZestReflectHelper.setValue(param, fieldName, ZestDateUtil.parseDate(value));
-            } else if (List.class.isAssignableFrom(fieldClass) || Map.class.isAssignableFrom(fieldClass)) {
-                throw new ZestException(Messages.parseParamContainerNonsupport());
+            } else if (List.class.isAssignableFrom(fieldClass)) {
+                Class<?> listValueClass = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+                ZestReflectHelper.setValue(param, fieldName, ZestJsonUtil.fromJsonArray(value, listValueClass));
+            } else if (Map.class.isAssignableFrom(fieldClass)) {
+                throw new ZestException(Messages.parseParamNonsupportMap());
             } else {
                 ZestReflectHelper.setValue(param, fieldName, ZestJsonUtil.fromJson(value, fieldClass));
             }
