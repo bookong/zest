@@ -7,7 +7,9 @@ import com.github.bookong.zest.support.xml.data.SqlTable;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
+import com.github.bookong.zest.util.ZestXmlUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Node;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -30,8 +32,16 @@ public class Table extends AbstractTable {
     /** 关系型数据库的 SqlType */
     private Map<String, Integer> sqlTypes    = Collections.synchronizedMap(new HashMap<>());
 
+    public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn, boolean isTargetData) {
+        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+        init(nodeName, attrMap);
+        loadSqlTypes(conn);
+        // TODO
+    }
+
+    @Deprecated
     public Table(ZestWorker worker, String sourceId, SqlTable xmlTable, Connection conn, boolean isTargetData){
-        super(xmlTable);
+//        super(xmlTable);
         loadSqlTypes(conn);
 
         if (xmlTable.getSorts() != null && !xmlTable.getSorts().getSort().isEmpty()) {

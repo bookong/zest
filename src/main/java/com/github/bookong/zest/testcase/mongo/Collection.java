@@ -8,9 +8,12 @@ import com.github.bookong.zest.support.xml.data.MongoCollection;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestJsonUtil;
+import com.github.bookong.zest.util.ZestXmlUtil;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.w3c.dom.Node;
 
+import java.sql.Connection;
 import java.util.*;
 
 /**
@@ -26,8 +29,14 @@ public class Collection extends AbstractTable {
 
     private List<Object>              documents = Collections.synchronizedList(new ArrayList<>());
 
+    public Collection(ZestWorker worker, String sourceId, String nodeName, Node node, MongoOperations mongoOperations, boolean isTargetData) {
+        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+        init(nodeName, attrMap);
+        // TODO
+    }
+
     public Collection(ZestWorker worker, String sourceId, MongoCollection xmlCollection, MongoOperations mongoOperations, boolean isTargetData){
-        super(xmlCollection);
+//        super(xmlCollection);
 
         if (xmlCollection.getSorts() != null && !xmlCollection.getSorts().getSort().isEmpty()) {
             if (!isTargetData) {

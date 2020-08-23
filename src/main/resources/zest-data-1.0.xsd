@@ -186,7 +186,7 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="onlyCoreData" type="xsd:boolean" default="false">
+            <xsd:attribute name="OnlyCoreData" type="xsd:boolean" default="false">
                 <xsd:annotation>
                     <xsd:documentation>
                         If true, only the key data listed will be verified after the code under test is executed.
@@ -243,7 +243,7 @@
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="data:Sorts">
+                <xsd:element ref="data:Sorts" >
                     <xsd:annotation>
                         <xsd:documentation>
                             Generally, the primary key of MongoDB is a uuid string, so you need to specify the sorting

@@ -29,10 +29,9 @@ public abstract class ZestWorker {
 
     protected Map<String, AbstractExecutor> executorMap      = new HashMap<>();
     /**
-     * value 放三种东西: <br>
+     * value 放两种东西: <br>
      * javax.sql.DataSource <br>
-     * org.springframework.data.mongodb.core.MongoOperations<br>
-     * org.springframework.data.redis.core.RedisOperations
+     * org.springframework.data.mongodb.core.MongoOperations
      */
     private Map<String, Object>             sourceOperations = Collections.synchronizedMap(new HashMap<>());
 
@@ -96,7 +95,7 @@ public abstract class ZestWorker {
             return operationClass.cast(operation);
         }
 
-        throw new ZestException(Messages.operationNull(sourceId));
+        return null;
     }
 
     public <E extends AbstractExecutor> E getExecutor(String sourceId, Class<E> executorClass) {

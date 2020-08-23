@@ -61,6 +61,10 @@ public class Messages {
         return getString("parse.sources.type");
     }
 
+    public static String parseSourceError(String sourceId) {
+        return getString("parse.source.error", sourceId);
+    }
+
     public static String parseSourceNecessary() {
         return getString("parse.source.necessary");
     }
@@ -71,6 +75,26 @@ public class Messages {
 
     public static String parseSourceIdDuplicate(String sourceId) {
         return getString("parse.source.id.duplicate", sourceId);
+    }
+
+    public static String parseSourceInitError() {
+        return getString("parse.source.init.error");
+    }
+
+    public static String parseSourceVerifyError() {
+        return getString("parse.source.verify.error");
+    }
+
+    public static String parseSourceOperationMatch(String operation, String nodeName, String subNodeName) {
+        return getString("parse.source.operation.match", operation, nodeName, subNodeName);
+    }
+
+    public static String parseSourceOperationUnknown(String operation) {
+        return getString("parse.source.operation.unknown", operation);
+    }
+
+    public static String parseSourceOperationNone() {
+        return getString("parse.source.operation.none");
     }
 
     public static String parseParamType() {
@@ -139,10 +163,6 @@ public class Messages {
 
     public static String duplicateOperation(String value) {
         return getString("duplicate.operation", value);
-    }
-
-    public static String operationNull(String sourceId) {
-        return getString("operation.null", sourceId);
     }
 
     public static String operationUnsupported(String sourceId, String operationClass) {

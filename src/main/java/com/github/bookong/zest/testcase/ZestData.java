@@ -119,7 +119,7 @@ public class ZestData {
         getSourceList().clear();
         Set<String> sourceIds = new HashSet<>(elements.size() + 1);
         for (Node sourceNode : elements) {
-            getSourceList().add(new Source(worker, nodeName, sourceNode, sourceIds));
+            getSourceList().add(new Source(worker, sourceNode.getNodeName(), sourceNode, sourceIds));
         }
         ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
     }
@@ -138,6 +138,8 @@ public class ZestData {
         for (Node item : elements) {
             loadParamField(worker, item.getNodeName(), item, fieldNames);
         }
+
+        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
     }
 
     private void loadParamField(ZestWorker worker, String nodeName, Node paramFieldNode, Set<String> fieldNames) {

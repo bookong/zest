@@ -151,7 +151,7 @@ public class SqlExecutor extends AbstractExecutor {
     protected void verifyRow(ZestData testCaseData, Source dataSource, Table table, int rowIdx, Row expectedRow,
                              Map<String, Object> actualRow) {
         List<String> columnNames = new ArrayList<>(actualRow.size() + 1);
-        if (dataSource.getTargetData().isOnlyCheckCoreData()) {
+        if (dataSource.getVerifyData().isOnlyCheckCoreData()) {
             logger.info(Messages.ignoreTargetColUnspecified(dataSource.getId(), table.getName()));
             columnNames.addAll(expectedRow.getFields().keySet());
         } else {

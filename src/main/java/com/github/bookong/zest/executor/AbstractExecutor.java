@@ -54,12 +54,12 @@ public abstract class AbstractExecutor {
      * @param source
      */
     public void verify(ZestWorker worker, ZestData zestData, Source source) {
-        if (source.getTargetData().isIgnoreCheck()) {
+        if (source.getVerifyData().isIgnoreCheck()) {
             logger.info(Messages.ignoreTargetData(source.getId()));
             return;
         }
 
-        for (AbstractTable table : source.getTargetData().getTargetDataMap().values()) {
+        for (AbstractTable table : source.getVerifyData().getTargetDataMap().values()) {
             if (table.isIgnoreCheckTarget()) {
                 logger.info(Messages.ignoreTargetTable(source.getId(), table.getName()));
                 continue;
@@ -79,7 +79,7 @@ public abstract class AbstractExecutor {
     protected Set<String> findAllTableNames(Source source) {
         Set<String> tableNames = new LinkedHashSet<>();
         source.getInitData().getInitDataList().forEach(table -> tableNames.add(table.getName()));
-        source.getTargetData().getTargetDataMap().values().forEach(table -> tableNames.add(table.getName()));
+        source.getVerifyData().getTargetDataMap().values().forEach(table -> tableNames.add(table.getName()));
         return tableNames;
     }
 

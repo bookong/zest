@@ -4,12 +4,15 @@ import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestReflectHelper;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.mongodb.core.MongoOperations;
 
+import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +48,7 @@ public class ZestDataTest {
 
     @Test
     public void testLoad005() {
+        logger.info("Normal data");
         ZestData zestData = load("005.xml");
         Assert.assertFalse(zestData.isTransferTime());
         Assert.assertEquals(0L, zestData.getCurrentTimeDiff());
@@ -53,6 +57,7 @@ public class ZestDataTest {
 
     @Test
     public void testLoad006() {
+        logger.info("Normal data");
         ZestData zestData = load("006.xml");
         Assert.assertEquals(3.4F, zestData.getVersion(), 0.1F);
         Assert.assertTrue(zestData.isTransferTime());
@@ -76,16 +81,17 @@ public class ZestDataTest {
 
     @Test
     public void testLoad010() {
-        testLoadError("010.xml", Messages.parseSourceNecessary());
+        testLoadError("010.xml", Messages.parseSourceError("mysql"), Messages.parseSourceNecessary());
     }
 
     @Test
     public void testLoad011() {
-        testLoadError("011.xml", Messages.parseSourceNecessary());
+        testLoadError("011.xml", Messages.parseSourceError("mysql"), Messages.parseSourceNecessary());
     }
 
     @Test
     public void testLoad012() {
+        logger.info("Normal data");
         ZestData zestData = load("012.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         Assert.assertEquals("mysql", zestData.getSourceList().get(0).getId());
@@ -123,48 +129,133 @@ public class ZestDataTest {
 
     @Test
     public void testLoad019() {
-        testLoadError("019.xml", Messages.parseParamObjLoad("intValue"), "For input string: \"str value\"");
+        testLoadError("019.xml", Messages.parseParamObjLoad("intValue"), //
+                      "For input string: \"str value\"");
     }
 
     @Test
     public void testLoad020() {
-        testLoadError("020.xml", Messages.parseParamObjLoad("date1"), Messages.parseDate("str value"));
+        testLoadError("020.xml", Messages.parseParamObjLoad("date1"), //
+                      Messages.parseDate("str value"));
     }
 
     @Test
     public void testLoad021() {
-        testLoadError("021.xml", Messages.parseParamObjLoad("nonsupportMapObj"), Messages.parseParamNonsupportMap());
+        testLoadError("021.xml", Messages.parseParamObjLoad("nonsupportMapObj"), //
+                      Messages.parseParamNonsupportMap());
     }
 
     @Test
     public void testLoad022() {
+        logger.info("Normal data");
         ZestData zestData = load("022.xml");
         Param param = (Param) zestData.getParam();
-        Assert.assertEquals(1, param.intValue);
-        Assert.assertEquals(2, param.intObjValue.intValue());
-        Assert.assertEquals(3, param.longValue);
-        Assert.assertEquals(4, param.longObjValue.longValue());
-        Assert.assertTrue(param.boolValue);
-        Assert.assertTrue(param.boolObjValue);
-        Assert.assertEquals(5.5, param.doubleValue, 0.1);
-        Assert.assertEquals(6.5, param.doubleObjValue, 0.1);
-        Assert.assertEquals(7.5, param.floatValue, 0.1);
-        Assert.assertEquals(8.5, param.floatObjValue, 0.1);
-        Assert.assertEquals("hello", param.strValue);
-        Assert.assertEquals("2020-08-10 13:14:15", DateFormatUtils.format(param.date1, "yyyy-MM-dd HH:mm:ss"));
-        Assert.assertEquals("2020-08-10 13:14:00", DateFormatUtils.format(param.date2, "yyyy-MM-dd HH:mm:ss"));
-        Assert.assertEquals("2020-08-10 13:00:00", DateFormatUtils.format(param.date3, "yyyy-MM-dd HH:mm:ss"));
-        Assert.assertEquals("2020-08-10 00:00:00", DateFormatUtils.format(param.date4, "yyyy-MM-dd HH:mm:ss"));
+        Assert.assertEquals(1, param.getIntValue());
+        Assert.assertEquals(2, param.getIntObjValue().intValue());
+        Assert.assertEquals(3, param.getLongValue());
+        Assert.assertEquals(4, param.getLongObjValue().longValue());
+        Assert.assertTrue(param.isBoolValue());
+        Assert.assertTrue(param.getBoolObjValue());
+        Assert.assertEquals(5.5, param.getDoubleValue(), 0.1);
+        Assert.assertEquals(6.5, param.getDoubleObjValue(), 0.1);
+        Assert.assertEquals(7.5, param.getFloatValue(), 0.1);
+        Assert.assertEquals(8.5, param.getFloatObjValue(), 0.1);
+        Assert.assertEquals("hello", param.getStrValue());
+        Assert.assertEquals("2020-08-10 13:14:15", DateFormatUtils.format(param.getDate1(), //
+                                                                          "yyyy-MM-dd HH:mm:ss"));
+        Assert.assertEquals("2020-08-10 13:14:00", DateFormatUtils.format(param.getDate2(), //
+                                                                          "yyyy-MM-dd HH:mm:ss"));
+        Assert.assertEquals("2020-08-10 13:00:00", DateFormatUtils.format(param.getDate3(), //
+                                                                          "yyyy-MM-dd HH:mm:ss"));
+        Assert.assertEquals("2020-08-10 00:00:00", DateFormatUtils.format(param.getDate4(), //
+                                                                          "yyyy-MM-dd HH:mm:ss"));
 
-        Assert.assertEquals(2, param.listObj.size());
-        Assert.assertEquals("1: param1 str", param.listObj.get(0).getStr());
-        Assert.assertEquals("1: param2 str", param.listObj.get(0).getObj2().getStr());
+        Assert.assertEquals(2, param.getListObj().size());
+        Assert.assertEquals("1: param1 str", param.getListObj().get(0).getStr());
+        Assert.assertEquals("1: param2 str", param.getListObj().get(0).getObj2().getStr());
 
-        Assert.assertEquals("2: param1 str", param.listObj.get(1).getStr());
-        Assert.assertEquals("2: param2 str", param.listObj.get(1).getObj2().getStr());
+        Assert.assertEquals("2: param1 str", param.getListObj().get(1).getStr());
+        Assert.assertEquals("2: param2 str", param.getListObj().get(1).getObj2().getStr());
 
-        Assert.assertEquals("param1 str", param.obj.getStr());
-        Assert.assertEquals("param2 str", param.obj.getObj2().getStr());
+        Assert.assertEquals("param1 str", param.getObj().getStr());
+        Assert.assertEquals("param2 str", param.getObj().getObj2().getStr());
+    }
+
+    @Test
+    public void testLoad023() {
+        testLoadError("023.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseCommonAttrUnknown("Source", "U,V"));
+    }
+
+    @Test
+    public void testLoad024() {
+        testLoadError("024.xml", Messages.parseCommonAttrUnknown("Param", "U"));
+    }
+
+    @Test
+    public void testLoad025() {
+        testLoadError("025.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseCommonAttrUnknown("Init", "U"));
+    }
+
+    @Test
+    public void testLoad026() {
+        testLoadError("026.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseCommonAttrUnknown("Verify", "U"));
+    }
+
+    @Test
+    public void testLoad027() {
+        testLoadError("027.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceOperationMatch("java.sql.Connection", "Init", "Table"));
+    }
+
+    @Test
+    public void testLoad028() {
+        testLoadError("028.xml", Messages.parseSourceError("mongo"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations", "Init", "Collection"));
+    }
+
+    @Test
+    public void testLoad029() {
+        testLoadError("029.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseSourceOperationMatch("java.sql.Connection", "Verify", "Table"));
+    }
+
+    @Test
+    public void testLoad030() {
+        testLoadError("030.xml", Messages.parseSourceError("mongo"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations", "Verify", "Collection"));
+    }
+
+    @Test
+    public void testLoad031() {
+        testLoadError("031.xml", Messages.parseSourceError("unknown"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceOperationUnknown("java.lang.Object"));
+    }
+
+    @Test
+    public void testLoad032() {
+        testLoadError("032.xml", Messages.parseSourceError("none"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceOperationNone());
+    }
+
+    @Test
+    public void testLoad033() {
+        logger.info("Normal data");
+        ZestData zestData = load("033.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Assert.assertTrue(obj.isIgnoreCheck());
+        Assert.assertTrue(obj.isOnlyCheckCoreData());
     }
 
     private void testLoadError(String filename, String... errorMessages) {
@@ -178,6 +269,14 @@ public class ZestDataTest {
     }
 
     private ZestData load(String filename) {
+        Connection conn = new MockConnection();
+        MongoOperations mongoOperations = new MockMongoOperations();
+
+        Map<String, Object> sourceOperations = (Map<String, Object>) ZestReflectHelper.getValue(worker, "sourceOperations");
+        sourceOperations.put("mysql", conn);
+        sourceOperations.put("mongo", mongoOperations);
+        sourceOperations.put("unknown", new Object());
+
         String filePath = ZestDataTest.class.getResource(filename).getPath();
         ZestData zestData = new ZestData(filePath);
         Param param = new Param();
@@ -217,6 +316,150 @@ public class ZestDataTest {
         private List<Param1>        listObj;
         private Param1              obj;
         private Map<String, String> nonsupportMapObj;
+
+        public int getIntValue() {
+            return intValue;
+        }
+
+        public void setIntValue(int intValue) {
+            this.intValue = intValue;
+        }
+
+        public Integer getIntObjValue() {
+            return intObjValue;
+        }
+
+        public void setIntObjValue(Integer intObjValue) {
+            this.intObjValue = intObjValue;
+        }
+
+        public long getLongValue() {
+            return longValue;
+        }
+
+        public void setLongValue(long longValue) {
+            this.longValue = longValue;
+        }
+
+        public Long getLongObjValue() {
+            return longObjValue;
+        }
+
+        public void setLongObjValue(Long longObjValue) {
+            this.longObjValue = longObjValue;
+        }
+
+        public boolean isBoolValue() {
+            return boolValue;
+        }
+
+        public void setBoolValue(boolean boolValue) {
+            this.boolValue = boolValue;
+        }
+
+        public Boolean getBoolObjValue() {
+            return boolObjValue;
+        }
+
+        public void setBoolObjValue(Boolean boolObjValue) {
+            this.boolObjValue = boolObjValue;
+        }
+
+        public double getDoubleValue() {
+            return doubleValue;
+        }
+
+        public void setDoubleValue(double doubleValue) {
+            this.doubleValue = doubleValue;
+        }
+
+        public Double getDoubleObjValue() {
+            return doubleObjValue;
+        }
+
+        public void setDoubleObjValue(Double doubleObjValue) {
+            this.doubleObjValue = doubleObjValue;
+        }
+
+        public float getFloatValue() {
+            return floatValue;
+        }
+
+        public void setFloatValue(float floatValue) {
+            this.floatValue = floatValue;
+        }
+
+        public Float getFloatObjValue() {
+            return floatObjValue;
+        }
+
+        public void setFloatObjValue(Float floatObjValue) {
+            this.floatObjValue = floatObjValue;
+        }
+
+        public String getStrValue() {
+            return strValue;
+        }
+
+        public void setStrValue(String strValue) {
+            this.strValue = strValue;
+        }
+
+        public Date getDate1() {
+            return date1;
+        }
+
+        public void setDate1(Date date1) {
+            this.date1 = date1;
+        }
+
+        public Date getDate2() {
+            return date2;
+        }
+
+        public void setDate2(Date date2) {
+            this.date2 = date2;
+        }
+
+        public Date getDate3() {
+            return date3;
+        }
+
+        public void setDate3(Date date3) {
+            this.date3 = date3;
+        }
+
+        public Date getDate4() {
+            return date4;
+        }
+
+        public void setDate4(Date date4) {
+            this.date4 = date4;
+        }
+
+        public List<Param1> getListObj() {
+            return listObj;
+        }
+
+        public void setListObj(List<Param1> listObj) {
+            this.listObj = listObj;
+        }
+
+        public Param1 getObj() {
+            return obj;
+        }
+
+        public void setObj(Param1 obj) {
+            this.obj = obj;
+        }
+
+        public Map<String, String> getNonsupportMapObj() {
+            return nonsupportMapObj;
+        }
+
+        public void setNonsupportMapObj(Map<String, String> nonsupportMapObj) {
+            this.nonsupportMapObj = nonsupportMapObj;
+        }
     }
 
     public static class Param1 {

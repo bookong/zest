@@ -20,36 +20,35 @@ public class Source {
 
     private SourceInitData   initData;
 
-    private SourceTargetData targetData;
-
-    public Source(ZestWorker worker, com.github.bookong.zest.support.xml.data.Source xmlDataSource){
-        this.id = xmlDataSource.getId();
-
-        this.initData = new SourceInitData(worker, getId(), xmlDataSource.getInit());
-        this.targetData = new SourceTargetData(worker, getId(), xmlDataSource.getInit(), xmlDataSource.getTarget());
-    }
+    private SourceVerifyData verifyData;
 
     public Source(ZestWorker worker, String nodeName, Node sourceNode, Set<String> sourceIds){
         List<Node> elements = ZestXmlUtil.getElements(sourceNode.getChildNodes());
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(sourceNode);
 
-        if (elements.size() != 2 //
-            || !"Init".equals(elements.get(0).getNodeName()) //
-            || !"Verify".equals(elements.get(1).getNodeName())) {
-            throw new ZestException(Messages.parseSourceNecessary());
-        }
-
         this.id = ZestXmlUtil.removeAttr(nodeName, attrMap, "Id");
+        if (sourceIds.contains(getId())) {
+            throw new ZestException(Messages.parseSourceIdDuplicate(getId()));
+        }
+        sourceIds.add(getId());
+
         if (StringUtils.isBlank(getId())) {
             throw new ZestException(Messages.parseSourceIdEmpty());
         }
 
-        if (sourceIds.contains(getId())) {
-            throw new ZestException(Messages.parseSourceIdDuplicate(getId()));
-        }
+        try {
+            if (elements.size() != 2 //
+                || !"Init".equals(elements.get(0).getNodeName()) //
+                || !"Verify".equals(elements.get(1).getNodeName())) {
+                throw new ZestException(Messages.parseSourceNecessary());
+            }
 
-        sourceIds.add(getId());
-        // TODO
+            this.initData = new SourceInitData(worker, getId(), elements.get(0).getNodeName(), elements.get(0));
+            this.verifyData = new SourceVerifyData(worker, getId(), elements.get(1).getNodeName(), elements.get(1));
+            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseSourceError(getId()), e);
+        }
     }
 
     public String getId() {
@@ -60,7 +59,7 @@ public class Source {
         return initData;
     }
 
-    public SourceTargetData getTargetData() {
-        return targetData;
+    public SourceVerifyData getVerifyData() {
+        return verifyData;
     }
 }

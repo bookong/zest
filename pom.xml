@@ -137,6 +137,13 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>4.0.5</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- XML -->
         <!-- zest-data.xsd to java code : -->
         <!-- mvn exec:java -Dexec.mainClass="com.sun.tools.xjc.XJCFacade" -Dexec.args="-p xml -d ./tmp ./schema/zest-data.xsd" -->
