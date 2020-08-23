@@ -86,7 +86,8 @@ public class ZestJUnit5Worker extends ZestWorker {
     private <T extends ZestParam> T before(ZestData zestData, Class<T> zestParamClass) {
         try {
             T param = zestParamClass.newInstance();
-            zestData.setTestParam(param);
+            zestData.setParam(param);
+            param.setZestData(zestData);
             ZestUtil.loadFromAbsolutePath(this, zestData);
 
             logger.info(Messages.statementRun(zestData.getDescription()));

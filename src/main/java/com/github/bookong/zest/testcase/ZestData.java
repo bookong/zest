@@ -221,7 +221,7 @@ public class ZestData {
         return param;
     }
 
-    public void setTestParam(ZestParam param) {
+    public void setParam(ZestParam param) {
         this.param = param;
     }
 

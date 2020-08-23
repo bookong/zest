@@ -72,8 +72,7 @@ public class ZestJUnit4Worker extends ZestWorker {
     }
 
     void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
-        Description description = Description.createTestDescription(testClass.getJavaClass(), frameworkMethod.getName(),
-                                                                    frameworkMethod.getAnnotations());
+        Description description = Description.createTestDescription(testClass.getJavaClass(), frameworkMethod.getName(), frameworkMethod.getAnnotations());
 
         if (ignoreTest()) {
             // 整个测试类忽略
@@ -101,8 +100,7 @@ public class ZestJUnit4Worker extends ZestWorker {
             eachNotifier.addFailure(e);
 
         } catch (Throwable e) {
-            eachNotifier.addFailure(new ZestException(Messages.statementEvaluate(frameworkMethod.getTestCaseFilePath()),
-                                                      e));
+            eachNotifier.addFailure(new ZestException(Messages.statementEvaluate(frameworkMethod.getTestCaseFilePath()), e));
         } finally {
             eachNotifier.fireTestFinished();
         }
@@ -150,7 +148,10 @@ public class ZestJUnit4Worker extends ZestWorker {
                 throw new ZestException(Messages.initParam());
             }
 
-            zestData.setTestParam((ZestParam) paramClass.newInstance());
+            ZestParam param = (ZestParam) paramClass.newInstance();
+            zestData.setParam(param);
+            param.setZestData(zestData);
+
             ZestUtil.loadFromAbsolutePath(this, zestData);
 
         } catch (ZestException e) {

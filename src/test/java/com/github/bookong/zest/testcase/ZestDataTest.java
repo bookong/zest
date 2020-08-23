@@ -180,7 +180,9 @@ public class ZestDataTest {
     private ZestData load(String filename) {
         String filePath = ZestDataTest.class.getResource(filename).getPath();
         ZestData zestData = new ZestData(filePath);
-        zestData.setTestParam(new Param());
+        Param param = new Param();
+        zestData.setParam(param);
+        param.setZestData(zestData);
         zestData.load(worker);
         return zestData;
     }
@@ -195,7 +197,7 @@ public class ZestDataTest {
         return sb.toString();
     }
 
-    public static class Param implements ZestParam {
+    public static class Param extends ZestParam {
 
         private int                 intValue;
         private Integer             intObjValue;
