@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * @author Jiang Xu
  */
-public class Collection extends AbstractTable {
+public class Collection extends AbstractTable<Object> {
 
     private Sort                      mongoSort;
 
@@ -29,14 +29,15 @@ public class Collection extends AbstractTable {
 
     private List<Object>              documents = Collections.synchronizedList(new ArrayList<>());
 
-    public Collection(ZestWorker worker, String sourceId, String nodeName, Node node, MongoOperations mongoOperations, boolean isTargetData) {
+    public Collection(ZestWorker worker, String sourceId, String nodeName, Node node, MongoOperations mongoOperations, boolean isTargetData){
+        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        init(nodeName, attrMap);
+        init(nodeName, elements, attrMap, isTargetData);
         // TODO
     }
 
     public Collection(ZestWorker worker, String sourceId, MongoCollection xmlCollection, MongoOperations mongoOperations, boolean isTargetData){
-//        super(xmlCollection);
+        // super(xmlCollection);
 
         if (xmlCollection.getSorts() != null && !xmlCollection.getSorts().getSort().isEmpty()) {
             if (!isTargetData) {

@@ -1,7 +1,11 @@
 package com.github.bookong.zest.testcase;
 
 import com.github.bookong.zest.util.ZestXmlUtil;
+import org.w3c.dom.Node;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,17 +13,21 @@ import java.util.Map;
  * 
  * @author Jiang Xu
  */
-public abstract class AbstractTable {
+public abstract class AbstractTable<T> {
+
+    private List<T> dataList;
 
     /** 广义的表名 */
     private String  name;
 
     /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
-    private boolean ignoreCheckTarget;
+    private boolean ignoreVerify;
 
-    protected void init(String nodeName, Map<String, String> attrMap) {
+    protected void init(String nodeName, List<Node> elements, Map<String, String> attrMap, boolean isTargetData) {
         this.name = ZestXmlUtil.removeAttr(nodeName, attrMap, "Name");
-        this.ignoreCheckTarget = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, "Ignore", false);
+        this.ignoreVerify = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, "Ignore", false);
+
+        dataList = new ArrayList<>(elements.size() + 1);
         // TODO
     }
 
@@ -27,8 +35,14 @@ public abstract class AbstractTable {
         return name;
     }
 
-    public boolean isIgnoreCheckTarget() {
-        return ignoreCheckTarget;
+    public boolean isIgnoreVerify() {
+        return ignoreVerify;
     }
 
+    public List<T> getDataList() {
+        if (dataList == null) {
+            return Collections.emptyList();
+        }
+        return dataList;
+    }
 }

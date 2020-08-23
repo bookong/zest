@@ -1,4 +1,4 @@
-package com.github.bookong.zest.testcase;
+package com.github.bookong.zest.testcase.mock;
 
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.ReadPreference;

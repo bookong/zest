@@ -1,4 +1,4 @@
-package com.github.bookong.zest.testcase;
+package com.github.bookong.zest.testcase.mock;
 
 import java.sql.*;
 import java.util.Map;
@@ -9,6 +9,12 @@ import java.util.concurrent.Executor;
  * @author Jiang Xu
  */
 public class MockConnection implements Connection {
+
+    @Override
+    public DatabaseMetaData getMetaData() throws SQLException {
+        return new MockMetaData();
+    }
+
     @Override
     public Statement createStatement() throws SQLException {
         return null;
@@ -57,11 +63,6 @@ public class MockConnection implements Connection {
     @Override
     public boolean isClosed() throws SQLException {
         return false;
-    }
-
-    @Override
-    public DatabaseMetaData getMetaData() throws SQLException {
-        return null;
     }
 
     @Override

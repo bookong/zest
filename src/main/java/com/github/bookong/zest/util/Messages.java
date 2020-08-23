@@ -97,6 +97,10 @@ public class Messages {
         return getString("parse.source.operation.none");
     }
 
+    public static String parseTableMeta() {
+        return getString("parse.table.meta");
+    }
+
     public static String parseParamType() {
         return getString("parse.param.type");
     }
@@ -151,10 +155,6 @@ public class Messages {
 
     public static String parseDocObj(String sourceId, String collectionId, int rowIdx) {
         return getString("parse.doc.obj", sourceId, collectionId, rowIdx);
-    }
-
-    public static String parseDbMeta() {
-        return getString("parse.db.meta");
     }
 
     public static String parseOperation() {

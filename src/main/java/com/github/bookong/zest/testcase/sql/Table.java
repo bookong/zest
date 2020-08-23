@@ -21,7 +21,7 @@ import java.util.*;
  * 
  * @author Jiang Xu
  */
-public class Table extends AbstractTable {
+public class Table extends AbstractTable<Object> {
 
     /** 排序的依据 */
     private String               sort;
@@ -32,16 +32,17 @@ public class Table extends AbstractTable {
     /** 关系型数据库的 SqlType */
     private Map<String, Integer> sqlTypes    = Collections.synchronizedMap(new HashMap<>());
 
-    public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn, boolean isTargetData) {
+    public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn, boolean isTargetData){
+        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        init(nodeName, attrMap);
+        init(nodeName, elements, attrMap, isTargetData);
         loadSqlTypes(conn);
         // TODO
     }
 
     @Deprecated
     public Table(ZestWorker worker, String sourceId, SqlTable xmlTable, Connection conn, boolean isTargetData){
-//        super(xmlTable);
+        // super(xmlTable);
         loadSqlTypes(conn);
 
         if (xmlTable.getSorts() != null && !xmlTable.getSorts().getSort().isEmpty()) {
@@ -91,10 +92,8 @@ public class Table extends AbstractTable {
                 ZestSqlHelper.close(rs);
             }
 
-        } catch (ZestException e) {
-            throw e;
         } catch (Exception e) {
-            throw new ZestException(Messages.parseDbMeta(), e);
+            throw new ZestException(Messages.parseTableMeta(), e);
         } finally {
             ZestSqlHelper.close(rs);
         }

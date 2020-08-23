@@ -3,6 +3,8 @@ package com.github.bookong.zest.testcase;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
+import com.github.bookong.zest.testcase.mock.MockConnection;
+import com.github.bookong.zest.testcase.mock.MockMongoOperations;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -256,6 +258,17 @@ public class ZestDataTest {
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
         Assert.assertTrue(obj.isIgnoreCheck());
         Assert.assertTrue(obj.isOnlyCheckCoreData());
+    }
+
+    @Test
+    public void testLoad034() {
+        logger.info("Normal data");
+        ZestData zestData = load("034.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceInitData obj = zestData.getSourceList().get(0).getInitData();
+        Assert.assertEquals(1, obj.getInitDataList().size());
+        Assert.assertEquals("tab", obj.getInitDataList().get(0).getName());
+        Assert.assertFalse(obj.getInitDataList().get(0).isIgnoreVerify());
     }
 
     private void testLoadError(String filename, String... errorMessages) {

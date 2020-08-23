@@ -60,7 +60,7 @@ public abstract class AbstractExecutor {
         }
 
         for (AbstractTable table : source.getVerifyData().getTargetDataMap().values()) {
-            if (table.isIgnoreCheckTarget()) {
+            if (table.isIgnoreVerify()) {
                 logger.info(Messages.ignoreTargetTable(source.getId(), table.getName()));
                 continue;
             }
