@@ -5,8 +5,10 @@ import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestXmlUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -32,7 +34,7 @@ public class Collection extends AbstractTable<Document> {
                       boolean isVerifyElement){
         List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        init(nodeName, elements, attrMap, isVerifyElement);
+        init(nodeName, elements, attrMap);
         String entityClassAttr = ZestXmlUtil.removeAttr(nodeName, attrMap, "EntityClass");
         if (StringUtils.isBlank(entityClassAttr)) {
             throw new ZestException(Messages.parseCollectionEntity());
@@ -84,7 +86,14 @@ public class Collection extends AbstractTable<Document> {
             }
         }
 
-        // TODO
+        parseData(elements, isVerifyElement);
+    }
+
+    protected void checkRule(AbstractRule rule) {
+        Field field = ZestReflectHelper.getFieldByPath(this.entityClass, rule.getPath());
+        if (field == null) {
+            throw new ZestException(Messages.parseCollectionRule(rule.getPath()));
+        }
     }
 
     private Order getOrder(Sort item) {

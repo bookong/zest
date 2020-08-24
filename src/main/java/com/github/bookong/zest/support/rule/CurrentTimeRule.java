@@ -1,11 +1,16 @@
 package com.github.bookong.zest.support.rule;
 
+import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.sql.Table;
-import com.github.bookong.zest.testcase.Source;
-import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestXmlUtil;
 import org.junit.Assert;
+import org.w3c.dom.Node;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jiang Xu
@@ -14,19 +19,31 @@ public class CurrentTimeRule extends AbstractRule {
 
     private int offset;
 
-    public CurrentTimeRule(Field xmlField){
-        super(xmlField);
-        this.offset = xmlField.getCurrentTime().getOffset();
+    CurrentTimeRule(Node node, String path, boolean nullable){
+        super(path, nullable);
+        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
+
+        this.offset = ZestXmlUtil.removeIntAttr("CurrentTime", attrMap, "Offset", 1000);
+
+        ZestXmlUtil.attrMapMustEmpty("CurrentTime", attrMap);
+        if (!elements.isEmpty()) {
+            throw new ZestException(Messages.parseCommonChildren("CurrentTime"));
+        }
     }
 
     @Override
-    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx,
-                         String columnName, Object value) {
+    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx, String columnName,
+                         Object value) {
         assertNullable(dataSource, table, rowIdx, columnName, value);
 
         long tmp = getActualDataTime(dataSource, table, rowIdx, columnName, value);
         Assert.assertTrue(Messages.checkTableColDateCurrent(dataSource.getId(), table.getName(), rowIdx, columnName),
-                          (tmp >= testCaseData.getStartTime() && tmp <= testCaseData.getEndTime() + offset));
+                          (tmp >= testCaseData.getStartTime() && tmp <= testCaseData.getEndTime() + getOffset()));
 
+    }
+
+    public int getOffset() {
+        return offset;
     }
 }

@@ -2,6 +2,7 @@ package com.github.bookong.zest.testcase.sql;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
@@ -31,7 +32,7 @@ public class Table extends AbstractTable<Row> {
                  boolean isVerifyElement){
         List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        init(nodeName, elements, attrMap, isVerifyElement);
+        init(nodeName, elements, attrMap);
         loadSqlTypes(conn);
 
         ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
@@ -73,7 +74,13 @@ public class Table extends AbstractTable<Row> {
             }
         }
 
-        // TODO
+        parseData(elements, isVerifyElement);
+    }
+
+    protected void checkRule(AbstractRule rule) {
+        if (!sqlTypes.containsKey(rule.getPath())) {
+            throw new ZestException(Messages.parseTableRule(rule.getPath()));
+        }
     }
 
     public String getSort() {

@@ -51,6 +51,10 @@ public class Messages {
         return getString("parse.common.class.found", className);
     }
 
+    public static String parseCommonChildren(String nodeName) {
+        return getString("parse.common.children", nodeName);
+    }
+
     public static String parseZest() {
         return getString("parse.zest");
     }
@@ -111,6 +115,10 @@ public class Messages {
         return getString("parse.table.sort.exist", fieldName);
     }
 
+    public static String parseTableRule(String path) {
+        return getString("parse.table.rule", path);
+    }
+
     public static String parseCollectionEntity() {
         return getString("parse.collection.entity");
     }
@@ -120,7 +128,11 @@ public class Messages {
     }
 
     public static String parseCollectionSortExits(String fieldName) {
-        return getString("parse.collection.sort.exits",fieldName);
+        return getString("parse.collection.sort.exits", fieldName);
+    }
+
+    public static String parseCollectionRule(String path) {
+        return getString("parse.collection.rule", path);
     }
 
     public static String parseSortPosition() {
@@ -145,6 +157,58 @@ public class Messages {
 
     public static String parseSortDirection(String fieldName) {
         return getString("parse.sort.direction", fieldName);
+    }
+
+    public static String parseDataError() {
+        return getString("parse.data.error");
+    }
+
+    public static String parseDataValueExist() {
+        return getString("parse.data.value.exist");
+    }
+
+    public static String parseDataRulesPosition() {
+        return getString("parse.data.rules.position");
+    }
+
+    public static String parseDataInclude() {
+        return getString("parse.data.include");
+    }
+
+    public static String parseRuleFromMin() {
+        return getString("parse.rule.from.min");
+    }
+
+    public static String parseRulefromMax() {
+        return getString("parse.rule.from.max");
+    }
+
+    public static String parseRuleFromUnit() {
+        return getString("parse.rule.from.unit");
+    }
+
+    public static String parseRulefromUnitUnknown(String unit) {
+        return getString("parse.rule.from.unit.unknown", unit);
+    }
+
+    public static String parseRulesError() {
+        return getString("parse.rules.error");
+    }
+
+    public static String parseRuleType() {
+        return getString("parse.rule.type");
+    }
+
+    public static String parseRuleChoice() {
+        return getString("parse.rule.choice");
+    }
+
+    public static String parseRulePathEmpty() {
+        return getString("parse.rule.path.empty");
+    }
+
+    public static String parseRulePathDuplicate(String path) {
+        return getString("parse.rule.path.duplicate", path);
     }
 
     public static String parseParamType() {

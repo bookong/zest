@@ -1,6 +1,8 @@
 package com.github.bookong.zest.testcase;
 
 import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.support.rule.AbstractRule;
+import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestXmlUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -15,19 +17,90 @@ import java.util.*;
  */
 public abstract class AbstractTable<T extends AbstractRowData> {
 
-    private List<T> dataList;
+    private List<T>            dataList;
+
+    private List<AbstractRule> ruleList;
 
     /** 广义的表名 */
-    private String  name;
+    private String             name;
 
     /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
-    private boolean ignoreVerify;
+    private boolean            ignoreVerify;
 
-    protected void init(String nodeName, List<Node> elements, Map<String, String> attrMap, boolean isVerifyElement) {
+    protected void init(String nodeName, List<Node> elements, Map<String, String> attrMap) {
         this.name = ZestXmlUtil.removeAttr(nodeName, attrMap, "Name");
         this.ignoreVerify = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, "Ignore", false);
 
         dataList = new ArrayList<>(elements.size() + 1);
+    }
+
+    protected void parseData(List<Node> elements, boolean isVerifyElement) {
+        try {
+            for (Node node : elements) {
+                if (!"Data".equals(node.getNodeName())) {
+                    continue;
+                }
+
+                ZestXmlUtil.attrMapMustEmpty("Data", ZestXmlUtil.getAllAttrs(node));
+                List<Node> subElements = ZestXmlUtil.getElements(node.getChildNodes());
+                if (subElements.size() == 1) {
+                    if (!"Value".equals(subElements.get(0).getNodeName())) {
+                        throw new ZestException(Messages.parseDataValueExist());
+                    }
+                    parseValue(subElements.get(0));
+
+                } else if (subElements.size() == 2) {
+                    if (!isVerifyElement) {
+                        throw new ZestException(Messages.parseDataRulesPosition());
+                    }
+
+                    if (!"Rules".equals(subElements.get(0).getNodeName())) {
+                        throw new ZestException(Messages.parseDataInclude());
+                    }
+
+                    if (!"Value".equals(subElements.get(1).getNodeName())) {
+                        throw new ZestException(Messages.parseDataInclude());
+                    }
+
+                    parseRules(subElements.get(0));
+                    parseValue(subElements.get(1));
+
+                } else {
+                    throw new ZestException(Messages.parseDataInclude());
+                }
+            }
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseDataError(), e);
+        }
+    }
+
+    protected abstract void checkRule(AbstractRule rule);
+
+    private void parseRules(Node rulesNode) {
+        try {
+            ZestXmlUtil.attrMapMustEmpty("Rules", ZestXmlUtil.getAllAttrs(rulesNode));
+            List<Node> elements = ZestXmlUtil.getElements(rulesNode.getChildNodes());
+            this.ruleList = new ArrayList<>(elements.size() + 1);
+            Set<String> rulePaths = new HashSet<>(elements.size() + 1);
+            for (Node element : elements) {
+                if (!"Rule".equals(element.getNodeName())) {
+                    throw new ZestException(Messages.parseRuleType());
+                }
+
+                AbstractRule rule = RuleFactory.create(element);
+                if (rulePaths.contains(rule.getPath())) {
+                    throw new ZestException(Messages.parseRulePathDuplicate(rule.getPath()));
+                }
+                rulePaths.add(rule.getPath());
+                checkRule(rule);
+                this.ruleList.add(rule);
+            }
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseRulesError(), e);
+        }
+    }
+
+    private void parseValue(Node valueNode) {
         // TODO
     }
 
@@ -81,10 +154,11 @@ public abstract class AbstractTable<T extends AbstractRowData> {
     }
 
     public List<T> getDataList() {
-        if (dataList == null) {
-            return Collections.emptyList();
-        }
-        return dataList;
+        return dataList == null ? Collections.emptyList() : dataList;
+    }
+
+    public List<AbstractRule> getRuleList() {
+        return ruleList == null ? Collections.emptyList() : ruleList;
     }
 
     protected class Sort {

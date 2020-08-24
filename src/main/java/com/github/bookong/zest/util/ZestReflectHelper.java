@@ -15,6 +15,33 @@ import java.util.List;
  */
 public class ZestReflectHelper {
 
+    public static Field getFieldByPath(Class<?> theClass, String path) {
+        Field f = null;
+        Class<?> clazz = theClass;
+        for (String subPath : StringUtils.split(path, '.')) {
+            f = getField(clazz, subPath);
+            if (f == null) {
+                return null;
+            }
+
+            clazz = f.getType();
+        }
+
+        return f;
+    }
+
+    public static Field getField(Class<?> theClass, String fieldName) {
+        for (Class<?> clazz : getAllClass(theClass)) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (StringUtils.equals(fieldName, f.getName())) {
+                    return f;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static Field getField(Object obj, String fieldName) {
         for (Class<?> clazz : getAllClass(obj)) {
             for (Field f : clazz.getDeclaredFields()) {
@@ -81,8 +108,11 @@ public class ZestReflectHelper {
     }
 
     private static List<Class<?>> getAllClass(Object obj) {
+        return getAllClass(obj.getClass());
+    }
+
+    private static List<Class<?>> getAllClass(Class<?> clazz) {
         List<Class<?>> list = new ArrayList<>();
-        Class<?> clazz = obj.getClass();
 
         do {
             list.add(clazz);

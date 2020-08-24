@@ -50,7 +50,7 @@ public class Row extends AbstractRowData {
                     throw new ZestException(Messages.parseDataFieldUnder(tableName, fieldName));
                 }
 
-                fields.put(fieldName, RuleFactory.createRule(sourceId, tableName, rowIdx, fieldName, xmlField));
+                // fields.put(fieldName, RuleFactory.createRule(sourceId, tableName, rowIdx, fieldName, xmlField));
             }
         }
     }

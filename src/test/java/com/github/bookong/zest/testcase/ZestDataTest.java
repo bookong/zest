@@ -419,8 +419,66 @@ public class ZestDataTest {
     @Test
     public void testLoad054() {
         testLoadError("054.xml", Messages.parseSourceError("mongo"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseCollectionSortExits("none"));
+    }
+
+    @Test
+    public void testLoad055() {
+        testLoadError("055.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseDataError(), //
+                      Messages.parseDataInclude());
+    }
+
+    @Test
+    public void testLoad056() {
+        testLoadError("056.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseDataError(), //
+                      Messages.parseDataValueExist());
+    }
+
+    @Test
+    public void testLoad057() {
+        testLoadError("057.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseDataError(), //
+                      Messages.parseDataInclude());
+    }
+
+    @Test
+    public void testLoad058() {
+        testLoadError("058.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseDataError(), //
+                      Messages.parseDataRulesPosition());
+    }
+
+    @Test
+    public void testLoad059() {
+        testLoadError("059.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseDataError(), //
+                      Messages.parseCommonAttrUnknown("Data", "U"));
+    }
+
+    @Test
+    public void testLoad060() {
+        testLoadError("060.xml", Messages.parseSourceError("mysql"), //
                 Messages.parseSourceVerifyError(), //
-                Messages.parseCollectionSortExits("none"));
+                Messages.parseDataError(), //
+                Messages.parseRulesError(), //
+                Messages.parseRuleType());
+    }
+
+    @Test
+    public void testLoad061() {
+        testLoadError("061.xml", Messages.parseSourceError("mysql"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseDataError(), //
+                Messages.parseRulesError(), //
+                Messages.parseCommonAttrUnknown("Rules", "U"));
     }
 
     private void testLoadError(String filename, String... errorMessages) {

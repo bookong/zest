@@ -1,13 +1,16 @@
 package com.github.bookong.zest.support.rule;
 
-import com.github.bookong.zest.testcase.ZestData;
+import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.testcase.Source;
+import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.sql.Table;
-import com.github.bookong.zest.support.xml.data.Field;
 import com.github.bookong.zest.util.Messages;
-import org.apache.commons.lang3.StringUtils;
+import com.github.bookong.zest.util.ZestXmlUtil;
 import org.junit.Assert;
+import org.w3c.dom.Node;
 
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -17,17 +20,30 @@ public class RegExpRule extends AbstractRule {
 
     private String regExp;
 
-    public RegExpRule(Field xmlField){
-        super(xmlField);
-        regExp = StringUtils.trimToEmpty(xmlField.getRegExp());
+    RegExpRule(Node node, String path, boolean nullable){
+        super(path, nullable);
+        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
+
+        this.regExp = ZestXmlUtil.getValue(node);
+
+        ZestXmlUtil.attrMapMustEmpty("RegExp", attrMap);
+        if (!elements.isEmpty()) {
+            throw new ZestException(Messages.parseCommonChildren("RegExp"));
+        }
     }
 
     @Override
-    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx,
-                         String columnName, Object value) {
+    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx, String columnName,
+                         Object value) {
         assertNullable(dataSource, table, rowIdx, columnName, value);
 
-        Assert.assertTrue(Messages.checkTableColRegexp(dataSource.getId(), table.getName(), rowIdx, columnName, regExp),
-                          Pattern.matches(regExp, String.valueOf(value)));
+        Assert.assertTrue(Messages.checkTableColRegexp(dataSource.getId(), table.getName(), rowIdx, columnName,
+                                                       getRegExp()),
+                          Pattern.matches(getRegExp(), String.valueOf(value)));
+    }
+
+    public String getRegExp() {
+        return regExp;
     }
 }

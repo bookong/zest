@@ -35,6 +35,22 @@ public class ZestXmlUtil {
         return StringUtils.trimToEmpty(node.getFirstChild().getNodeValue());
     }
 
+    public static int removeIntAttr(String nodeName, Map<String, String> attrMap, String attrName, int defValue) {
+        Integer value = removeIntAttr(nodeName, attrMap, attrName);
+        return value != null ? value : defValue;
+    }
+
+    public static Integer removeIntAttr(String nodeName, Map<String, String> attrMap, String attrName) {
+        try {
+            String value = removeAttr(nodeName, attrMap, attrName);
+            return value != null ? Integer.valueOf(value) : null;
+        } catch (ZestException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseCommonAttr(nodeName, attrName), e);
+        }
+    }
+
     public static float removeFloatAttr(String nodeName, Map<String, String> attrMap, String attrName, float defValue) {
         Float value = removeFloatAttr(nodeName, attrMap, attrName);
         return value != null ? value : defValue;
@@ -51,7 +67,8 @@ public class ZestXmlUtil {
         }
     }
 
-    public static boolean removeBooleanAttr(String nodeName, Map<String, String> attrMap, String attrName, boolean defValue) {
+    public static boolean removeBooleanAttr(String nodeName, Map<String, String> attrMap, String attrName,
+                                            boolean defValue) {
         Boolean value = removeBooleanAttr(nodeName, attrMap, attrName);
         return value != null ? value : defValue;
     }
