@@ -37,7 +37,7 @@ public class SqlExecutor extends AbstractExecutor {
 
         Table table = (Table) data;
         Connection conn = worker.getSourceOperation(source.getId(), Connection.class);
-        List<Row> rowList = table.getRowDataList();
+        List<Row> rowList = table.getDataList();
         if (rowList.isEmpty()) {
             return;
         }
@@ -47,8 +47,8 @@ public class SqlExecutor extends AbstractExecutor {
             return;
         }
 
-        for (int i = 0; i < table.getRowDataList().size(); i++) {
-            Row row = table.getRowDataList().get(i);
+        for (int i = 0; i < table.getDataList().size(); i++) {
+            Row row = table.getDataList().get(i);
             String sql = genInsertSql(columnNames, table);
             Object[] params = new Object[columnNames.size()];
             int idx = 0;
@@ -68,10 +68,10 @@ public class SqlExecutor extends AbstractExecutor {
         Table table = (Table) data;
         Connection conn = worker.getSourceOperation(source.getId(), Connection.class);
         List<Map<String, Object>> dataInDb = findData(conn, table);
-        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getRowDataList().size(),
+        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(),
                             dataInDb.size());
-        for (int i = 0; i < table.getRowDataList().size(); i++) {
-            Row expected = table.getRowDataList().get(i);
+        for (int i = 0; i < table.getDataList().size(); i++) {
+            Row expected = table.getDataList().get(i);
             Map<String, Object> actual = dataInDb.get(i);
             verifyRow(zestData, source, table, i + 1, expected, actual);
         }
@@ -103,8 +103,8 @@ public class SqlExecutor extends AbstractExecutor {
     }
 
     protected Set<String> getColumnNames(Table table) {
-        Set<String> columnNames = new LinkedHashSet<>(table.getRowDataList().get(0).getFields().size() + 1);
-        for (Row row : table.getRowDataList()) {
+        Set<String> columnNames = new LinkedHashSet<>(table.getDataList().get(0).getFields().size() + 1);
+        for (Row row : table.getDataList()) {
             columnNames.addAll(row.getFields().keySet());
         }
         return columnNames;
