@@ -243,7 +243,7 @@
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="data:Sorts" >
+                <xsd:element ref="data:Sorts" minOccurs="0">
                     <xsd:annotation>
                         <xsd:documentation>
                             Generally, the primary key of MongoDB is a uuid string, so you need to specify the sorting

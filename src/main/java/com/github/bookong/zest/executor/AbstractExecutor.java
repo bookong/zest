@@ -59,7 +59,7 @@ public abstract class AbstractExecutor {
             return;
         }
 
-        for (AbstractTable table : source.getVerifyData().getTargetDataMap().values()) {
+        for (AbstractTable table : source.getVerifyData().getVerifyDataMap().values()) {
             if (table.isIgnoreVerify()) {
                 logger.info(Messages.ignoreTargetTable(source.getId(), table.getName()));
                 continue;
@@ -79,7 +79,7 @@ public abstract class AbstractExecutor {
     protected Set<String> findAllTableNames(Source source) {
         Set<String> tableNames = new LinkedHashSet<>();
         source.getInitData().getInitDataList().forEach(table -> tableNames.add(table.getName()));
-        source.getVerifyData().getTargetDataMap().values().forEach(table -> tableNames.add(table.getName()));
+        source.getVerifyData().getVerifyDataMap().values().forEach(table -> tableNames.add(table.getName()));
         return tableNames;
     }
 

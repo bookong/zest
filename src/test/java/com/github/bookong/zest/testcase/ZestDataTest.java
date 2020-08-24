@@ -312,7 +312,7 @@ public class ZestDataTest {
     @Test
     public void testLoad040() {
         testLoadError("040.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceVerifyError(), //
                       Messages.parseTableData());
     }
 
@@ -326,49 +326,49 @@ public class ZestDataTest {
     @Test
     public void testLoad042() {
         testLoadError("042.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceVerifyError(), //
                       Messages.parseSortType());
     }
 
     @Test
     public void testLoad043() {
         testLoadError("043.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceVerifyError(), //
                       Messages.parseCommonAttrUnknown("Sorts", "U"));
     }
 
     @Test
     public void testLoad044() {
         testLoadError("044.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceVerifyError(), //
                       Messages.parseSortField());
     }
 
     @Test
     public void testLoad045() {
         testLoadError("045.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceVerifyError(), //
                       Messages.parseSortDirection("f_varchar"));
     }
 
     @Test
     public void testLoad046() {
         testLoadError("046.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceVerifyError(), //
                       Messages.parseSortChildren("f_varchar"));
     }
 
     @Test
     public void testLoad047() {
         testLoadError("047.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceVerifyError(), //
                       Messages.parseSortFieldDuplicate("f_varchar"));
     }
 
     @Test
     public void testLoad048() {
         testLoadError("048.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
+                      Messages.parseSourceVerifyError(), //
                       Messages.parseSortFieldExist("none"));
     }
 
@@ -377,10 +377,10 @@ public class ZestDataTest {
         logger.info("Normal data");
         ZestData zestData = load("049.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
-        SourceInitData obj = zestData.getSourceList().get(0).getInitData();
-        Assert.assertEquals(1, obj.getInitDataList().size());
-        Assert.assertTrue(obj.getInitDataList().get(0) instanceof Table);
-        Table table = (Table) obj.getInitDataList().get(0);
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Assert.assertEquals(1, obj.getVerifyDataMap().size());
+        Assert.assertTrue(obj.getVerifyDataMap().get("tab") instanceof Table);
+        Table table = (Table) obj.getVerifyDataMap().get("tab");
         Assert.assertEquals(" order by f_varchar desc, f_double asc, f_bigint asc", table.getSort());
     }
 
@@ -388,7 +388,21 @@ public class ZestDataTest {
     public void testLoad050() {
         testLoadError("050.xml", Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseCollectionSorts());
+                      Messages.parseCollectionData());
+    }
+
+    @Test
+    public void testLoad051() {
+        testLoadError("051.xml", Messages.parseSourceError("mysql"), //
+                Messages.parseSourceInitError(), //
+                Messages.parseSortPosition());
+    }
+
+    @Test
+    public void testLoad052() {
+        testLoadError("052.xml", Messages.parseSourceError("mongo"), //
+                Messages.parseSourceInitError(), //
+                Messages.parseSortPosition());
     }
 
     private void testLoadError(String filename, String... errorMessages) {

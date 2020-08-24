@@ -111,8 +111,12 @@ public class Messages {
         return getString("parse.collection.entity");
     }
 
-    public static String parseCollectionSorts() {
-        return getString("parse.collection.sorts");
+    public static String parseCollectionData() {
+        return getString("parse.collection.data");
+    }
+
+    public static String parseSortPosition() {
+        return getString("parse.sort.position");
     }
 
     public static String parseSortType() {

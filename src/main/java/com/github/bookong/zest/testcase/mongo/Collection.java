@@ -27,10 +27,10 @@ public class Collection extends AbstractTable<Document> {
     private List<Object>                         documents = Collections.synchronizedList(new ArrayList<>());
 
     public Collection(ZestWorker worker, String sourceId, String nodeName, Node node, MongoOperations mongoOperations,
-                      boolean isTargetData){
+                      boolean isVerifyElement){
         List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        init(nodeName, elements, attrMap, isTargetData);
+        init(nodeName, elements, attrMap, isVerifyElement);
         String entityClassAttr = ZestXmlUtil.removeAttr(nodeName, attrMap, "EntityClass");
         if (StringUtils.isBlank(entityClassAttr)) {
             throw new ZestException(Messages.parseCollectionEntity());
@@ -48,11 +48,28 @@ public class Collection extends AbstractTable<Document> {
             return;
         }
 
-        int startIdx = 1;
+        int startIdx = 0;
         Node firstNode = elements.get(0);
-        if (!"Sorts".equals(firstNode.getNodeName())) {
-            throw new ZestException(Messages.parseCollectionSorts());
+        if ("Sorts".equals(firstNode.getNodeName())) {
+            if (!isVerifyElement) {
+                throw new ZestException(Messages.parseSortPosition());
+            }
+
+            startIdx = 1;
+            List<Sort> sortList = parseSort(firstNode);
+            if (!sortList.isEmpty()) {
+                // TODO
+            }
         }
+
+        for (int i = startIdx; i < elements.size(); i++) {
+            Node element = elements.get(i);
+            if (!"Data".equals(element.getNodeName())) {
+                throw new ZestException(Messages.parseCollectionData());
+            }
+        }
+
+        List<Sort> sortList = parseSort(firstNode);
 
         // TODO
     }

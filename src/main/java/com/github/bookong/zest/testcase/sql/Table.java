@@ -32,10 +32,11 @@ public class Table extends AbstractTable<Row> {
     /** 关系型数据库的 SqlType */
     private Map<String, Integer> sqlTypes    = Collections.synchronizedMap(new HashMap<>());
 
-    public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn, boolean isTargetData){
+    public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn,
+                 boolean isVerifyElement){
         List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        init(nodeName, elements, attrMap, isTargetData);
+        init(nodeName, elements, attrMap, isVerifyElement);
         loadSqlTypes(conn);
 
         ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
@@ -47,6 +48,10 @@ public class Table extends AbstractTable<Row> {
         int startIdx = 0;
         Node firstNode = elements.get(0);
         if ("Sorts".equals(firstNode.getNodeName())) {
+            if (!isVerifyElement) {
+                throw new ZestException(Messages.parseSortPosition());
+            }
+
             startIdx = 1;
             List<Sort> sortList = parseSort(firstNode);
             if (!sortList.isEmpty()) {

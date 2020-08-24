@@ -4,14 +4,14 @@
     <Description>test case description</Description>
     <Sources>
         <Source Id="mysql">
-            <Init>
+            <Init/>
+            <Verify>
                 <Table Name="tab">
                     <Sorts>
                         <Other/>
                     </Sorts>
                 </Table>
-            </Init>
-            <Verify/>
+            </Verify>
         </Source>
     </Sources>
     <Param/>

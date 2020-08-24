@@ -3,16 +3,13 @@
       xsi:schemaLocation="https://www.bookong.net/schema/zest/data file://zest-data-1.0.xsd">
     <Description>test case description</Description>
     <Sources>
-        <Source Id="mysql">
-            <Init/>
-            <Verify>
-                <Table Name="tab">
-                    <Sorts>
-                        <Sort Field="f_varchar" Direction="desc"/>
-                        <Sort Field="f_varchar" Direction="asc"/>
-                    </Sorts>
-                </Table>
-            </Verify>
+        <Source Id="mongo">
+            <Init>
+                <Collection Name="tab" EntityClass="java.lang.Object">
+                    <Sorts/>
+                </Collection>
+            </Init>
+            <Verify/>
         </Source>
     </Sources>
     <Param/>

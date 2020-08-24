@@ -19,7 +19,7 @@ public class SourceVerifyData extends AbstractSourceData {
     private boolean                    onlyCheckCoreData;
 
     /** 执行完，检测数据源的数据 */
-    private Map<String, AbstractTable> targetDataMap = new LinkedHashMap<>();
+    private Map<String, AbstractTable> verifyDataMap = new LinkedHashMap<>();
 
     public SourceVerifyData(ZestWorker worker, String sourceId, String nodeName, Node verifyNode){
         try {
@@ -28,7 +28,7 @@ public class SourceVerifyData extends AbstractSourceData {
             this.onlyCheckCoreData = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, "OnlyCoreData", false);
 
             for (AbstractTable table : createTables(worker, sourceId, nodeName, verifyNode, true)) {
-                targetDataMap.put(table.getName(), table);
+                verifyDataMap.put(table.getName(), table);
             }
 
             ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
@@ -45,7 +45,7 @@ public class SourceVerifyData extends AbstractSourceData {
         return onlyCheckCoreData;
     }
 
-    public Map<String, AbstractTable> getTargetDataMap() {
-        return targetDataMap;
+    public Map<String, AbstractTable> getVerifyDataMap() {
+        return verifyDataMap;
     }
 }

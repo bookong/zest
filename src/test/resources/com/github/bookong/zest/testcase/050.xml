@@ -6,7 +6,8 @@
         <Source Id="mongo">
             <Init>
                 <Collection Name="tab" EntityClass="java.lang.Object">
-                    <Other/>
+                    <Data/>
+                    <Sorts/>
                 </Collection>
             </Init>
             <Verify/>

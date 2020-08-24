@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public abstract class AbstractSourceData {
 
-    protected List<AbstractTable> createTables(ZestWorker worker, String sourceId, String nodeName, Node node, boolean isTargetData) {
+    protected List<AbstractTable> createTables(ZestWorker worker, String sourceId, String nodeName, Node node, boolean isVerifyElement) {
         List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
         Object operation = worker.getSourceOperation(sourceId);
         if (operation == null) {
@@ -33,14 +33,14 @@ public abstract class AbstractSourceData {
                 if (!"Table".equals(item.getNodeName())) {
                     throw new ZestException(Messages.parseSourceOperationMatch(Connection.class.getName(), nodeName, "Table"));
                 }
-                list.add(new Table(worker, sourceId, item.getNodeName(), item, (Connection) operation, isTargetData));
+                list.add(new Table(worker, sourceId, item.getNodeName(), item, (Connection) operation, isVerifyElement));
             }
         } else if (operation instanceof MongoOperations) {
             for (Node item : elements) {
                 if (!"Collection".equals(item.getNodeName())) {
                     throw new ZestException(Messages.parseSourceOperationMatch(MongoOperations.class.getName(), nodeName, "Collection"));
                 }
-                list.add(new Collection(worker, sourceId, item.getNodeName(), item, (MongoOperations) operation, isTargetData));
+                list.add(new Collection(worker, sourceId, item.getNodeName(), item, (MongoOperations) operation, isVerifyElement));
             }
         } else {
             throw new ZestException(Messages.parseSourceOperationUnknown(operation.getClass().getName()));

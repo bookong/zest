@@ -23,7 +23,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
     /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
     private boolean ignoreVerify;
 
-    protected void init(String nodeName, List<Node> elements, Map<String, String> attrMap, boolean isTargetData) {
+    protected void init(String nodeName, List<Node> elements, Map<String, String> attrMap, boolean isVerifyElement) {
         this.name = ZestXmlUtil.removeAttr(nodeName, attrMap, "Name");
         this.ignoreVerify = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, "Ignore", false);
 
