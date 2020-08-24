@@ -3,11 +3,12 @@ package com.github.bookong.zest.testcase.mongo;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
-import com.github.bookong.zest.support.xml.data.MongoCollection;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestXmlUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.w3c.dom.Node;
 
@@ -18,7 +19,7 @@ import java.util.*;
  */
 public class Collection extends AbstractTable<Document> {
 
-    private org.springframework.data.domain.Sort mongoSort;
+    private org.springframework.data.domain.Sort sort;
 
     private Class<?>                             entityClass;
 
@@ -58,7 +59,12 @@ public class Collection extends AbstractTable<Document> {
             startIdx = 1;
             List<Sort> sortList = parseSort(firstNode);
             if (!sortList.isEmpty()) {
-                // TODO
+                List<Order> orderList = new ArrayList<>(sortList.size() + 1);
+                for (Sort item : sortList) {
+                    orderList.add(getOrder(item));
+                }
+
+                sort = org.springframework.data.domain.Sort.by(orderList);
             }
         }
 
@@ -69,55 +75,19 @@ public class Collection extends AbstractTable<Document> {
             }
         }
 
-        List<Sort> sortList = parseSort(firstNode);
-
         // TODO
     }
 
-    public Collection(ZestWorker worker, String sourceId, MongoCollection xmlCollection,
-                      MongoOperations mongoOperations, boolean isTargetData){
-        // super(xmlCollection);
-
-        // if (xmlCollection.getSorts() != null && !xmlCollection.getSorts().getSort().isEmpty()) {
-        // if (!isTargetData) {
-        // throw new ZestException(Messages.parseDataTableSort());
-        // }
-        //
-        // mongoSort = getSort(xmlCollection.getSorts().getSort().get(0));
-        // for (int i = 1; i < xmlCollection.getSorts().getSort().size(); i++) {
-        // mongoSort.and(getSort(xmlCollection.getSorts().getSort().get(i)));
-        // }
-        // }
-
-        // TODO rules
-
-        try {
-            entityClass = Class.forName(xmlCollection.getEntityClass());
-        } catch (Exception e) {
-            throw new ZestException(e);
+    private Order getOrder(Sort item) {
+        if ("asc".equalsIgnoreCase(item.getDirection())) {
+            return new Order(Direction.ASC, item.getField());
+        } else {
+            return new Order(Direction.DESC, item.getField());
         }
-
-        int rowIdx = 1;
-        // for (Document xmlDoc : xmlCollection.getDocument()) {
-        // try {
-        // documents.add(ZestJsonUtil.fromJson(xmlDoc.getValue(), entityClass));
-        // rowIdx++;
-        // } catch (Exception e) {
-        // throw new ZestException(Messages.parseDocObj(sourceId, getName(), rowIdx), e);
-        // }
-        // }
     }
 
-    // private Sort getSort(com.github.bookong.zest.support.xml.data.Sort item) {
-    // if ("asc".equalsIgnoreCase(item.getDirection())) {
-    // return Sort.by(Sort.Direction.ASC, item.getField());
-    // } else {
-    // return Sort.by(Sort.Direction.DESC, item.getField());
-    // }
-    // }
-
-    public org.springframework.data.domain.Sort getMongoSort() {
-        return mongoSort;
+    public org.springframework.data.domain.Sort getSort() {
+        return sort;
     }
 
     public Class<?> getEntityClass() {

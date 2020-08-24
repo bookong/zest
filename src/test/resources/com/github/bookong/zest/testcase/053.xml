@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="https://www.bookong.net/schema/zest/data file://zest-data-1.0.xsd">
+    <Description>test case description</Description>
+    <Sources>
+        <Source Id="mongo">
+            <Init/>
+            <Verify>
+                <Collection Name="tab" EntityClass="com.github.bookong.zest.testcase.param.Param">
+                    <Sorts>
+                        <Sort Field="intObjValue" Direction="desc"/>
+                        <Sort Field="longObjValue" Direction="asc"/>
+                        <Sort Field="doubleObjValue"/>
+                    </Sorts>
+                </Collection>
+            </Verify>
+        </Source>
+    </Sources>
+    <Param/>
+</Zest>

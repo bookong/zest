@@ -5,6 +5,8 @@ import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
 import com.github.bookong.zest.testcase.mock.MockConnection;
 import com.github.bookong.zest.testcase.mock.MockMongoOperations;
+import com.github.bookong.zest.testcase.mongo.Collection;
+import com.github.bookong.zest.testcase.param.Param;
 import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
@@ -16,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 import java.sql.Connection;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -394,15 +394,26 @@ public class ZestDataTest {
     @Test
     public void testLoad051() {
         testLoadError("051.xml", Messages.parseSourceError("mysql"), //
-                Messages.parseSourceInitError(), //
-                Messages.parseSortPosition());
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSortPosition());
     }
 
     @Test
     public void testLoad052() {
         testLoadError("052.xml", Messages.parseSourceError("mongo"), //
-                Messages.parseSourceInitError(), //
-                Messages.parseSortPosition());
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSortPosition());
+    }
+
+    @Test
+    public void testLoad053() {
+        logger.info("Normal data");
+        ZestData zestData = load("053.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        AbstractTable obj = zestData.getSourceList().get(0).getVerifyData().getVerifyDataMap().get("tab");
+        Assert.assertTrue(obj instanceof Collection);
+        Collection tab = (Collection) obj;
+        Assert.assertEquals("intObjValue: DESC,longObjValue: ASC,doubleObjValue: ASC", tab.getSort().toString());
     }
 
     private void testLoadError(String filename, String... errorMessages) {
@@ -444,204 +455,4 @@ public class ZestDataTest {
         return sb.toString();
     }
 
-    public static class Param extends ZestParam {
-
-        private int                 intValue;
-        private Integer             intObjValue;
-        private long                longValue;
-        private Long                longObjValue;
-        private boolean             boolValue;
-        private Boolean             boolObjValue;
-        private double              doubleValue;
-        private Double              doubleObjValue;
-        private float               floatValue;
-        private Float               floatObjValue;
-        private String              strValue;
-        private Date                date1;
-        private Date                date2;
-        private Date                date3;
-        private Date                date4;
-        private List<Param1>        listObj;
-        private Param1              obj;
-        private Map<String, String> nonsupportMapObj;
-
-        public int getIntValue() {
-            return intValue;
-        }
-
-        public void setIntValue(int intValue) {
-            this.intValue = intValue;
-        }
-
-        public Integer getIntObjValue() {
-            return intObjValue;
-        }
-
-        public void setIntObjValue(Integer intObjValue) {
-            this.intObjValue = intObjValue;
-        }
-
-        public long getLongValue() {
-            return longValue;
-        }
-
-        public void setLongValue(long longValue) {
-            this.longValue = longValue;
-        }
-
-        public Long getLongObjValue() {
-            return longObjValue;
-        }
-
-        public void setLongObjValue(Long longObjValue) {
-            this.longObjValue = longObjValue;
-        }
-
-        public boolean isBoolValue() {
-            return boolValue;
-        }
-
-        public void setBoolValue(boolean boolValue) {
-            this.boolValue = boolValue;
-        }
-
-        public Boolean getBoolObjValue() {
-            return boolObjValue;
-        }
-
-        public void setBoolObjValue(Boolean boolObjValue) {
-            this.boolObjValue = boolObjValue;
-        }
-
-        public double getDoubleValue() {
-            return doubleValue;
-        }
-
-        public void setDoubleValue(double doubleValue) {
-            this.doubleValue = doubleValue;
-        }
-
-        public Double getDoubleObjValue() {
-            return doubleObjValue;
-        }
-
-        public void setDoubleObjValue(Double doubleObjValue) {
-            this.doubleObjValue = doubleObjValue;
-        }
-
-        public float getFloatValue() {
-            return floatValue;
-        }
-
-        public void setFloatValue(float floatValue) {
-            this.floatValue = floatValue;
-        }
-
-        public Float getFloatObjValue() {
-            return floatObjValue;
-        }
-
-        public void setFloatObjValue(Float floatObjValue) {
-            this.floatObjValue = floatObjValue;
-        }
-
-        public String getStrValue() {
-            return strValue;
-        }
-
-        public void setStrValue(String strValue) {
-            this.strValue = strValue;
-        }
-
-        public Date getDate1() {
-            return date1;
-        }
-
-        public void setDate1(Date date1) {
-            this.date1 = date1;
-        }
-
-        public Date getDate2() {
-            return date2;
-        }
-
-        public void setDate2(Date date2) {
-            this.date2 = date2;
-        }
-
-        public Date getDate3() {
-            return date3;
-        }
-
-        public void setDate3(Date date3) {
-            this.date3 = date3;
-        }
-
-        public Date getDate4() {
-            return date4;
-        }
-
-        public void setDate4(Date date4) {
-            this.date4 = date4;
-        }
-
-        public List<Param1> getListObj() {
-            return listObj;
-        }
-
-        public void setListObj(List<Param1> listObj) {
-            this.listObj = listObj;
-        }
-
-        public Param1 getObj() {
-            return obj;
-        }
-
-        public void setObj(Param1 obj) {
-            this.obj = obj;
-        }
-
-        public Map<String, String> getNonsupportMapObj() {
-            return nonsupportMapObj;
-        }
-
-        public void setNonsupportMapObj(Map<String, String> nonsupportMapObj) {
-            this.nonsupportMapObj = nonsupportMapObj;
-        }
-    }
-
-    public static class Param1 {
-
-        private String str;
-        private Param2 obj2;
-
-        public String getStr() {
-            return str;
-        }
-
-        public void setStr(String str) {
-            this.str = str;
-        }
-
-        public Param2 getObj2() {
-            return obj2;
-        }
-
-        public void setObj2(Param2 obj2) {
-            this.obj2 = obj2;
-        }
-    }
-
-    public static class Param2 {
-
-        private String str;
-
-        public String getStr() {
-            return str;
-        }
-
-        public void setStr(String str) {
-            this.str = str;
-        }
-    }
 }

@@ -46,8 +46,8 @@ public class MongoExecutor extends AbstractExecutor {
         MongoOperations operation = worker.getSourceOperation(source.getId(), MongoOperations.class);
 
         Query query = new Query();
-        if (collection.getMongoSort() != null) {
-            query.with(collection.getMongoSort());
+        if (collection.getSort() != null) {
+            query.with(collection.getSort());
         }
 
         List<?> actualList = operation.find(query, collection.getEntityClass());
