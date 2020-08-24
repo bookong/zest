@@ -3,6 +3,9 @@ package com.github.bookong.zest.testcase;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
+import com.github.bookong.zest.support.rule.CurrentTimeRule;
+import com.github.bookong.zest.support.rule.FromCurrentTimeRule;
+import com.github.bookong.zest.support.rule.RegExpRule;
 import com.github.bookong.zest.testcase.mock.MockConnection;
 import com.github.bookong.zest.testcase.mock.MockMongoOperations;
 import com.github.bookong.zest.testcase.mongo.Collection;
@@ -18,7 +21,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 import java.sql.Connection;
+import java.util.Calendar;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Jiang Xu
@@ -479,6 +484,132 @@ public class ZestDataTest {
                 Messages.parseDataError(), //
                 Messages.parseRulesError(), //
                 Messages.parseCommonAttrUnknown("Rules", "U"));
+    }
+
+    @Test
+    public void testLoad062() {
+        testLoadError("062.xml", Messages.parseSourceError("mysql"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseDataError(), //
+                Messages.parseRulesError(), //
+                Messages.parseRuleChoice());
+    }
+
+    @Test
+    public void testLoad063() {
+        testLoadError("063.xml", Messages.parseSourceError("mysql"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseDataError(), //
+                Messages.parseRulesError(), //
+                Messages.parseRulePathEmpty());
+    }
+
+    @Test
+    public void testLoad064() {
+        testLoadError("064.xml", Messages.parseSourceError("mysql"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseDataError(), //
+                Messages.parseRulesError(), //
+                Messages.parseTableRule("none"));
+    }
+
+    @Test
+    public void testLoad065() {
+        testLoadError("065.xml", Messages.parseSourceError("mongo"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseDataError(), //
+                Messages.parseRulesError(), //
+                Messages.parseCollectionRule("none"));
+    }
+
+    @Test
+    public void testLoad066() {
+        logger.info("Normal data");
+        ZestData zestData = load("066.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Assert.assertEquals(1, obj.getVerifyDataMap().size());
+        Assert.assertTrue(obj.getVerifyDataMap().get("tab") instanceof Table);
+        Table table = (Table) obj.getVerifyDataMap().get("tab");
+        Assert.assertEquals(3, table.getRuleList().size());
+
+        RegExpRule regExpRule = (RegExpRule) table.getRuleList().get(0);
+        Assert.assertEquals("f_varchar", regExpRule.getPath());
+        Assert.assertEquals("^[0-9]*$", regExpRule.getRegExp());
+
+        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleList().get(1);
+        Assert.assertEquals("f_time", currentTimeRule.getPath());
+        Assert.assertEquals(1000, currentTimeRule.getOffset());
+
+        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleList().get(2);
+        Assert.assertEquals("f_date", fromCurrentTimeRule.getPath());
+        Assert.assertEquals(1000, fromCurrentTimeRule.getOffset());
+        Assert.assertEquals(1, fromCurrentTimeRule.getMin());
+        Assert.assertEquals(2, fromCurrentTimeRule.getMax());
+        Assert.assertEquals(Calendar.DAY_OF_YEAR, fromCurrentTimeRule.getUnit());
+    }
+
+    @Test
+    public void testLoad067() {
+        testLoadError("067.xml", Messages.parseSourceError("mysql"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseDataError(), //
+                Messages.parseRulesError(), //
+                Messages.parseRulePathDuplicate("f_varchar"));
+    }
+
+    @Test
+    public void testLoad068() {
+        logger.info("Normal data");
+        ZestData zestData = load("068.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Assert.assertEquals(1, obj.getVerifyDataMap().size());
+        Collection table = (Collection) obj.getVerifyDataMap().get("tab");
+        Assert.assertEquals(3, table.getRuleList().size());
+
+        RegExpRule regExpRule = (RegExpRule) table.getRuleList().get(0);
+        Assert.assertEquals("obj.str", regExpRule.getPath());
+        Assert.assertEquals("^[0-9]*$", regExpRule.getRegExp());
+
+        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleList().get(1);
+        Assert.assertEquals("date1", currentTimeRule.getPath());
+        Assert.assertEquals(1000, currentTimeRule.getOffset());
+
+        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleList().get(2);
+        Assert.assertEquals("date2", fromCurrentTimeRule.getPath());
+        Assert.assertEquals(1000, fromCurrentTimeRule.getOffset());
+        Assert.assertEquals(1, fromCurrentTimeRule.getMin());
+        Assert.assertEquals(2, fromCurrentTimeRule.getMax());
+        Assert.assertEquals(Calendar.DAY_OF_YEAR, fromCurrentTimeRule.getUnit());
+    }
+
+    @Test
+    public void testLoad069() {
+        logger.info("Normal data");
+        ZestData zestData = load("069.xml");
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Table table = (Table) obj.getVerifyDataMap().get("tab");
+
+        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleList().get(0);
+        Assert.assertEquals("f_time", currentTimeRule.getPath());
+        Assert.assertEquals(2000, currentTimeRule.getOffset());
+
+        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleList().get(1);
+        Assert.assertEquals("f_date", fromCurrentTimeRule.getPath());
+        Assert.assertEquals(2000, fromCurrentTimeRule.getOffset());
+        Assert.assertEquals(1, fromCurrentTimeRule.getMin());
+        Assert.assertEquals(2, fromCurrentTimeRule.getMax());
+        Assert.assertEquals(Calendar.HOUR_OF_DAY, fromCurrentTimeRule.getUnit());
+    }
+
+    @Test
+    public void testLoad070() {
+        testLoadError("070.xml", Messages.parseSourceError("mysql"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseDataError(), //
+                Messages.parseRulesError(), //
+                Messages.parseRulefromUnitUnknown("x"));
     }
 
     private void testLoadError(String filename, String... errorMessages) {

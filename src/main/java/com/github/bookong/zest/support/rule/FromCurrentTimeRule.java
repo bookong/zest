@@ -72,23 +72,37 @@ public class FromCurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx, String columnName,
-                         Object value) {
+    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx, String columnName, Object value) {
         assertNullable(dataSource, table, rowIdx, columnName, value);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(testCaseData.getStartTime());
-        cal.add(unit, min);
-        cal.add(Calendar.MILLISECOND, -offset);
+        cal.add(getUnit(), getMin());
+        cal.add(Calendar.MILLISECOND, -getOffset() );
         long expectedMin = cal.getTimeInMillis();
 
         cal.setTimeInMillis(testCaseData.getEndTime());
-        cal.add(unit, max);
-        cal.add(Calendar.MILLISECOND, offset);
+        cal.add(getUnit(), getMax());
+        cal.add(Calendar.MILLISECOND, getOffset() );
         long expectedMax = cal.getTimeInMillis();
 
         long tmp = getActualDataTime(dataSource, table, rowIdx, columnName, value);
-        Assert.assertTrue(Messages.checkTableColDateFrom(dataSource.getId(), table.getName(), rowIdx, columnName),
-                          (tmp >= expectedMin && tmp <= expectedMax));
+        Assert.assertTrue(Messages.checkTableColDateFrom(dataSource.getId(), table.getName(), rowIdx, columnName), (tmp >= expectedMin && tmp <= expectedMax));
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public int getUnit() {
+        return unit;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 }
