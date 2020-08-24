@@ -1,7 +1,5 @@
 package com.github.bookong.zest.util;
 
-import com.github.bookong.zest.support.xml.data.ParamField;
-
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
