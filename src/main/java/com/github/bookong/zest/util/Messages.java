@@ -113,6 +113,10 @@ public class Messages {
         return getString("parse.collection.entity");
     }
 
+    public static String parseCollectionSorts() {
+        return getString("parse.collection.sorts");
+    }
+
     public static String parseSortType() {
         return getString("parse.sort.type");
     }

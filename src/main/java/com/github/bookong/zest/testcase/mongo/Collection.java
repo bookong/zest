@@ -18,13 +18,13 @@ import java.util.*;
  */
 public class Collection extends AbstractTable<Document> {
 
-    private org.springframework.data.domain.Sort                      mongoSort;
+    private org.springframework.data.domain.Sort mongoSort;
 
-    private Class<?>                  entityClass;
+    private Class<?>                             entityClass;
 
-    private Map<String, AbstractRule> ruleMap   = Collections.synchronizedMap(new LinkedHashMap<>());
+    private Map<String, AbstractRule>            ruleMap   = Collections.synchronizedMap(new LinkedHashMap<>());
 
-    private List<Object>              documents = Collections.synchronizedList(new ArrayList<>());
+    private List<Object>                         documents = Collections.synchronizedList(new ArrayList<>());
 
     public Collection(ZestWorker worker, String sourceId, String nodeName, Node node, MongoOperations mongoOperations,
                       boolean isTargetData){
@@ -44,6 +44,16 @@ public class Collection extends AbstractTable<Document> {
 
         ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
 
+        if (elements.isEmpty()) {
+            return;
+        }
+
+        int startIdx = 1;
+        Node firstNode = elements.get(0);
+        if (!"Sorts".equals(firstNode.getNodeName())) {
+            throw new ZestException(Messages.parseCollectionSorts());
+        }
+
         // TODO
     }
 
@@ -51,16 +61,16 @@ public class Collection extends AbstractTable<Document> {
                       MongoOperations mongoOperations, boolean isTargetData){
         // super(xmlCollection);
 
-//        if (xmlCollection.getSorts() != null && !xmlCollection.getSorts().getSort().isEmpty()) {
-//            if (!isTargetData) {
-//                throw new ZestException(Messages.parseDataTableSort());
-//            }
-//
-//            mongoSort = getSort(xmlCollection.getSorts().getSort().get(0));
-//            for (int i = 1; i < xmlCollection.getSorts().getSort().size(); i++) {
-//                mongoSort.and(getSort(xmlCollection.getSorts().getSort().get(i)));
-//            }
-//        }
+        // if (xmlCollection.getSorts() != null && !xmlCollection.getSorts().getSort().isEmpty()) {
+        // if (!isTargetData) {
+        // throw new ZestException(Messages.parseDataTableSort());
+        // }
+        //
+        // mongoSort = getSort(xmlCollection.getSorts().getSort().get(0));
+        // for (int i = 1; i < xmlCollection.getSorts().getSort().size(); i++) {
+        // mongoSort.and(getSort(xmlCollection.getSorts().getSort().get(i)));
+        // }
+        // }
 
         // TODO rules
 
@@ -81,15 +91,15 @@ public class Collection extends AbstractTable<Document> {
         // }
     }
 
-//    private Sort getSort(com.github.bookong.zest.support.xml.data.Sort item) {
-//        if ("asc".equalsIgnoreCase(item.getDirection())) {
-//            return Sort.by(Sort.Direction.ASC, item.getField());
-//        } else {
-//            return Sort.by(Sort.Direction.DESC, item.getField());
-//        }
-//    }
+    // private Sort getSort(com.github.bookong.zest.support.xml.data.Sort item) {
+    // if ("asc".equalsIgnoreCase(item.getDirection())) {
+    // return Sort.by(Sort.Direction.ASC, item.getField());
+    // } else {
+    // return Sort.by(Sort.Direction.DESC, item.getField());
+    // }
+    // }
 
-    public org.springframework.data.domain.Sort  getMongoSort() {
+    public org.springframework.data.domain.Sort getMongoSort() {
         return mongoSort;
     }
 

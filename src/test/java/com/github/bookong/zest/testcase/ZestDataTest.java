@@ -384,6 +384,13 @@ public class ZestDataTest {
         Assert.assertEquals(" order by f_varchar desc, f_double asc, f_bigint asc", table.getSort());
     }
 
+    @Test
+    public void testLoad050() {
+        testLoadError("050.xml", Messages.parseSourceError("mongo"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseCollectionSorts());
+    }
+
     private void testLoadError(String filename, String... errorMessages) {
         try {
             load(filename);
