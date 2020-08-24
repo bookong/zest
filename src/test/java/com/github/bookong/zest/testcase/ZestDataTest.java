@@ -369,7 +369,7 @@ public class ZestDataTest {
     public void testLoad048() {
         testLoadError("048.xml", Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseSortFieldExist("none"));
+                      Messages.parseTableSortExist("none"));
     }
 
     @Test
@@ -414,6 +414,13 @@ public class ZestDataTest {
         Assert.assertTrue(obj instanceof Collection);
         Collection tab = (Collection) obj;
         Assert.assertEquals("intObjValue: DESC,longObjValue: ASC,doubleObjValue: ASC", tab.getSort().toString());
+    }
+
+    @Test
+    public void testLoad054() {
+        testLoadError("054.xml", Messages.parseSourceError("mongo"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseCollectionSortExits("none"));
     }
 
     private void testLoadError(String filename, String... errorMessages) {

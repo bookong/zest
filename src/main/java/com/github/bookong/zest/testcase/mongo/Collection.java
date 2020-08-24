@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.w3c.dom.Node;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -59,8 +60,16 @@ public class Collection extends AbstractTable<Document> {
             startIdx = 1;
             List<Sort> sortList = parseSort(firstNode);
             if (!sortList.isEmpty()) {
+                Set<String> fieldNames = new HashSet<>(entityClass.getDeclaredFields().length + 1);
+                for (Field f : entityClass.getDeclaredFields()) {
+                    fieldNames.add(f.getName());
+                }
+
                 List<Order> orderList = new ArrayList<>(sortList.size() + 1);
                 for (Sort item : sortList) {
+                    if (!fieldNames.contains(item.getField())) {
+                        throw new ZestException(Messages.parseCollectionSortExits(item.getField()));
+                    }
                     orderList.add(getOrder(item));
                 }
 

@@ -107,12 +107,20 @@ public class Messages {
         return getString("parse.table.data");
     }
 
+    public static String parseTableSortExist(String fieldName) {
+        return getString("parse.table.sort.exist", fieldName);
+    }
+
     public static String parseCollectionEntity() {
         return getString("parse.collection.entity");
     }
 
     public static String parseCollectionData() {
         return getString("parse.collection.data");
+    }
+
+    public static String parseCollectionSortExits(String fieldName) {
+        return getString("parse.collection.sort.exits",fieldName);
     }
 
     public static String parseSortPosition() {
@@ -133,10 +141,6 @@ public class Messages {
 
     public static String parseSortFieldDuplicate(String fieldName) {
         return getString("parse.sort.field.duplicate", fieldName);
-    }
-
-    public static String parseSortFieldExist(String fieldName) {
-        return getString("parse.sort.field.exist", fieldName);
     }
 
     public static String parseSortDirection(String fieldName) {

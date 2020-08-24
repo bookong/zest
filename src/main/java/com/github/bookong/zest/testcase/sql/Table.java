@@ -60,7 +60,7 @@ public class Table extends AbstractTable<Row> {
                 for (int i = 0; i < sortList.size(); i++) {
                     Sort item = sortList.get(i);
                     if (!sqlTypes.containsKey(item.getField())) {
-                        throw new ZestException(Messages.parseSortFieldExist(item.getField()));
+                        throw new ZestException(Messages.parseTableSortExist(item.getField()));
                     }
                     if (i > 0) {
                         sb.append(",");
