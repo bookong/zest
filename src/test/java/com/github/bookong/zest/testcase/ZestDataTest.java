@@ -5,6 +5,7 @@ import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
 import com.github.bookong.zest.testcase.mock.MockConnection;
 import com.github.bookong.zest.testcase.mock.MockMongoOperations;
+import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -219,7 +220,8 @@ public class ZestDataTest {
     public void testLoad028() {
         testLoadError("028.xml", Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations", "Init", "Collection"));
+                      Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations",
+                                                         "Init", "Collection"));
     }
 
     @Test
@@ -233,7 +235,8 @@ public class ZestDataTest {
     public void testLoad030() {
         testLoadError("030.xml", Messages.parseSourceError("mongo"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations", "Verify", "Collection"));
+                      Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations",
+                                                         "Verify", "Collection"));
     }
 
     @Test
@@ -271,10 +274,120 @@ public class ZestDataTest {
         Assert.assertFalse(obj.getInitDataList().get(0).isIgnoreVerify());
     }
 
+    @Test
+    public void testLoad035() {
+        testLoadError("035.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseCommonAttrUnknown("Table", "U"));
+    }
+
+    @Test
+    public void testLoad036() {
+        testLoadError("036.xml", Messages.parseSourceError("mongo"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseCollectionEntity());
+    }
+
+    @Test
+    public void testLoad037() {
+        testLoadError("037.xml", Messages.parseSourceError("mongo"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseCommonClassFound("none"));
+    }
+
+    @Test
+    public void testLoad038() {
+        testLoadError("038.xml", Messages.parseSourceError("mongo"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseCommonAttrUnknown("Collection", "U"));
+    }
+
+    @Test
+    public void testLoad039() {
+        testLoadError("039.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseTableData());
+    }
+
+    @Test
+    public void testLoad040() {
+        testLoadError("040.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseTableData());
+    }
+
+    @Test
+    public void testLoad041() {
+        testLoadError("041.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseTableData());
+    }
+
+    @Test
+    public void testLoad042() {
+        testLoadError("042.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSortType());
+    }
+
+    @Test
+    public void testLoad043() {
+        testLoadError("043.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseCommonAttrUnknown("Sorts", "U"));
+    }
+
+    @Test
+    public void testLoad044() {
+        testLoadError("044.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSortField());
+    }
+
+    @Test
+    public void testLoad045() {
+        testLoadError("045.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSortDirection("f_varchar"));
+    }
+
+    @Test
+    public void testLoad046() {
+        testLoadError("046.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSortChildren("f_varchar"));
+    }
+
+    @Test
+    public void testLoad047() {
+        testLoadError("047.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSortFieldDuplicate("f_varchar"));
+    }
+
+    @Test
+    public void testLoad048() {
+        testLoadError("048.xml", Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceInitError(), //
+                      Messages.parseSortFieldExist("none"));
+    }
+
+    @Test
+    public void testLoad049() {
+        logger.info("Normal data");
+        ZestData zestData = load("049.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceInitData obj = zestData.getSourceList().get(0).getInitData();
+        Assert.assertEquals(1, obj.getInitDataList().size());
+        Assert.assertTrue(obj.getInitDataList().get(0) instanceof Table);
+        Table table = (Table) obj.getInitDataList().get(0);
+        Assert.assertEquals(" order by f_varchar desc, f_double asc, f_bigint asc", table.getSort());
+    }
+
     private void testLoadError(String filename, String... errorMessages) {
         try {
             load(filename);
-            Assert.fail();
+            Assert.fail("Should raise an exception");
         } catch (ZestException e) {
             logger.info(e.getMessage());
             Assert.assertEquals(getExpectMessage(filename, errorMessages), e.getMessage());
@@ -285,7 +398,8 @@ public class ZestDataTest {
         Connection conn = new MockConnection();
         MongoOperations mongoOperations = new MockMongoOperations();
 
-        Map<String, Object> sourceOperations = (Map<String, Object>) ZestReflectHelper.getValue(worker, "sourceOperations");
+        Map<String, Object> sourceOperations = (Map<String, Object>) ZestReflectHelper.getValue(worker,
+                                                                                                "sourceOperations");
         sourceOperations.put("mysql", conn);
         sourceOperations.put("mongo", mongoOperations);
         sourceOperations.put("unknown", new Object());

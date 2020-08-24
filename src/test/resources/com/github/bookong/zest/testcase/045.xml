@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="https://www.bookong.net/schema/zest/data file://zest-data-1.0.xsd">
+    <Description>test case description</Description>
+    <Sources>
+        <Source Id="mysql">
+            <Init>
+                <Table Name="tab">
+                    <Sorts>
+                        <Sort Field="f_varchar" Direction="x" />
+                    </Sorts>
+                </Table>
+            </Init>
+            <Verify/>
+        </Source>
+    </Sources>
+    <Param/>
+</Zest>

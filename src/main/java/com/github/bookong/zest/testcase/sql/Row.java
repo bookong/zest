@@ -5,6 +5,7 @@ import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.support.xml.data.Field;
+import com.github.bookong.zest.testcase.AbstractRowData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -18,13 +19,13 @@ import java.util.Map.Entry;
 /**
  * @author Jiang Xu
  */
-public class Row {
+public class Row extends AbstractRowData {
 
     private Map<String, Object> fields = new LinkedHashMap<>();
 
     public Row(ZestWorker worker, String sourceId, String tableName, int rowIdx,
                com.github.bookong.zest.support.xml.data.Row xmlRow, Map<String, Integer> sqlTypes,
-               boolean isTargetData) {
+               boolean isTargetData){
         SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
         for (Entry<QName, String> entry : xmlRow.getOtherAttributes().entrySet()) {
             String fieldName = entry.getKey().toString();

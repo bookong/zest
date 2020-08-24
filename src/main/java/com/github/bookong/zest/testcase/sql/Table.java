@@ -21,7 +21,7 @@ import java.util.*;
  * 
  * @author Jiang Xu
  */
-public class Table extends AbstractTable<Object> {
+public class Table extends AbstractTable<Row> {
 
     /** 排序的依据 */
     private String               sort;
@@ -37,6 +37,42 @@ public class Table extends AbstractTable<Object> {
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
         init(nodeName, elements, attrMap, isTargetData);
         loadSqlTypes(conn);
+
+        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+
+        if (elements.isEmpty()) {
+            return;
+        }
+
+        int startIdx = 0;
+        Node firstNode = elements.get(0);
+        if ("Sorts".equals(firstNode.getNodeName())) {
+            startIdx = 1;
+            List<Sort> sortList = parseSort(firstNode);
+            if (!sortList.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(" order by");
+                for (int i = 0; i < sortList.size(); i++) {
+                    Sort item = sortList.get(i);
+                    if (!sqlTypes.containsKey(item.getField())) {
+                        throw new ZestException(Messages.parseSortFieldExist(item.getField()));
+                    }
+                    if (i > 0) {
+                        sb.append(",");
+                    }
+                    sb.append(" ").append(item.getField()).append(" ").append(item.getDirection());
+                }
+                sort = sb.toString();
+            }
+        }
+
+        for (int i = startIdx; i < elements.size(); i++) {
+            Node element = elements.get(i);
+            if (!"Data".equals(element.getNodeName())) {
+                throw new ZestException(Messages.parseTableData());
+            }
+        }
+
         // TODO
     }
 
@@ -45,23 +81,23 @@ public class Table extends AbstractTable<Object> {
         // super(xmlTable);
         loadSqlTypes(conn);
 
-        if (xmlTable.getSorts() != null && !xmlTable.getSorts().getSort().isEmpty()) {
-            if (!isTargetData) {
-                throw new ZestException(Messages.parseDataTableSort());
-            }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(" order by");
-            for (Sort item : xmlTable.getSorts().getSort()) {
-                sb.append(" ").append(item.getField()).append(" ").append(item.getDirection());
-            }
-            this.sort = sb.toString();
-        }
-
-        int rowIdx = 1;
-        for (com.github.bookong.zest.support.xml.data.Row xmlRow : xmlTable.getRow()) {
-            rowDataList.add(new Row(worker, sourceId, getName(), rowIdx++, xmlRow, sqlTypes, isTargetData));
-        }
+        // if (xmlTable.getSorts() != null && !xmlTable.getSorts().getSort().isEmpty()) {
+        // if (!isTargetData) {
+        // throw new ZestException(Messages.parseDataTableSort());
+        // }
+        //
+        // StringBuilder sb = new StringBuilder();
+        // sb.append(" order by");
+        // for (Sort item : xmlTable.getSorts().getSort()) {
+        // sb.append(" ").append(item.getField()).append(" ").append(item.getDirection());
+        // }
+        // this.sort = sb.toString();
+        // }
+        //
+        // int rowIdx = 1;
+        // for (com.github.bookong.zest.support.xml.data.Row xmlRow : xmlTable.getRow()) {
+        // rowDataList.add(new Row(worker, sourceId, getName(), rowIdx++, xmlRow, sqlTypes, isTargetData));
+        // }
     }
 
     public List<Row> getRowDataList() {

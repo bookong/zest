@@ -49,6 +49,10 @@ public class Messages {
         return getString("parse.common.attr.unknown", nodeName, attrNames);
     }
 
+    public static String parseCommonClassFound(String className) {
+        return getString("parse.common.class.found", className);
+    }
+
     public static String parseZest() {
         return getString("parse.zest");
     }
@@ -99,6 +103,38 @@ public class Messages {
 
     public static String parseTableMeta() {
         return getString("parse.table.meta");
+    }
+
+    public static String parseTableData() {
+        return getString("parse.table.data");
+    }
+
+    public static String parseCollectionEntity() {
+        return getString("parse.collection.entity");
+    }
+
+    public static String parseSortType() {
+        return getString("parse.sort.type");
+    }
+
+    public static String parseSortChildren(String fieldName) {
+        return getString("parse.sort.children", fieldName);
+    }
+
+    public static String parseSortField() {
+        return getString("parse.sort.field");
+    }
+
+    public static String parseSortFieldDuplicate(String fieldName) {
+        return getString("parse.sort.field.duplicate", fieldName);
+    }
+
+    public static String parseSortFieldExist(String fieldName) {
+        return getString("parse.sort.field.exist", fieldName);
+    }
+
+    public static String parseSortDirection(String fieldName) {
+        return getString("parse.sort.direction", fieldName);
     }
 
     public static String parseParamType() {
@@ -225,7 +261,8 @@ public class Messages {
         return getString("check.table.col.date.current", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColDateFromUnit(String sourceId, String tableName, int rowIdx, String columnName, String unit) {
+    public static String checkTableColDateFromUnit(String sourceId, String tableName, int rowIdx, String columnName,
+                                                   String unit) {
         return getString("check.table.col.date.from.unit", sourceId, tableName, rowIdx, columnName, unit);
     }
 
@@ -233,7 +270,8 @@ public class Messages {
         return getString("check.table.col.date.from", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName, String regExp) {
+    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName,
+                                             String regExp) {
         return getString("check.table.col.regexp", sourceId, tableName, rowIdx, columnName, regExp);
     }
 

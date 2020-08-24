@@ -36,7 +36,6 @@ public class MockMetaData implements DatabaseMetaData {
             rs.append(genColumnsResult("f_time", Types.TIME));
             rs.append(genColumnsResult("f_timestamp", Types.TIMESTAMP));
             rs.append(genColumnsResult("f_char", Types.CHAR));
-            rs.append(genColumnsResult("f_char", Types.CHAR));
             rs.append(genColumnsResult("f_varchar", Types.VARCHAR));
             rs.append(genColumnsResult("f_longvarchar", Types.LONGVARCHAR));
             return rs;

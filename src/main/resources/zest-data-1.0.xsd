@@ -261,18 +261,18 @@
                 </xsd:element>
             </xsd:sequence>
             <xsd:attribute name="Name" type="xsd:string" use="required"/>
-            <xsd:attribute name="EntityClass" type="xsd:string" use="required">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        The entity object class name of the Document. Used for conversion from JSON data to objects
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
                 <xsd:annotation>
                     <xsd:documentation>
                         If true, ignore the verification of this Collection after the code under test is executed.
                         This attribute is only valid in the Table element under the Verify element.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="EntityClass" type="xsd:string" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The entity object class name of the Document. Used for conversion from JSON data to objects
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
