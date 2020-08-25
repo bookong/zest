@@ -56,7 +56,7 @@ import java.lang.annotation.*;
  * <pre class="code">
  * {@code
  *   <Zest xmlns="https://www.bookong.net/schema/zest/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- *     xsi:schemaLocation="https://www.bookong.net/schema/zest/data jar:http://zest-1.0.0.jar!zest-data-1.0.xsd">
+ *     xsi:schemaLocation="https://www.bookong.net/schema/zest/data jar://zest-1.0.0.jar!zest-data-1.0.xsd">
  *     ...
  *     <Sources>
  *       <Source Id="mysql">
