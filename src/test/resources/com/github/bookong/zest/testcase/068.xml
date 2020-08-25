@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="https://www.bookong.net/schema/zest/data file://zest-data-1.0.xsd">
+    <Description>test case description</Description>
+    <Sources>
+        <Source Id="mysql">
+            <Init/>
+            <Verify>
+                <Table Name="tab">
+                    <Rules>
+                        <Rule Path="f_time">
+                            <FromCurrentTime Max="2" Min="1" Unit="day" U="x"/>
+                        </Rule>
+                    </Rules>
+                </Table>
+            </Verify>
+        </Source>
+    </Sources>
+    <Param/>
+</Zest>

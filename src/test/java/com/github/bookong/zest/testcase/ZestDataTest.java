@@ -573,6 +573,138 @@ public class ZestDataTest {
         Assert.assertEquals(Calendar.HOUR_OF_DAY, fromCurrentTimeRule.getUnit());
     }
 
+    @Test
+    public void testLoad058() {
+        testLoadError("058.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseCommonChildrenList("Rules", "Rule"));
+    }
+
+    @Test
+    public void testLoad059() {
+        testLoadError("059.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseCommonAttrUnknown("Rules", "U"));
+    }
+
+    @Test
+    public void testLoad060() {
+        testLoadError("060.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError(""), //
+                      Messages.parseRuleChoice());
+    }
+
+    @Test
+    public void testLoad061() {
+        testLoadError("061.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError(""), //
+                      Messages.parseCommonAttrEmpty("Path"));
+    }
+
+    @Test
+    public void testLoad062() {
+        testLoadError("062.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseRuleChoice());
+    }
+
+    @Test
+    public void testLoad063() {
+        testLoadError("063.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseCommonAttr("CurrentTime", "Offset"), //
+                      "For input string: \"abc\"");
+    }
+
+    @Test
+    public void testLoad064() {
+        testLoadError("064.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseCommonAttrUnknown("CurrentTime", "U"));
+    }
+
+    @Test
+    public void testLoad065() {
+        testLoadError("065.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseCommonChildren("CurrentTime"));
+    }
+
+    @Test
+    public void testLoad066() {
+        testLoadError("066.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseCommonAttr("FromCurrentTime", "Max"), //
+                      "For input string: \"abc\"");
+    }
+
+    @Test
+    public void testLoad067() {
+        testLoadError("067.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseRuleFromUnitUnknown("none"));
+    }
+
+    @Test
+    public void testLoad068() {
+        testLoadError("068.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseCommonAttrUnknown("FromCurrentTime", "U"));
+    }
+
+    @Test
+    public void testLoad069() {
+        testLoadError("069.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseCommonChildren("FromCurrentTime"));
+    }
+
     private void testLoadError(String filename, String... errorMessages) {
         try {
             load(filename);
@@ -581,6 +713,28 @@ public class ZestDataTest {
             logger.info(e.getMessage());
             Assert.assertEquals(getExpectMessage(filename, errorMessages), e.getMessage());
         }
+    }
+
+    @Test
+    public void testLoad070() {
+        testLoadError("070.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseRulesError(), //
+                      Messages.parseRuleError("f_time"), //
+                      Messages.parseCommonAttrUnknown("RegExp", "U"));
+    }
+
+    @Test
+    public void testLoad071() {
+        testLoadError("071.xml", Messages.parseSourcesError(), //
+                Messages.parseSourceError("mysql"), //
+                Messages.parseSourceVerifyError(), //
+                Messages.parseTableError("tab"), //
+                Messages.parseRulesError(), //
+                Messages.parseRuleError("f_time"), //
+                Messages.parseCommonChildren("RegExp"));
     }
 
     private ZestData load(String filename) {

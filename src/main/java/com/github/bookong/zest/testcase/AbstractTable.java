@@ -134,14 +134,16 @@ public abstract class AbstractTable<T extends AbstractRowData> {
     }
 
     private AbstractRule parseRule(String nodeName, Node node, Set<String> rulePaths) {
-        AbstractRule rule = null;
+        String path = null;
         try {
-            rule = RuleFactory.create(node);
+            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+            path = ZestXmlUtil.removeAttr(nodeName, attrMap, Xml.PATH);
+            AbstractRule rule = RuleFactory.create(node);
             ZestXmlUtil.duplicateCheck(Xml.PATH, rulePaths, rule.getPath());
             checkRule(rule);
             return rule;
         } catch (Exception e) {
-            throw new ZestException(Messages.parseRuleError(rule != null ? rule.getPath() : null), e);
+            throw new ZestException(Messages.parseRuleError(path), e);
         }
     }
 
