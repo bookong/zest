@@ -1,5 +1,6 @@
 package com.github.bookong.zest.testcase.mongo;
 
+import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
@@ -7,10 +8,8 @@ import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestXmlUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.w3c.dom.Node;
 
@@ -32,63 +31,49 @@ public class Collection extends AbstractTable<Document> {
 
     public Collection(ZestWorker worker, String sourceId, String nodeName, Node node, MongoOperations mongoOperations,
                       boolean isVerifyElement){
-        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        init(nodeName, elements, attrMap);
-        String entityClassAttr = ZestXmlUtil.removeAttr(nodeName, attrMap, "EntityClass");
-        if (StringUtils.isBlank(entityClassAttr)) {
-            throw new ZestException(Messages.parseCollectionEntity());
-        }
-
+        String name = null;
         try {
-            this.entityClass = Class.forName(entityClassAttr);
-        } catch (ClassNotFoundException e) {
-            throw new ZestException(Messages.parseCommonClassFound(entityClassAttr));
+            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+            name = attrMap.get(Xml.NAME);
+            String entityClassAttr = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.ENTITY_CLASS);
+            try {
+                this.entityClass = Class.forName(entityClassAttr);
+            } catch (ClassNotFoundException e) {
+                throw new ZestException(Messages.parseCommonClassFound(entityClassAttr));
+            }
+
+            init(nodeName, node, children, attrMap, isVerifyElement);
+            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseCollectionError(name), e);
         }
+    }
 
-        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
-
-        if (elements.isEmpty()) {
+    @Override
+    protected void loadSorts(List<Sort> sortList) {
+        if (sortList.isEmpty()) {
             return;
         }
 
-        int startIdx = 0;
-        Node firstNode = elements.get(0);
-        if ("Sorts".equals(firstNode.getNodeName())) {
-            if (!isVerifyElement) {
-                throw new ZestException(Messages.parseSortPosition());
-            }
-
-            startIdx = 1;
-            List<Sort> sortList = parseSort(firstNode);
-            if (!sortList.isEmpty()) {
-                Set<String> fieldNames = new HashSet<>(entityClass.getDeclaredFields().length + 1);
-                for (Field f : entityClass.getDeclaredFields()) {
-                    fieldNames.add(f.getName());
-                }
-
-                List<Order> orderList = new ArrayList<>(sortList.size() + 1);
-                for (Sort item : sortList) {
-                    if (!fieldNames.contains(item.getField())) {
-                        throw new ZestException(Messages.parseCollectionSortExits(item.getField()));
-                    }
-                    orderList.add(getOrder(item));
-                }
-
-                sort = org.springframework.data.domain.Sort.by(orderList);
-            }
+        Set<String> fieldNames = new HashSet<>(entityClass.getDeclaredFields().length + 1);
+        for (Field f : entityClass.getDeclaredFields()) {
+            fieldNames.add(f.getName());
         }
 
-        for (int i = startIdx; i < elements.size(); i++) {
-            Node element = elements.get(i);
-            if (!"Data".equals(element.getNodeName())) {
-                throw new ZestException(Messages.parseCollectionData());
+        List<Order> orderList = new ArrayList<>(sortList.size() + 1);
+        for (Sort item : sortList) {
+            if (!fieldNames.contains(item.getField())) {
+                throw new ZestException(Messages.parseCollectionSortExits(item.getField()));
             }
+            orderList.add(getOrder(item));
         }
 
-        parseData(elements, isVerifyElement);
+        this.sort = org.springframework.data.domain.Sort.by(orderList);
     }
 
+    @Override
     protected void checkRule(AbstractRule rule) {
         Field field = ZestReflectHelper.getFieldByPath(this.entityClass, rule.getPath());
         if (field == null) {

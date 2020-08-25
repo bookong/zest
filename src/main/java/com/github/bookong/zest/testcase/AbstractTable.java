@@ -1,11 +1,11 @@
 package com.github.bookong.zest.testcase;
 
+import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestXmlUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 
 import java.util.*;
@@ -27,122 +27,122 @@ public abstract class AbstractTable<T extends AbstractRowData> {
     /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
     private boolean            ignoreVerify;
 
-    protected void init(String nodeName, List<Node> elements, Map<String, String> attrMap) {
-        this.name = ZestXmlUtil.removeAttr(nodeName, attrMap, "Name");
-        this.ignoreVerify = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, "Ignore", false);
-
-        dataList = new ArrayList<>(elements.size() + 1);
-    }
-
-    protected void parseData(List<Node> elements, boolean isVerifyElement) {
-        try {
-            for (Node node : elements) {
-                if (!"Data".equals(node.getNodeName())) {
-                    continue;
-                }
-
-                ZestXmlUtil.attrMapMustEmpty("Data", ZestXmlUtil.getAllAttrs(node));
-                List<Node> subElements = ZestXmlUtil.getElements(node.getChildNodes());
-                if (subElements.size() == 1) {
-                    if (!"Value".equals(subElements.get(0).getNodeName())) {
-                        throw new ZestException(Messages.parseDataValueExist());
-                    }
-                    parseValue(subElements.get(0));
-
-                } else if (subElements.size() == 2) {
-                    if (!isVerifyElement) {
-                        throw new ZestException(Messages.parseDataRulesPosition());
-                    }
-
-                    if (!"Rules".equals(subElements.get(0).getNodeName())) {
-                        throw new ZestException(Messages.parseDataInclude());
-                    }
-
-                    if (!"Value".equals(subElements.get(1).getNodeName())) {
-                        throw new ZestException(Messages.parseDataInclude());
-                    }
-
-                    parseRules(subElements.get(0));
-                    parseValue(subElements.get(1));
-
-                } else {
-                    throw new ZestException(Messages.parseDataInclude());
-                }
-            }
-        } catch (Exception e) {
-            throw new ZestException(Messages.parseDataError(), e);
-        }
-    }
+    protected abstract void loadSorts(List<Sort> sortList);
 
     protected abstract void checkRule(AbstractRule rule);
 
-    private void parseRules(Node rulesNode) {
-        try {
-            ZestXmlUtil.attrMapMustEmpty("Rules", ZestXmlUtil.getAllAttrs(rulesNode));
-            List<Node> elements = ZestXmlUtil.getElements(rulesNode.getChildNodes());
-            this.ruleList = new ArrayList<>(elements.size() + 1);
-            Set<String> rulePaths = new HashSet<>(elements.size() + 1);
-            for (Node element : elements) {
-                if (!"Rule".equals(element.getNodeName())) {
-                    throw new ZestException(Messages.parseRuleType());
+    protected void init(String nodeName, Node node, List<Node> children, Map<String, String> attrMap,
+                        boolean isVerifyElement) {
+        this.name = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.NAME);
+        this.ignoreVerify = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, Xml.IGNORE, false);
+        this.dataList = new ArrayList<>(children.size() + 1);
+
+        boolean parseSorts = false;
+        boolean parseRules = false;
+        boolean parseData = false;
+        for (Node child : children) {
+            if (Xml.SORTS.equals(child.getNodeName())) {
+                if (!isVerifyElement) {
+                    throw new ZestException(Messages.parseSortsPosition());
                 }
 
-                AbstractRule rule = RuleFactory.create(element);
-                if (rulePaths.contains(rule.getPath())) {
-                    throw new ZestException(Messages.parseRulePathDuplicate(rule.getPath()));
+                if (parseSorts || parseRules || parseData) {
+                    throw new ZestException(Messages.parseSortsOrder());
                 }
-                rulePaths.add(rule.getPath());
-                checkRule(rule);
-                this.ruleList.add(rule);
+                parseSorts(child.getNodeName(), child);
+                parseSorts = true;
+
+            } else if (Xml.RULES.equals(child.getNodeName())) {
+                if (parseRules || parseData) {
+                    throw new ZestException(Messages.parseRulesPosition());
+                }
+                parseRules(child.getNodeName(), child);
+                parseRules = true;
+
+            } else if (Xml.DATA.equals(child.getNodeName())) {
+                parseData(child);
+                parseData = true;
+
+            } else {
+                throw new ZestException(Messages.parseCommonChildrenUnknown(nodeName, child.getNodeName()));
+            }
+        }
+    }
+
+    private void parseSorts(String nodeName, Node node) {
+        try {
+            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            List<Sort> list = new ArrayList<>(children.size() + 1);
+
+            ZestXmlUtil.attrMapMustEmpty(nodeName, ZestXmlUtil.getAllAttrs(node));
+
+            Set<String> fieldNames = new HashSet<>(children.size() + 1);
+            for (Node child : children) {
+                if (!Xml.SORT.equals(child.getNodeName())) {
+                    throw new ZestException(Messages.parseCommonChildrenList(nodeName, Xml.SORT));
+                }
+                list.add(parseSort(child.getNodeName(), child, fieldNames));
+            }
+
+            loadSorts(list);
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseSortsError(), e);
+        }
+    }
+
+    private void parseRules(String nodeName, Node node) {
+        try {
+            ZestXmlUtil.attrMapMustEmpty(nodeName, ZestXmlUtil.getAllAttrs(node));
+            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            this.ruleList = new ArrayList<>(children.size() + 1);
+            Set<String> rulePaths = new HashSet<>(children.size() + 1);
+            for (Node child : children) {
+                if (!Xml.RULE.equals(child.getNodeName())) {
+                    throw new ZestException(Messages.parseCommonChildrenList(Xml.RULES, Xml.RULE));
+                }
+
+                this.ruleList.add(parseRule(child.getNodeName(), child, rulePaths));
             }
         } catch (Exception e) {
             throw new ZestException(Messages.parseRulesError(), e);
         }
     }
 
-    private void parseValue(Node valueNode) {
+    protected void parseData(Node nodeData) {
         // TODO
     }
 
-    protected List<Sort> parseSort(Node elementSorts) {
-        List<Node> elements = ZestXmlUtil.getElements(elementSorts.getChildNodes());
-        List<Sort> list = new ArrayList<>(elements.size() + 1);
+    private Sort parseSort(String nodeName, Node node, Set<String> fieldNames) {
+        String fieldName = null;
+        try {
+            List<Node> sortChildren = ZestXmlUtil.getElements(node.getChildNodes());
+            Map<String, String> sortAttrMap = ZestXmlUtil.getAllAttrs(node);
 
-        ZestXmlUtil.attrMapMustEmpty("Sorts", ZestXmlUtil.getAllAttrs(elementSorts));
-
-        Set<String> fieldNames = new HashSet<>(elements.size() + 1);
-        for (Node sortElement : elements) {
-            if (!"Sort".equals(sortElement.getNodeName())) {
-                throw new ZestException(Messages.parseSortType());
+            fieldName = ZestXmlUtil.removeNotEmptyAttr(nodeName, sortAttrMap, Xml.FIELD);
+            String direction = ZestXmlUtil.removeAttr(nodeName, sortAttrMap, Xml.DIRECTION, Xml.ASC);
+            if (!Xml.ASC.equals(direction) && !Xml.DESC.equals(direction)) {
+                throw new ZestException(Messages.parseSortDirection());
             }
 
-            List<Node> sortSubElements = ZestXmlUtil.getElements(sortElement.getChildNodes());
-            Map<String, String> sortAttrMap = ZestXmlUtil.getAllAttrs(sortElement);
+            ZestXmlUtil.mustHaveNoChildrenElements(Xml.SORT, sortChildren);
+            ZestXmlUtil.duplicateCheck(Xml.FIELD, fieldNames, fieldName);
 
-            String fieldName = ZestXmlUtil.removeAttr(sortElement.getNodeName(), sortAttrMap, "Field");
-            if (StringUtils.isBlank(fieldName)) {
-                throw new ZestException(Messages.parseSortField());
-            }
-
-            String direction = ZestXmlUtil.removeAttr(sortElement.getNodeName(), sortAttrMap, "Direction");
-            direction = StringUtils.isBlank(direction) ? "asc" : direction;
-            if (!"asc".equals(direction) && !"desc".equals(direction)) {
-                throw new ZestException(Messages.parseSortDirection(fieldName));
-            }
-
-            if (!sortSubElements.isEmpty()) {
-                throw new ZestException(Messages.parseSortChildren(fieldName));
-            }
-
-            if (fieldNames.contains(fieldName)) {
-                throw new ZestException(Messages.parseSortFieldDuplicate(fieldName));
-            }
-            fieldNames.add(fieldName);
-
-            list.add(new Sort(fieldName, direction));
+            return new Sort(fieldName, direction);
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseSortError(fieldName), e);
         }
+    }
 
-        return list;
+    private AbstractRule parseRule(String nodeName, Node node, Set<String> rulePaths) {
+        AbstractRule rule = null;
+        try {
+            rule = RuleFactory.create(node);
+            ZestXmlUtil.duplicateCheck(Xml.PATH, rulePaths, rule.getPath());
+            checkRule(rule);
+            return rule;
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseRuleError(rule != null ? rule.getPath() : null), e);
+        }
     }
 
     public String getName() {

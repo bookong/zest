@@ -6,10 +6,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Jiang Xu
@@ -33,6 +30,14 @@ public class ZestXmlUtil {
         }
 
         return StringUtils.trimToEmpty(node.getFirstChild().getNodeValue());
+    }
+
+    public static int removeNotNullIntAttr(String nodeName, Map<String, String> attrMap, String attrName) {
+        Integer value = removeIntAttr(nodeName, attrMap, attrName);
+        if (value == null) {
+            throw new ZestException(Messages.parseCommonAttr(nodeName, attrName));
+        }
+        return value;
     }
 
     public static int removeIntAttr(String nodeName, Map<String, String> attrMap, String attrName, int defValue) {
@@ -84,10 +89,23 @@ public class ZestXmlUtil {
         }
     }
 
+    public static String removeNotEmptyAttr(String nodeName, Map<String, String> attrMap, String attrName) {
+        String value = removeAttr(nodeName, attrMap, attrName);
+        if (StringUtils.isBlank(value)) {
+            throw new ZestException(Messages.parseCommonAttrNeed(nodeName, attrName));
+        }
+        return value;
+    }
+
+    public static String removeAttr(String nodeName, Map<String, String> attrMap, String attrName, String defValue) {
+        String value = removeAttr(nodeName, attrMap, attrName);
+        return value != null ? value : defValue;
+    }
+
     public static String removeAttr(String nodeName, Map<String, String> attrMap, String attrName) {
         try {
             String value = attrMap.remove(attrName);
-            return value != null ? StringUtils.trimToEmpty(value) : null;
+            return value != null ? value.trim() : null;
         } catch (Exception e) {
             throw new ZestException(Messages.parseCommonAttr(nodeName, attrName));
         }
@@ -110,5 +128,18 @@ public class ZestXmlUtil {
         if (!attrMap.isEmpty()) {
             throw new ZestException(Messages.parseCommonAttrUnknown(nodeName, StringUtils.join(attrMap.keySet(), ',')));
         }
+    }
+
+    public static void mustHaveNoChildrenElements(String nodeName, List<Node> children) {
+        if (!children.isEmpty()) {
+            throw new ZestException(Messages.parseCommonChildren(nodeName));
+        }
+    }
+
+    public static void duplicateCheck(String attrName, Set<String> values, String value) {
+        if (values.contains(value)) {
+            throw new ZestException(Messages.parseCommonAttrDuplicate(attrName, value));
+        }
+        values.add(value);
     }
 }

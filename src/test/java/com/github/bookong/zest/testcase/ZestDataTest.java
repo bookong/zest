@@ -79,22 +79,26 @@ public class ZestDataTest {
 
     @Test
     public void testLoad008() {
-        testLoadError("008.xml", Messages.parseSourcesType());
+        testLoadError("008.xml", Messages.parseSourcesError(), //
+                      Messages.parseCommonChildrenList("Sources", "Source"));
     }
 
     @Test
     public void testLoad009() {
-        testLoadError("009.xml", Messages.parseCommonAttrUnknown("Sources", "U"));
+        testLoadError("009.xml", Messages.parseSourcesError(), //
+                      Messages.parseCommonAttrUnknown("Sources", "U"));
     }
 
     @Test
     public void testLoad010() {
-        testLoadError("010.xml", Messages.parseSourceError("mysql"), Messages.parseSourceNecessary());
+        testLoadError("010.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), Messages.parseSourceNecessary());
     }
 
     @Test
     public void testLoad011() {
-        testLoadError("011.xml", Messages.parseSourceError("mysql"), Messages.parseSourceNecessary());
+        testLoadError("011.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), Messages.parseSourceNecessary());
     }
 
     @Test
@@ -107,49 +111,60 @@ public class ZestDataTest {
 
     @Test
     public void testLoad013() {
-        testLoadError("013.xml", Messages.parseSourceIdEmpty());
+        testLoadError("013.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError(""), //
+                      Messages.parseCommonAttrNeed("Source", "Id"));
     }
 
     @Test
     public void testLoad014() {
-        testLoadError("014.xml", Messages.parseSourceIdDuplicate("mysql"));
+        testLoadError("014.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseCommonAttrDuplicate("Id", "mysql"));
     }
 
     @Test
     public void testLoad015() {
-        testLoadError("015.xml", Messages.parseParamType());
+        testLoadError("015.xml", Messages.parseParamError(), //
+                      Messages.parseCommonChildrenList("Param", "ParamField"));
     }
 
     @Test
     public void testLoad016() {
-        testLoadError("016.xml", Messages.parseParamNameEmpty());
+        testLoadError("016.xml", Messages.parseParamError(), //
+                      Messages.parseCommonAttrNeed("ParamField", "Name"));
     }
 
     @Test
     public void testLoad017() {
-        testLoadError("017.xml", Messages.parseParamNameDuplicate("strValue"));
+        testLoadError("017.xml", Messages.parseParamError(), //
+                      Messages.parseCommonAttrDuplicate("Name", "strValue"));
     }
 
     @Test
     public void testLoad018() {
-        testLoadError("018.xml", Messages.parseParamNone("none"));
+        testLoadError("018.xml", Messages.parseParamError(), //
+                      Messages.parseParamNone("none"));
     }
 
     @Test
     public void testLoad019() {
-        testLoadError("019.xml", Messages.parseParamObjLoad("intValue"), //
+        testLoadError("019.xml", Messages.parseParamError(), //
+                      Messages.parseParamObjLoad("intValue"), //
                       "For input string: \"str value\"");
     }
 
     @Test
     public void testLoad020() {
-        testLoadError("020.xml", Messages.parseParamObjLoad("date1"), //
+        testLoadError("020.xml", Messages.parseParamError(), //
+                      Messages.parseParamObjLoad("date1"), //
                       Messages.parseDate("str value"));
     }
 
     @Test
     public void testLoad021() {
-        testLoadError("021.xml", Messages.parseParamObjLoad("nonsupportMapObj"), //
+        testLoadError("021.xml", Messages.parseParamError(), //
+                      Messages.parseParamObjLoad("nonsupportMapObj"), //
                       Messages.parseParamNonsupportMap());
     }
 
@@ -191,39 +206,45 @@ public class ZestDataTest {
 
     @Test
     public void testLoad023() {
-        testLoadError("023.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("023.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseCommonAttrUnknown("Source", "U,V"));
     }
 
     @Test
     public void testLoad024() {
-        testLoadError("024.xml", Messages.parseCommonAttrUnknown("Param", "U"));
+        testLoadError("024.xml", Messages.parseParamError(), //
+                      Messages.parseCommonAttrUnknown("Param", "U"));
     }
 
     @Test
     public void testLoad025() {
-        testLoadError("025.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("025.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceInitError(), //
                       Messages.parseCommonAttrUnknown("Init", "U"));
     }
 
     @Test
     public void testLoad026() {
-        testLoadError("026.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("026.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
                       Messages.parseCommonAttrUnknown("Verify", "U"));
     }
 
     @Test
     public void testLoad027() {
-        testLoadError("027.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("027.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceInitError(), //
                       Messages.parseSourceOperationMatch("java.sql.Connection", "Init", "Table"));
     }
 
     @Test
     public void testLoad028() {
-        testLoadError("028.xml", Messages.parseSourceError("mongo"), //
+        testLoadError("028.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
                       Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations",
                                                          "Init", "Collection"));
@@ -231,14 +252,16 @@ public class ZestDataTest {
 
     @Test
     public void testLoad029() {
-        testLoadError("029.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("029.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
                       Messages.parseSourceOperationMatch("java.sql.Connection", "Verify", "Table"));
     }
 
     @Test
     public void testLoad030() {
-        testLoadError("030.xml", Messages.parseSourceError("mongo"), //
+        testLoadError("030.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mongo"), //
                       Messages.parseSourceVerifyError(), //
                       Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations",
                                                          "Verify", "Collection"));
@@ -246,14 +269,16 @@ public class ZestDataTest {
 
     @Test
     public void testLoad031() {
-        testLoadError("031.xml", Messages.parseSourceError("unknown"), //
+        testLoadError("031.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("unknown"), //
                       Messages.parseSourceInitError(), //
                       Messages.parseSourceOperationUnknown("java.lang.Object"));
     }
 
     @Test
     public void testLoad032() {
-        testLoadError("032.xml", Messages.parseSourceError("none"), //
+        testLoadError("032.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("none"), //
                       Messages.parseSourceInitError(), //
                       Messages.parseSourceOperationNone());
     }
@@ -281,99 +306,138 @@ public class ZestDataTest {
 
     @Test
     public void testLoad035() {
-        testLoadError("035.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("035.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceInitError(), //
+                      Messages.parseTableError("tab"), //
                       Messages.parseCommonAttrUnknown("Table", "U"));
     }
 
     @Test
     public void testLoad036() {
-        testLoadError("036.xml", Messages.parseSourceError("mongo"), //
+        testLoadError("036.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseCollectionEntity());
+                      Messages.parseCollectionError("tab"), //
+                      Messages.parseCommonAttrNeed("Collection", "EntityClass"));
     }
 
     @Test
     public void testLoad037() {
-        testLoadError("037.xml", Messages.parseSourceError("mongo"), //
+        testLoadError("037.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
+                      Messages.parseCollectionError("tab"), //
                       Messages.parseCommonClassFound("none"));
     }
 
     @Test
     public void testLoad038() {
-        testLoadError("038.xml", Messages.parseSourceError("mongo"), //
+        testLoadError("038.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
+                      Messages.parseCollectionError("tab"), //
                       Messages.parseCommonAttrUnknown("Collection", "U"));
     }
 
     @Test
     public void testLoad039() {
-        testLoadError("039.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("039.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseTableData());
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsPosition());
     }
 
     @Test
     public void testLoad040() {
-        testLoadError("040.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("040.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseTableData());
+                      Messages.parseTableError("tab"), //
+                      Messages.parseCommonChildrenUnknown("Table", "Other"));
     }
 
     @Test
     public void testLoad041() {
-        testLoadError("041.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("041.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseTableData());
+                      Messages.parseTableError("tab"), //
+                      Messages.parseCommonChildrenUnknown("Table", "Other"));
     }
 
     @Test
     public void testLoad042() {
-        testLoadError("042.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("042.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseSortType());
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsError(), //
+                      Messages.parseCommonChildrenList("Sorts", "Sort"));
     }
 
     @Test
     public void testLoad043() {
-        testLoadError("043.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("043.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsError(), //
                       Messages.parseCommonAttrUnknown("Sorts", "U"));
     }
 
     @Test
     public void testLoad044() {
-        testLoadError("044.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("044.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseSortField());
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsError(), //
+                      Messages.parseSortError(""), //
+                      Messages.parseCommonAttrNeed("Sort", "Field"));
     }
 
     @Test
     public void testLoad045() {
-        testLoadError("045.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("045.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseSortDirection("f_varchar"));
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsError(), //
+                      Messages.parseSortError("f_varchar"), //
+                      Messages.parseSortDirection());
     }
 
     @Test
     public void testLoad046() {
-        testLoadError("046.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("046.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseSortChildren("f_varchar"));
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsError(), //
+                      Messages.parseSortError("f_varchar"), //
+                      Messages.parseCommonChildren("Sort"));
     }
 
     @Test
     public void testLoad047() {
-        testLoadError("047.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("047.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseSortFieldDuplicate("f_varchar"));
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsError(), //
+                      Messages.parseSortError("f_varchar"), //
+                      Messages.parseCommonAttrDuplicate("Field", "f_varchar"));
     }
 
     @Test
     public void testLoad048() {
-        testLoadError("048.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("048.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceVerifyError(), //
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsError(), //
                       Messages.parseTableSortExist("none"));
     }
 
@@ -391,23 +455,29 @@ public class ZestDataTest {
 
     @Test
     public void testLoad050() {
-        testLoadError("050.xml", Messages.parseSourceError("mongo"), //
+        testLoadError("050.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseCollectionData());
+                      Messages.parseCollectionError("tab"), //
+                      Messages.parseSortsPosition());
     }
 
     @Test
     public void testLoad051() {
-        testLoadError("051.xml", Messages.parseSourceError("mysql"), //
+        testLoadError("051.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mysql"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseSortPosition());
+                      Messages.parseTableError("tab"), //
+                      Messages.parseSortsPosition());
     }
 
     @Test
     public void testLoad052() {
-        testLoadError("052.xml", Messages.parseSourceError("mongo"), //
+        testLoadError("052.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseSortPosition());
+                      Messages.parseCollectionError("tab"), //
+                      Messages.parseSortsPosition());
     }
 
     @Test
@@ -423,109 +493,18 @@ public class ZestDataTest {
 
     @Test
     public void testLoad054() {
-        testLoadError("054.xml", Messages.parseSourceError("mongo"), //
+        testLoadError("054.xml", Messages.parseSourcesError(), //
+                      Messages.parseSourceError("mongo"), //
                       Messages.parseSourceVerifyError(), //
+                      Messages.parseCollectionError("tab"), //
+                      Messages.parseSortsError(), //
                       Messages.parseCollectionSortExits("none"));
     }
 
     @Test
     public void testLoad055() {
-        testLoadError("055.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceVerifyError(), //
-                      Messages.parseDataError(), //
-                      Messages.parseDataInclude());
-    }
-
-    @Test
-    public void testLoad056() {
-        testLoadError("056.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceVerifyError(), //
-                      Messages.parseDataError(), //
-                      Messages.parseDataValueExist());
-    }
-
-    @Test
-    public void testLoad057() {
-        testLoadError("057.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceVerifyError(), //
-                      Messages.parseDataError(), //
-                      Messages.parseDataInclude());
-    }
-
-    @Test
-    public void testLoad058() {
-        testLoadError("058.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceInitError(), //
-                      Messages.parseDataError(), //
-                      Messages.parseDataRulesPosition());
-    }
-
-    @Test
-    public void testLoad059() {
-        testLoadError("059.xml", Messages.parseSourceError("mysql"), //
-                      Messages.parseSourceVerifyError(), //
-                      Messages.parseDataError(), //
-                      Messages.parseCommonAttrUnknown("Data", "U"));
-    }
-
-    @Test
-    public void testLoad060() {
-        testLoadError("060.xml", Messages.parseSourceError("mysql"), //
-                Messages.parseSourceVerifyError(), //
-                Messages.parseDataError(), //
-                Messages.parseRulesError(), //
-                Messages.parseRuleType());
-    }
-
-    @Test
-    public void testLoad061() {
-        testLoadError("061.xml", Messages.parseSourceError("mysql"), //
-                Messages.parseSourceVerifyError(), //
-                Messages.parseDataError(), //
-                Messages.parseRulesError(), //
-                Messages.parseCommonAttrUnknown("Rules", "U"));
-    }
-
-    @Test
-    public void testLoad062() {
-        testLoadError("062.xml", Messages.parseSourceError("mysql"), //
-                Messages.parseSourceVerifyError(), //
-                Messages.parseDataError(), //
-                Messages.parseRulesError(), //
-                Messages.parseRuleChoice());
-    }
-
-    @Test
-    public void testLoad063() {
-        testLoadError("063.xml", Messages.parseSourceError("mysql"), //
-                Messages.parseSourceVerifyError(), //
-                Messages.parseDataError(), //
-                Messages.parseRulesError(), //
-                Messages.parseRulePathEmpty());
-    }
-
-    @Test
-    public void testLoad064() {
-        testLoadError("064.xml", Messages.parseSourceError("mysql"), //
-                Messages.parseSourceVerifyError(), //
-                Messages.parseDataError(), //
-                Messages.parseRulesError(), //
-                Messages.parseTableRule("none"));
-    }
-
-    @Test
-    public void testLoad065() {
-        testLoadError("065.xml", Messages.parseSourceError("mongo"), //
-                Messages.parseSourceVerifyError(), //
-                Messages.parseDataError(), //
-                Messages.parseRulesError(), //
-                Messages.parseCollectionRule("none"));
-    }
-
-    @Test
-    public void testLoad066() {
         logger.info("Normal data");
-        ZestData zestData = load("066.xml");
+        ZestData zestData = load("055.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
         Assert.assertEquals(1, obj.getVerifyDataMap().size());
@@ -550,18 +529,9 @@ public class ZestDataTest {
     }
 
     @Test
-    public void testLoad067() {
-        testLoadError("067.xml", Messages.parseSourceError("mysql"), //
-                Messages.parseSourceVerifyError(), //
-                Messages.parseDataError(), //
-                Messages.parseRulesError(), //
-                Messages.parseRulePathDuplicate("f_varchar"));
-    }
-
-    @Test
-    public void testLoad068() {
+    public void testLoad056() {
         logger.info("Normal data");
-        ZestData zestData = load("068.xml");
+        ZestData zestData = load("056.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
         Assert.assertEquals(1, obj.getVerifyDataMap().size());
@@ -585,9 +555,9 @@ public class ZestDataTest {
     }
 
     @Test
-    public void testLoad069() {
+    public void testLoad057() {
         logger.info("Normal data");
-        ZestData zestData = load("069.xml");
+        ZestData zestData = load("057.xml");
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
         Table table = (Table) obj.getVerifyDataMap().get("tab");
 
@@ -601,15 +571,6 @@ public class ZestDataTest {
         Assert.assertEquals(1, fromCurrentTimeRule.getMin());
         Assert.assertEquals(2, fromCurrentTimeRule.getMax());
         Assert.assertEquals(Calendar.HOUR_OF_DAY, fromCurrentTimeRule.getUnit());
-    }
-
-    @Test
-    public void testLoad070() {
-        testLoadError("070.xml", Messages.parseSourceError("mysql"), //
-                Messages.parseSourceVerifyError(), //
-                Messages.parseDataError(), //
-                Messages.parseRulesError(), //
-                Messages.parseRulefromUnitUnknown("x"));
     }
 
     private void testLoadError(String filename, String... errorMessages) {

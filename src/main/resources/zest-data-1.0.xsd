@@ -34,7 +34,7 @@
     <xsd:element name="Zest">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="Description" type="xsd:string" >
+                <xsd:element name="Description" type="xsd:string">
                     <xsd:annotation>
                         <xsd:documentation>
                             The description information of the unit test case
@@ -214,6 +214,14 @@
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
+                <xsd:element ref="data:Rules" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Specify data validation rules.
+                            This attribute is only valid in the Table element under the Verify element.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
                 <xsd:element ref="data:Data" minOccurs="0" maxOccurs="unbounded">
                     <xsd:annotation>
                         <xsd:documentation>
@@ -248,6 +256,15 @@
                         <xsd:documentation>
                             Generally, the primary key of MongoDB is a uuid string, so you need to specify the sorting
                             rules of the query.
+                            This attribute is only valid in the Collection element under the Verify element.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element ref="data:Rules" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Specify data validation rules. For MongoDB Document, no matter how it is set, the entity
+                            object field marked by @Id will not be verified.
                             This attribute is only valid in the Collection element under the Verify element.
                         </xsd:documentation>
                     </xsd:annotation>
@@ -317,35 +334,15 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="Data">
+    <xsd:element name="Data" type="xsd:string">
         <xsd:annotation>
             <xsd:documentation>
                 It can be a table record in a relational database that supports SQL, or a Document in MongoDB. It
                 depends on the definition of the superior node.
+                The specific value represented by the JSON content. If the content contains the Date type, it will determine whether to perform the assignment after conversion
+                according to whether the CurrentTime property is set before.
             </xsd:documentation>
         </xsd:annotation>
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element ref="data:Rules" minOccurs="0">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            Specify data validation rules. For MongoDB Document, no matter how it is set, the entity
-                            object field marked by @Id will not be verified.
-                            This attribute is only valid in the Table or Collection element under the Verify element.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element name="Value" type="xsd:string">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            The specific value represented by the JSON content. If the content contains the Date type,
-                            it will determine whether to perform the assignment after conversion according to whether
-                            the CurrentTime property is set before.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-            </xsd:sequence>
-        </xsd:complexType>
     </xsd:element>
 
     <xsd:element name="Rules">

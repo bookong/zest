@@ -1,5 +1,6 @@
 package com.github.bookong.zest.testcase;
 
+import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.util.Messages;
@@ -23,28 +24,21 @@ public class Source {
     private SourceVerifyData verifyData;
 
     public Source(ZestWorker worker, String nodeName, Node sourceNode, Set<String> sourceIds){
-        List<Node> elements = ZestXmlUtil.getElements(sourceNode.getChildNodes());
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(sourceNode);
-
-        this.id = ZestXmlUtil.removeAttr(nodeName, attrMap, "Id");
-        if (sourceIds.contains(getId())) {
-            throw new ZestException(Messages.parseSourceIdDuplicate(getId()));
-        }
-        sourceIds.add(getId());
-
-        if (StringUtils.isBlank(getId())) {
-            throw new ZestException(Messages.parseSourceIdEmpty());
-        }
-
         try {
-            if (elements.size() != 2 //
-                || !"Init".equals(elements.get(0).getNodeName()) //
-                || !"Verify".equals(elements.get(1).getNodeName())) {
+            List<Node> children = ZestXmlUtil.getElements(sourceNode.getChildNodes());
+            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(sourceNode);
+            this.id = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.ID);
+            ZestXmlUtil.duplicateCheck(Xml.ID, sourceIds, getId());
+
+            if (children.size() != 2 //
+                || !Xml.INIT.equals(children.get(0).getNodeName()) //
+                || !Xml.VERIFY.equals(children.get(1).getNodeName())) {
                 throw new ZestException(Messages.parseSourceNecessary());
             }
 
-            this.initData = new SourceInitData(worker, getId(), elements.get(0).getNodeName(), elements.get(0));
-            this.verifyData = new SourceVerifyData(worker, getId(), elements.get(1).getNodeName(), elements.get(1));
+            this.initData = new SourceInitData(worker, getId(), children.get(0).getNodeName(), children.get(0));
+            this.verifyData = new SourceVerifyData(worker, getId(), children.get(1).getNodeName(), children.get(1));
+
             ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
         } catch (Exception e) {
             throw new ZestException(Messages.parseSourceError(getId()), e);

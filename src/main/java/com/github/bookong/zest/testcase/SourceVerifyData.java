@@ -1,5 +1,6 @@
 package com.github.bookong.zest.testcase;
 
+import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.util.Messages;
@@ -21,13 +22,13 @@ public class SourceVerifyData extends AbstractSourceData {
     /** 执行完，检测数据源的数据 */
     private Map<String, AbstractTable> verifyDataMap = new LinkedHashMap<>();
 
-    public SourceVerifyData(ZestWorker worker, String sourceId, String nodeName, Node verifyNode){
+    public SourceVerifyData(ZestWorker worker, String sourceId, String nodeName, Node node){
         try {
-            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(verifyNode);
-            this.ignoreCheck = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, "Ignore", false);
-            this.onlyCheckCoreData = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, "OnlyCoreData", false);
+            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+            this.ignoreCheck = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, Xml.IGNORE, false);
+            this.onlyCheckCoreData = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, Xml.ONLY_CORE_DATA, false);
 
-            for (AbstractTable table : createTables(worker, sourceId, nodeName, verifyNode, true)) {
+            for (AbstractTable table : createTables(worker, sourceId, nodeName, node, true)) {
                 verifyDataMap.put(table.getName(), table);
             }
 

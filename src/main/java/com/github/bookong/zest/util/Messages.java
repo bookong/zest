@@ -1,5 +1,7 @@
 package com.github.bookong.zest.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -47,12 +49,32 @@ public class Messages {
         return getString("parse.common.attr.unknown", nodeName, attrNames);
     }
 
+    public static String parseCommonAttrNeed(String nodeName, String attrName) {
+        return getString("parse.common.attr.need", nodeName, attrName);
+    }
+
+    public static String parseCommonAttrDuplicate(String attrName, String attrValue) {
+        return getString("parse.common.attr.duplicate", attrName, attrValue);
+    }
+
+    public static String parseCommonAttrEmpty(String attrName) {
+        return getString("parse.common.attr.empty", attrName);
+    }
+
     public static String parseCommonClassFound(String className) {
         return getString("parse.common.class.found", className);
     }
 
     public static String parseCommonChildren(String nodeName) {
         return getString("parse.common.children", nodeName);
+    }
+
+    public static String parseCommonChildrenUnknown(String parentElement, String childrenElement) {
+        return getString("parse.common.children.unknown", parentElement, childrenElement);
+    }
+
+    public static String parseCommonChildrenList(String parentElement, String childrenElement) {
+        return getString("parse.common.children.list", parentElement, childrenElement);
     }
 
     public static String parseZest() {
@@ -63,8 +85,8 @@ public class Messages {
         return getString("parse.zest.necessary");
     }
 
-    public static String parseSourcesType() {
-        return getString("parse.sources.type");
+    public static String parseSourcesError() {
+        return getString("parse.sources.error");
     }
 
     public static String parseSourceError(String sourceId) {
@@ -73,14 +95,6 @@ public class Messages {
 
     public static String parseSourceNecessary() {
         return getString("parse.source.necessary");
-    }
-
-    public static String parseSourceIdEmpty() {
-        return getString("parse.source.id.empty");
-    }
-
-    public static String parseSourceIdDuplicate(String sourceId) {
-        return getString("parse.source.id.duplicate", sourceId);
     }
 
     public static String parseSourceInitError() {
@@ -103,6 +117,10 @@ public class Messages {
         return getString("parse.source.operation.none");
     }
 
+    public static String parseTableError(String name) {
+        return getString("parse.table.error", name);
+    }
+
     public static String parseTableMeta() {
         return getString("parse.table.meta");
     }
@@ -119,12 +137,8 @@ public class Messages {
         return getString("parse.table.rule", path);
     }
 
-    public static String parseCollectionEntity() {
-        return getString("parse.collection.entity");
-    }
-
-    public static String parseCollectionData() {
-        return getString("parse.collection.data");
+    public static String parseCollectionError(String name) {
+        return getString("parse.collection.error", name);
     }
 
     public static String parseCollectionSortExits(String fieldName) {
@@ -135,92 +149,48 @@ public class Messages {
         return getString("parse.collection.rule", path);
     }
 
-    public static String parseSortPosition() {
-        return getString("parse.sort.position");
+    public static String parseSortsError() {
+        return getString("parse.sorts.error");
     }
 
-    public static String parseSortType() {
-        return getString("parse.sort.type");
+    public static String parseSortsPosition() {
+        return getString("parse.sorts.position");
     }
 
-    public static String parseSortChildren(String fieldName) {
-        return getString("parse.sort.children", fieldName);
+    public static String parseSortsOrder() {
+        return getString("parse.sorts.order");
     }
 
-    public static String parseSortField() {
-        return getString("parse.sort.field");
+    public static String parseSortError(String fieldName) {
+        return getString("parse.sort.error", fieldName);
     }
 
-    public static String parseSortFieldDuplicate(String fieldName) {
-        return getString("parse.sort.field.duplicate", fieldName);
+    public static String parseSortDirection() {
+        return getString("parse.sort.direction");
     }
 
-    public static String parseSortDirection(String fieldName) {
-        return getString("parse.sort.direction", fieldName);
+    public static String parseRulesPosition() {
+        return getString("parse.rules.position");
     }
 
-    public static String parseDataError() {
-        return getString("parse.data.error");
+    public static String parseRuleError(String path) {
+        return getString("parse.rule.error", path);
     }
 
-    public static String parseDataValueExist() {
-        return getString("parse.data.value.exist");
-    }
-
-    public static String parseDataRulesPosition() {
-        return getString("parse.data.rules.position");
-    }
-
-    public static String parseDataInclude() {
-        return getString("parse.data.include");
-    }
-
-    public static String parseRuleFromMin() {
-        return getString("parse.rule.from.min");
-    }
-
-    public static String parseRulefromMax() {
-        return getString("parse.rule.from.max");
-    }
-
-    public static String parseRuleFromUnit() {
-        return getString("parse.rule.from.unit");
-    }
-
-    public static String parseRulefromUnitUnknown(String unit) {
+    public static String parseRuleFromUnitUnknown(String unit) {
         return getString("parse.rule.from.unit.unknown", unit);
+    }
+
+    public static String parseParamError() {
+        return getString("parse.param.error");
     }
 
     public static String parseRulesError() {
         return getString("parse.rules.error");
     }
 
-    public static String parseRuleType() {
-        return getString("parse.rule.type");
-    }
-
     public static String parseRuleChoice() {
         return getString("parse.rule.choice");
-    }
-
-    public static String parseRulePathEmpty() {
-        return getString("parse.rule.path.empty");
-    }
-
-    public static String parseRulePathDuplicate(String path) {
-        return getString("parse.rule.path.duplicate", path);
-    }
-
-    public static String parseParamType() {
-        return getString("parse.param.type");
-    }
-
-    public static String parseParamNameEmpty() {
-        return getString("parse.param.name.empty");
-    }
-
-    public static String parseParamNameDuplicate(String fieldName) {
-        return getString("parse.param.name.duplicate", fieldName);
     }
 
     public static String parseParamNone(String fieldName) {
@@ -255,32 +225,12 @@ public class Messages {
         return getString("parse.data.field.under", tableName, fieldName);
     }
 
-    public static String parseDataFieldNone(String tableName, String fieldName) {
-        return getString("parse.data.field.none", tableName, fieldName);
-    }
-
-    public static String parseDataTableSort() {
-        return getString("parse.data.table.sort");
-    }
-
-    public static String parseDocObj(String sourceId, String collectionId, int rowIdx) {
-        return getString("parse.doc.obj", sourceId, collectionId, rowIdx);
-    }
-
     public static String parseOperation() {
         return getString("parse.operation");
     }
 
     public static String duplicateOperation(String value) {
         return getString("duplicate.operation", value);
-    }
-
-    public static String operationUnsupported(String sourceId, String operationClass) {
-        return getString("operation.unsupported", sourceId, operationClass);
-    }
-
-    public static String operationMismatching(String sourceId, String nodeName) {
-        return getString("operation.mismatching", sourceId, nodeName);
     }
 
     public static String initExecutor(String className) {
@@ -335,11 +285,6 @@ public class Messages {
         return getString("check.table.col.date.current", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColDateFromUnit(String sourceId, String tableName, int rowIdx, String columnName,
-                                                   String unit) {
-        return getString("check.table.col.date.from.unit", sourceId, tableName, rowIdx, columnName, unit);
-    }
-
     public static String checkTableColDateFrom(String sourceId, String tableName, int rowIdx, String columnName) {
         return getString("check.table.col.date.from", sourceId, tableName, rowIdx, columnName);
     }
@@ -373,11 +318,20 @@ public class Messages {
         try {
             return RESOURCE_BUNDLE.getString(key);
         } catch (MissingResourceException e) {
-            return '!' + key + '!'; // $NON-NLS-1$ //$NON-NLS-2$
+            return '!' + key + '!';
         }
     }
 
     private static String getString(String key, Object... args) {
-        return String.format(getString(key), args);
+        Object[] objs = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            if (arg == null) {
+                objs[i] = "";
+            } else {
+                objs[i] = arg;
+            }
+        }
+        return String.format(getString(key), objs);
     }
 }

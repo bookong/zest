@@ -20,17 +20,15 @@ public class RegExpRule extends AbstractRule {
 
     private String regExp;
 
-    RegExpRule(Node node, String path, boolean nullable){
+    RegExpRule(String nodeName, Node node, String path, boolean nullable){
         super(path, nullable);
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
+        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
 
         this.regExp = ZestXmlUtil.getValue(node);
 
-        ZestXmlUtil.attrMapMustEmpty("RegExp", attrMap);
-        if (!elements.isEmpty()) {
-            throw new ZestException(Messages.parseCommonChildren("RegExp"));
-        }
+        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+        ZestXmlUtil.mustHaveNoChildrenElements(nodeName, children);
     }
 
     @Override

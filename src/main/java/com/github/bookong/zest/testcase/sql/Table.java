@@ -30,61 +30,46 @@ public class Table extends AbstractTable<Row> {
 
     public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn,
                  boolean isVerifyElement){
-        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        init(nodeName, elements, attrMap);
-        loadSqlTypes(conn);
+        try {
+            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+            loadSqlTypes(conn);
 
-        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+            init(nodeName, node, children, attrMap, isVerifyElement);
+            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
 
-        if (elements.isEmpty()) {
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseTableError(getName()), e);
+        }
+    }
+
+    @Override
+    protected void loadSorts(List<Sort> sortList) {
+
+        if (sortList.isEmpty()) {
             return;
         }
 
-        int startIdx = 0;
-        Node firstNode = elements.get(0);
-        if ("Sorts".equals(firstNode.getNodeName())) {
-            if (!isVerifyElement) {
-                throw new ZestException(Messages.parseSortPosition());
+        StringBuilder sb = new StringBuilder();
+        sb.append(" order by");
+        for (int i = 0; i < sortList.size(); i++) {
+            Sort item = sortList.get(i);
+            if (!sqlTypes.containsKey(item.getField())) {
+                throw new ZestException(Messages.parseTableSortExist(item.getField()));
             }
-
-            startIdx = 1;
-            List<Sort> sortList = parseSort(firstNode);
-            if (!sortList.isEmpty()) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(" order by");
-                for (int i = 0; i < sortList.size(); i++) {
-                    Sort item = sortList.get(i);
-                    if (!sqlTypes.containsKey(item.getField())) {
-                        throw new ZestException(Messages.parseTableSortExist(item.getField()));
-                    }
-                    if (i > 0) {
-                        sb.append(",");
-                    }
-                    sb.append(" ").append(item.getField()).append(" ").append(item.getDirection());
-                }
-                sort = sb.toString();
+            if (i > 0) {
+                sb.append(",");
             }
+            sb.append(" ").append(item.getField()).append(" ").append(item.getDirection());
         }
-
-        for (int i = startIdx; i < elements.size(); i++) {
-            Node element = elements.get(i);
-            if (!"Data".equals(element.getNodeName())) {
-                throw new ZestException(Messages.parseTableData());
-            }
-        }
-
-        parseData(elements, isVerifyElement);
+        this.sort = sb.toString();
     }
 
+    @Override
     protected void checkRule(AbstractRule rule) {
         if (!sqlTypes.containsKey(rule.getPath())) {
             throw new ZestException(Messages.parseTableRule(rule.getPath()));
         }
-    }
-
-    public String getSort() {
-        return sort;
     }
 
     private void loadSqlTypes(Connection conn) {
@@ -117,4 +102,9 @@ public class Table extends AbstractTable<Row> {
     public Map<String, Integer> getSqlTypes() {
         return sqlTypes;
     }
+
+    public String getSort() {
+        return sort;
+    }
+
 }

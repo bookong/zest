@@ -19,17 +19,15 @@ public class CurrentTimeRule extends AbstractRule {
 
     private int offset;
 
-    CurrentTimeRule(Node node, String path, boolean nullable){
+    CurrentTimeRule(String nodeName, Node node, String path, boolean nullable){
         super(path, nullable);
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
+        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
 
-        this.offset = ZestXmlUtil.removeIntAttr("CurrentTime", attrMap, "Offset", 1000);
+        this.offset = ZestXmlUtil.removeIntAttr(nodeName, attrMap, "Offset", 1000);
 
-        ZestXmlUtil.attrMapMustEmpty("CurrentTime", attrMap);
-        if (!elements.isEmpty()) {
-            throw new ZestException(Messages.parseCommonChildren("CurrentTime"));
-        }
+        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+        ZestXmlUtil.mustHaveNoChildrenElements(nodeName, children);
     }
 
     @Override

@@ -24,19 +24,20 @@ public class RuleFactory {
 
         String path = ZestXmlUtil.removeAttr("Rule", attrMap, "Path");
         if (StringUtils.isBlank(path)) {
-            throw new ZestException(Messages.parseRulePathEmpty());
+            throw new ZestException(Messages.parseCommonAttrEmpty("Path"));
         }
         boolean nullable = ZestXmlUtil.removeBooleanAttr("Rule", attrMap, "Nullable", true);
         ZestXmlUtil.attrMapMustEmpty("Rule", attrMap);
 
-        Node subElement = elements.get(0);
-        switch (subElement.getNodeName()) {
+        Node childNode = elements.get(0);
+        String childName = childNode.getNodeName();
+        switch (childName) {
             case "RegExp":
-                return new RegExpRule(subElement, path, nullable);
+                return new RegExpRule(childName, childNode, path, nullable);
             case "CurrentTime":
-                return new CurrentTimeRule(subElement, path, nullable);
+                return new CurrentTimeRule(childName, childNode, path, nullable);
             case "FromCurrentTime":
-                return new FromCurrentTimeRule(subElement, path, nullable);
+                return new FromCurrentTimeRule(childName, childNode, path, nullable);
             default:
                 throw new ZestException(Messages.parseRuleChoice());
         }

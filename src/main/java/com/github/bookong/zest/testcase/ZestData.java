@@ -1,24 +1,19 @@
 package com.github.bookong.zest.testcase;
 
+import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
-import com.github.bookong.zest.support.xml.data.Data;
-import com.github.bookong.zest.support.xml.data.ParamField;
 import com.github.bookong.zest.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -49,7 +44,7 @@ public class ZestData {
     private ZestParam    param;
 
     /** 数据源描述 */
-    private List<Source> sourceList   = Collections.synchronizedList(new ArrayList<>());
+    private List<Source> sourceList   = new ArrayList<>();
 
     /** 开始进行测试的时间 */
     private long         startTime;
@@ -64,96 +59,94 @@ public class ZestData {
 
     public void load(ZestWorker worker) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new InputSource(getFilePath()));
-            List<Node> elements = ZestXmlUtil.getElements(doc.getChildNodes());
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(getFilePath()));
+            List<Node> rootElements = ZestXmlUtil.getElements(doc.getChildNodes());
 
-            if (elements.size() != 1 || !"Zest".equals(elements.get(0).getNodeName())) {
+            if (rootElements.size() != 1 || !Xml.ZEST.equals(rootElements.get(0).getNodeName())) {
                 throw new ZestException(Messages.parseZest());
             }
 
-            loadZest(worker, elements.get(0).getNodeName(), elements.get(0));
+            loadZest(worker, rootElements.get(0).getNodeName(), rootElements.get(0));
         } catch (Exception e) {
             throw new ZestException(Messages.parse(getFilePath()), e);
         }
     }
 
-    private void loadZest(ZestWorker worker, String nodeName, Node zestNode) {
-        List<Node> elements = ZestXmlUtil.getElements(zestNode.getChildNodes());
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(zestNode);
+    private void loadZest(ZestWorker worker, String nodeName, Node node) {
+        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
 
-        if (elements.size() != 3 //
-            || !"Description".equals(elements.get(0).getNodeName()) //
-            || !"Sources".equals(elements.get(1).getNodeName()) //
-            || !"Param".equals(elements.get(2).getNodeName())) {
+        if (children.size() != 3 //
+            || !Xml.DESCRIPTION.equals(children.get(0).getNodeName()) //
+            || !Xml.SOURCES.equals(children.get(1).getNodeName()) //
+            || !Xml.PARAM.equals(children.get(2).getNodeName())) { //
             throw new ZestException(Messages.parseZestNecessary());
         }
 
-        this.description = ZestXmlUtil.getValue(elements.get(0));
-        loadSources(worker, elements.get(1).getNodeName(), elements.get(1));
-        loadParam(worker, elements.get(2).getNodeName(), elements.get(2));
+        this.description = ZestXmlUtil.getValue(children.get(0));
+        loadSources(worker, children.get(1).getNodeName(), children.get(1));
+        loadParam(children.get(2).getNodeName(), children.get(2));
 
-        this.version = ZestXmlUtil.removeFloatAttr(nodeName, attrMap, "Version", 1.0F);
-        String currentTime = ZestXmlUtil.removeAttr(nodeName, attrMap, "CurrentTime");
+        this.version = ZestXmlUtil.removeFloatAttr(nodeName, attrMap, Xml.VERSION, 1.0F);
+        String currentTime = ZestXmlUtil.removeAttr(nodeName, attrMap, Xml.CURRENT_TIME);
         this.transferTime = StringUtils.isNotBlank(currentTime);
         if (isTransferTime()) {
             Date currDbTime = ZestDateUtil.parseDate(currentTime);
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.MILLISECOND, 0);
-            currentTimeDiff = cal.getTimeInMillis() - currDbTime.getTime();
+            this.currentTimeDiff = cal.getTimeInMillis() - currDbTime.getTime();
         }
         ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
     }
 
-    private void loadSources(ZestWorker worker, String nodeName, Node sourcesNode) {
-        List<Node> elements = ZestXmlUtil.getElements(sourcesNode.getChildNodes());
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(sourcesNode);
+    private void loadSources(ZestWorker worker, String nodeName, Node node) {
+        try {
+            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
 
-        for (Node item : elements) {
-            if (!"Source".equals(item.getNodeName())) {
-                throw new ZestException(Messages.parseSourcesType());
+            for (Node item : children) {
+                if (!Xml.SOURCE.equals(item.getNodeName())) {
+                    throw new ZestException(Messages.parseCommonChildrenList(Xml.SOURCES, Xml.SOURCE));
+                }
             }
-        }
 
-        getSourceList().clear();
-        Set<String> sourceIds = new HashSet<>(elements.size() + 1);
-        for (Node sourceNode : elements) {
-            getSourceList().add(new Source(worker, sourceNode.getNodeName(), sourceNode, sourceIds));
-        }
-        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
-    }
-
-    private void loadParam(ZestWorker worker, String nodeName, Node paramNode) {
-        List<Node> elements = ZestXmlUtil.getElements(paramNode.getChildNodes());
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(paramNode);
-
-        for (Node item : elements) {
-            if (!"ParamField".equals(item.getNodeName())) {
-                throw new ZestException(Messages.parseParamType());
+            Set<String> sourceIds = new HashSet<>(children.size() + 1);
+            for (Node child : children) {
+                getSourceList().add(new Source(worker, child.getNodeName(), child, sourceIds));
             }
+            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseSourcesError(), e);
         }
-
-        Set<String> fieldNames = new HashSet<>(elements.size() + 1);
-        for (Node item : elements) {
-            loadParamField(worker, item.getNodeName(), item, fieldNames);
-        }
-
-        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
     }
 
-    private void loadParamField(ZestWorker worker, String nodeName, Node paramFieldNode, Set<String> fieldNames) {
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(paramFieldNode);
+    private void loadParam(String nodeName, Node node) {
+        try {
+            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
 
-        String fieldName = ZestXmlUtil.removeAttr(nodeName, attrMap, "Name");
-        if (StringUtils.isBlank(fieldName)) {
-            throw new ZestException(Messages.parseParamNameEmpty());
-        }
+            for (Node item : children) {
+                if (!Xml.PARAM_FIELD.equals(item.getNodeName())) {
+                    throw new ZestException(Messages.parseCommonChildrenList(Xml.PARAM, Xml.PARAM_FIELD));
+                }
+            }
 
-        if (fieldNames.contains(fieldName)) {
-            throw new ZestException(Messages.parseParamNameDuplicate(fieldName));
+            Set<String> fieldNames = new HashSet<>(children.size() + 1);
+            for (Node child : children) {
+                loadParamField(child.getNodeName(), child, fieldNames);
+            }
+
+            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseParamError(), e);
         }
-        fieldNames.add(fieldName);
+    }
+
+    private void loadParamField(String nodeName, Node node, Set<String> fieldNames) {
+        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+
+        String fieldName = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.NAME);
+        ZestXmlUtil.duplicateCheck(Xml.NAME, fieldNames, fieldName);
 
         Field field = ZestReflectHelper.getField(param, fieldName);
         if (field == null) {
@@ -161,18 +154,18 @@ public class ZestData {
         }
 
         try {
-            String value = ZestXmlUtil.getValue(paramFieldNode);
+            String value = ZestXmlUtil.getValue(node);
             Class<?> fieldClass = field.getType();
 
-            if (Integer.class.isAssignableFrom(fieldClass) || "int".equals(fieldClass.getName())) { //$NON-NLS-1$
+            if (Integer.class.isAssignableFrom(fieldClass) || "int".equals(fieldClass.getName())) {
                 ZestReflectHelper.setValue(param, fieldName, Integer.valueOf(value.trim()));
-            } else if (Long.class.isAssignableFrom(fieldClass) || "long".equals(fieldClass.getName())) { //$NON-NLS-1$
+            } else if (Long.class.isAssignableFrom(fieldClass) || "long".equals(fieldClass.getName())) {
                 ZestReflectHelper.setValue(param, fieldName, Long.valueOf(value.trim()));
-            } else if (Boolean.class.isAssignableFrom(fieldClass) || "boolean".equals(fieldClass.getName())) { //$NON-NLS-1$
+            } else if (Boolean.class.isAssignableFrom(fieldClass) || "boolean".equals(fieldClass.getName())) {
                 ZestReflectHelper.setValue(param, fieldName, Boolean.valueOf(value.trim()));
-            } else if (Double.class.isAssignableFrom(fieldClass) || "double".equals(fieldClass.getName())) { //$NON-NLS-1$
+            } else if (Double.class.isAssignableFrom(fieldClass) || "double".equals(fieldClass.getName())) {
                 ZestReflectHelper.setValue(param, fieldName, Double.valueOf(value.trim()));
-            } else if (Float.class.isAssignableFrom(fieldClass) || "float".equals(fieldClass.getName())) { //$NON-NLS-1$
+            } else if (Float.class.isAssignableFrom(fieldClass) || "float".equals(fieldClass.getName())) {
                 ZestReflectHelper.setValue(param, fieldName, Float.valueOf(value.trim()));
             } else if (String.class.isAssignableFrom(fieldClass)) {
                 ZestReflectHelper.setValue(param, fieldName, value);
@@ -189,6 +182,8 @@ public class ZestData {
         } catch (Exception e) {
             throw new ZestException(Messages.parseParamObjLoad(fieldName), e);
         }
+
+        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
     }
 
     public String getFileName() {

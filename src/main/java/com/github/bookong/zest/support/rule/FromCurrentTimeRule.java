@@ -24,27 +24,15 @@ public class FromCurrentTimeRule extends AbstractRule {
     private int unit;
     private int offset;
 
-    FromCurrentTimeRule(Node node, String path, boolean nullable){
+    FromCurrentTimeRule(String nodeName, Node node, String path, boolean nullable){
         super(path, nullable);
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> elements = ZestXmlUtil.getElements(node.getChildNodes());
+        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
 
-        Integer tmp = ZestXmlUtil.removeIntAttr("FromCurrentTime", attrMap, "Min");
-        if (tmp == null) {
-            throw new ZestException(Messages.parseRuleFromMin());
-        }
-        this.min = tmp;
-
-        tmp = ZestXmlUtil.removeIntAttr("FromCurrentTime", attrMap, "Max");
-        if (tmp == null) {
-            throw new ZestException(Messages.parseRulefromMax());
-        }
-        this.max = tmp;
-
-        String str = ZestXmlUtil.removeAttr("FromCurrentTime", attrMap, "Unit");
-        if (StringUtils.isBlank(str)) {
-            throw new ZestException(Messages.parseRuleFromUnit());
-        }
+        this.min = ZestXmlUtil.removeNotNullIntAttr(nodeName, attrMap, "Min");
+        this.max = ZestXmlUtil.removeNotNullIntAttr(nodeName, attrMap, "Max");
+        String str = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, "Unit");
+        this.offset = ZestXmlUtil.removeIntAttr(nodeName, attrMap, "Offset", 1000);
 
         switch (str) {
             case "day":
@@ -60,34 +48,32 @@ public class FromCurrentTimeRule extends AbstractRule {
                 unit = Calendar.SECOND;
                 break;
             default:
-                throw new ZestException(Messages.parseRulefromUnitUnknown(str));
+                throw new ZestException(Messages.parseRuleFromUnitUnknown(str));
         }
 
-        this.offset = ZestXmlUtil.removeIntAttr("FromCurrentTime", attrMap, "Offset", 1000);
-
-        ZestXmlUtil.attrMapMustEmpty("FromCurrentTime", attrMap);
-        if (!elements.isEmpty()) {
-            throw new ZestException(Messages.parseCommonChildren("FromCurrentTime"));
-        }
+        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+        ZestXmlUtil.mustHaveNoChildrenElements(nodeName, children);
     }
 
     @Override
-    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx, String columnName, Object value) {
+    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx, String columnName,
+                         Object value) {
         assertNullable(dataSource, table, rowIdx, columnName, value);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(testCaseData.getStartTime());
         cal.add(getUnit(), getMin());
-        cal.add(Calendar.MILLISECOND, -getOffset() );
+        cal.add(Calendar.MILLISECOND, -getOffset());
         long expectedMin = cal.getTimeInMillis();
 
         cal.setTimeInMillis(testCaseData.getEndTime());
         cal.add(getUnit(), getMax());
-        cal.add(Calendar.MILLISECOND, getOffset() );
+        cal.add(Calendar.MILLISECOND, getOffset());
         long expectedMax = cal.getTimeInMillis();
 
         long tmp = getActualDataTime(dataSource, table, rowIdx, columnName, value);
-        Assert.assertTrue(Messages.checkTableColDateFrom(dataSource.getId(), table.getName(), rowIdx, columnName), (tmp >= expectedMin && tmp <= expectedMax));
+        Assert.assertTrue(Messages.checkTableColDateFrom(dataSource.getId(), table.getName(), rowIdx, columnName),
+                          (tmp >= expectedMin && tmp <= expectedMax));
     }
 
     public int getMin() {
