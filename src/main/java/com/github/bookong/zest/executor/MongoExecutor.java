@@ -61,14 +61,6 @@ public class MongoExecutor extends AbstractExecutor {
         }
     }
 
-    /**
-     * 简单验证数据，如果对验证有特殊需求，需要在子类里覆盖这个方法
-     */
-    public void verify(ZestWorker worker, ZestData zestData, Source source, MongoOperations operation,
-                       Collection collection, int rowIdx, Object expected, Object actual) {
-        System.out.println("TODO");
-    }
-
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
         Set<String> tableNames = findAllTableNames(source);
@@ -77,6 +69,26 @@ public class MongoExecutor extends AbstractExecutor {
         for (String tableName : tableNames) {
             operation.dropCollection(tableName);
         }
+    }
+
+    /**
+     * 根据测试用例中数据构建 Document 对象
+     * 
+     * @param entityClass
+     * @param collectionName
+     * @param xmlContent
+     * @return
+     */
+    public Object createDocument(Class<?> entityClass, String collectionName, String xmlContent) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 简单验证数据，如果对验证有特殊需求，需要在子类里覆盖这个方法
+     */
+    public void verify(ZestWorker worker, ZestData zestData, Source source, MongoOperations operation,
+                       Collection collection, int rowIdx, Object expected, Object actual) {
+        System.out.println("TODO");
     }
 
 }

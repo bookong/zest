@@ -2,6 +2,7 @@ package com.github.bookong.zest.testcase;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.support.rule.RuleFactory;
 import com.github.bookong.zest.util.Messages;
@@ -31,8 +32,10 @@ public abstract class AbstractTable<T extends AbstractRowData> {
 
     protected abstract void checkRule(AbstractRule rule);
 
-    protected void init(String nodeName, Node node, List<Node> children, Map<String, String> attrMap,
-                        boolean isVerifyElement) {
+    protected abstract void loadData(ZestWorker worker, String sourceId, String content);
+
+    protected void init(ZestWorker worker, String sourceId, String nodeName, List<Node> children,
+                        Map<String, String> attrMap, boolean isVerifyElement) {
         this.name = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.NAME);
         this.ignoreVerify = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, Xml.IGNORE, false);
         this.dataList = new ArrayList<>(children.size() + 1);
@@ -40,6 +43,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         boolean parseSorts = false;
         boolean parseRules = false;
         boolean parseData = false;
+        int dataIdx = 1;
         for (Node child : children) {
             if (Xml.SORTS.equals(child.getNodeName())) {
                 if (!isVerifyElement) {
@@ -60,7 +64,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
                 parseRules = true;
 
             } else if (Xml.DATA.equals(child.getNodeName())) {
-                parseData(child);
+                parseData(worker, sourceId, child, dataIdx++);
                 parseData = true;
 
             } else {
@@ -108,8 +112,12 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         }
     }
 
-    protected void parseData(Node nodeData) {
-        // TODO
+    private void parseData(ZestWorker worker, String sourceId, Node node, int dataIdx) {
+        try {
+            loadData(worker, sourceId, ZestXmlUtil.getValue(node));
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseDataError(dataIdx), e);
+        }
     }
 
     private Sort parseSort(String nodeName, Node node, Set<String> fieldNames) {

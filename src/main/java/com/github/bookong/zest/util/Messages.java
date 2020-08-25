@@ -137,6 +137,10 @@ public class Messages {
         return getString("parse.table.rule", path);
     }
 
+    public static String parseTableRowExist(String tableName, String fieldName) {
+        return getString("parse.table.row.exist", tableName, fieldName);
+    }
+
     public static String parseCollectionError(String name) {
         return getString("parse.collection.error", name);
     }
@@ -199,6 +203,10 @@ public class Messages {
 
     public static String parseParamNonsupportMap() {
         return getString("parse.param.nonsupport.map");
+    }
+
+    public static String parseDataError(int dataIdx) {
+        return getString("parse.data.error", dataIdx);
     }
 
     public static String parseParamObjLoad(String fieldName) {

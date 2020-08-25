@@ -2,10 +2,12 @@ package com.github.bookong.zest.testcase.mongo;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.executor.MongoExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestJsonUtil;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import com.github.bookong.zest.util.ZestXmlUtil;
 import org.springframework.data.domain.Sort.Direction;
@@ -43,7 +45,7 @@ public class Collection extends AbstractTable<Document> {
                 throw new ZestException(Messages.parseCommonClassFound(entityClassAttr));
             }
 
-            init(nodeName, node, children, attrMap, isVerifyElement);
+            init(worker, sourceId, nodeName, children, attrMap, isVerifyElement);
             ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
 
         } catch (Exception e) {
@@ -79,6 +81,12 @@ public class Collection extends AbstractTable<Document> {
         if (field == null) {
             throw new ZestException(Messages.parseCollectionRule(rule.getPath()));
         }
+    }
+
+    @Override
+    protected void loadData(ZestWorker worker, String sourceId, String content) {
+        MongoExecutor mongoExecutor = worker.getExecutor(sourceId, MongoExecutor.class);
+        getDocuments().add(new Document(mongoExecutor, entityClass, getName(), content));
     }
 
     private Order getOrder(Sort item) {

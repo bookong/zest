@@ -1,10 +1,13 @@
 package com.github.bookong.zest.testcase.sql;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestJsonUtil;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import com.github.bookong.zest.util.ZestXmlUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +38,7 @@ public class Table extends AbstractTable<Row> {
             Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
             loadSqlTypes(conn);
 
-            init(nodeName, node, children, attrMap, isVerifyElement);
+            init(worker, sourceId, nodeName, children, attrMap, isVerifyElement);
             ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
 
         } catch (Exception e) {
@@ -70,6 +73,12 @@ public class Table extends AbstractTable<Row> {
         if (!sqlTypes.containsKey(rule.getPath())) {
             throw new ZestException(Messages.parseTableRule(rule.getPath()));
         }
+    }
+
+    @Override
+    protected void loadData(ZestWorker worker, String sourceId, String content) {
+        SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
+        getDataList().add(new Row(sqlExecutor, getSqlTypes(), getName(), content));
     }
 
     private void loadSqlTypes(Connection conn) {
