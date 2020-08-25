@@ -1,5 +1,6 @@
 package com.github.bookong.zest.support.rule;
 
+import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestXmlUtil;
@@ -22,21 +23,18 @@ public class RuleFactory {
             throw new ZestException(Messages.parseRuleChoice());
         }
 
-        String path = ZestXmlUtil.removeAttr("Rule", attrMap, "Path");
-        if (StringUtils.isBlank(path)) {
-            throw new ZestException(Messages.parseCommonAttrEmpty("Path"));
-        }
-        boolean nullable = ZestXmlUtil.removeBooleanAttr("Rule", attrMap, "Nullable", true);
-        ZestXmlUtil.attrMapMustEmpty("Rule", attrMap);
+        String path = ZestXmlUtil.removeNotEmptyAttr(Xml.RULE, attrMap, Xml.PATH);
+        boolean nullable = ZestXmlUtil.removeBooleanAttr(Xml.RULE, attrMap, Xml.NULLABLE, true);
+        ZestXmlUtil.attrMapMustEmpty(Xml.RULE, attrMap);
 
         Node childNode = elements.get(0);
         String childName = childNode.getNodeName();
         switch (childName) {
-            case "RegExp":
+            case Xml.REG_EXP:
                 return new RegExpRule(childName, childNode, path, nullable);
-            case "CurrentTime":
+            case Xml.CURRENT_TIME:
                 return new CurrentTimeRule(childName, childNode, path, nullable);
-            case "FromCurrentTime":
+            case Xml.FROM_CURRENT_TIME:
                 return new FromCurrentTimeRule(childName, childNode, path, nullable);
             default:
                 throw new ZestException(Messages.parseRuleChoice());

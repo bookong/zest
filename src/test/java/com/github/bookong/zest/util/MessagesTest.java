@@ -1,6 +1,5 @@
 package com.github.bookong.zest.util;
 
-import com.github.bookong.zest.support.xml.data.ParamField;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,23 +25,16 @@ public class MessagesTest {
         test();
     }
 
-
     private void test() throws Exception {
         for (Method m : Messages.class.getMethods()) {
-            if (Modifier.isPublic(m.getModifiers()) && Modifier.isStatic(m.getModifiers())
-                    && !"getString".equals(m.getName()) && !"reBundle".equals(m.getName())) {
+            if (Modifier.isPublic(m.getModifiers()) && Modifier.isStatic(m.getModifiers()) && !"getString".equals(m.getName()) && !"reBundle".equals(m.getName())) {
 
                 System.out.println(m.getName().concat("()"));
 
                 Object[] params = new Object[m.getParameterTypes().length];
                 int idx = 0;
                 for (Class<?> c : m.getParameterTypes()) {
-                    if (ParamField.class.isAssignableFrom(c)) {
-                        ParamField obj = new ParamField();
-                        obj.setName("name");
-                        params[idx++] = obj;
-
-                    } else if (Class.class.isAssignableFrom(c)) {
+                    if (Class.class.isAssignableFrom(c)) {
                         params[idx++] = String.class;
 
                     } else if (Integer.class.isAssignableFrom(c)) {
@@ -62,8 +54,7 @@ public class MessagesTest {
 
                 String str = String.valueOf(m.invoke(null, params));
                 System.out.println("\t".concat(str));
-                Assert.assertFalse(m.getName().concat("() There is no corresponding content in the configuration file"),
-                        str.startsWith("!") && str.endsWith("!"));
+                Assert.assertFalse(m.getName().concat("() There is no corresponding content in the configuration file"), str.startsWith("!") && str.endsWith("!"));
             }
         }
     }

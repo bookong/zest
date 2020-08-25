@@ -2,7 +2,9 @@ package com.github.bookong.zest.testcase.sql;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
+import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.testcase.AbstractRowData;
+import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestJsonUtil;
@@ -10,6 +12,7 @@ import com.github.bookong.zest.util.ZestJsonUtil;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,8 +35,15 @@ public class Row extends AbstractRowData {
         }
     }
 
-    private Object parseValue(SqlExecutor sqlExecutor, String tableName, String fieldName, String xmlValue,
-                              Map<String, Integer> colSqlTypes) {
+    public void verify(Source dataSource, Table table, int rowIdx, Map<String, Object> actualRow, List<String> columnNames) {
+        try {
+            // TODO
+        } catch (Exception e) {
+            throw new ZestException(Messages.verifyRowError(dataSource.getId(), table.getName(), rowIdx), e);
+        }
+    }
+
+    private Object parseValue(SqlExecutor sqlExecutor, String tableName, String fieldName, String xmlValue, Map<String, Integer> colSqlTypes) {
         if (xmlValue == null) {
             return null;
         }

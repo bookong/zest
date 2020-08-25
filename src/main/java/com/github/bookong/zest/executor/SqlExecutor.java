@@ -2,6 +2,7 @@ package com.github.bookong.zest.executor;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.sql.Row;
@@ -68,8 +69,7 @@ public class SqlExecutor extends AbstractExecutor {
         Table table = (Table) data;
         Connection conn = worker.getSourceOperation(source.getId(), Connection.class);
         List<Map<String, Object>> dataInDb = findData(conn, table);
-        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(),
-                            dataInDb.size());
+        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(), dataInDb.size());
         for (int i = 0; i < table.getDataList().size(); i++) {
             Row expected = table.getDataList().get(i);
             Map<String, Object> actual = dataInDb.get(i);
@@ -97,8 +97,17 @@ public class SqlExecutor extends AbstractExecutor {
      * @return
      * @throws UnsupportedOperationException
      */
-    public Object parseRowValue(String tableName, String fieldName, Integer colSqlType,
-                                String xmlFieldValue) throws UnsupportedOperationException {
+    public Object parseRowValue(String tableName, String fieldName, Integer colSqlType, String xmlFieldValue) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * 自定义加载数据库的 SqlType
+     * 
+     * @param conn
+     * @param sqlTypes
+     */
+    public void loadSqlTypes(Connection conn, Map<String, Integer> sqlTypes) {
         throw new UnsupportedOperationException();
     }
 
@@ -148,8 +157,7 @@ public class SqlExecutor extends AbstractExecutor {
         ZestSqlHelper.execute(conn, sql, params);
     }
 
-    protected void verifyRow(ZestData testCaseData, Source dataSource, Table table, int rowIdx, Row expectedRow,
-                             Map<String, Object> actualRow) {
+    protected void verifyRow(ZestData zestData, Source dataSource, Table table, int rowIdx, Row expectedRow, Map<String, Object> actualRow) {
         List<String> columnNames = new ArrayList<>(actualRow.size() + 1);
         if (dataSource.getVerifyData().isOnlyCheckCoreData()) {
             logger.info(Messages.ignoreTargetColUnspecified(dataSource.getId(), table.getName()));
@@ -158,38 +166,34 @@ public class SqlExecutor extends AbstractExecutor {
             columnNames.addAll(actualRow.keySet());
         }
 
-        for (String columnName : columnNames) {
-            Object expected = expectedRow.getFields().get(columnName);
-            Object actual = actualRow.get(columnName);
+        expectedRow.verify(dataSource, table, rowIdx, actualRow, columnNames);
 
-            if (expected == null) {
-                Assert.assertNull(Messages.checkTableColNull(dataSource.getId(), table.getName(), rowIdx, columnName),
-                                  actual);
-
-            } else if (expected instanceof CurrentTimeRule) {
-                ((CurrentTimeRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
-
-            } else if (expected instanceof FromCurrentTimeRule) {
-                ((FromCurrentTimeRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
-
-            } else if (expected instanceof RegExpRule) {
-                ((RegExpRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
-
-            } else if (expected instanceof Date) {
-                Assert.assertTrue(Messages.checkTableColDateType(dataSource.getId(), table.getName(), rowIdx,
-                                                                 columnName),
-                                  (actual instanceof Date));
-                String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInZest((Date) expected,
-                                                                                               testCaseData));
-                String actualDate = ZestDateUtil.formatDateNormal((Date) actual);
-                Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName),
-                                    expectedDate, actualDate);
-
-            } else {
-                Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName),
-                                    String.valueOf(expected), String.valueOf(actual));
-            }
-        }
+//        for (String columnName : columnNames) {
+//            Object expected = expectedRow.getFields().get(columnName);
+//            Object actual = actualRow.get(columnName);
+//
+//            if (expected == null) {
+//                Assert.assertNull(Messages.checkTableColNull(dataSource.getId(), table.getName(), rowIdx, columnName), actual);
+//
+//            } else if (expected instanceof CurrentTimeRule) {
+//                ((CurrentTimeRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
+//
+//            } else if (expected instanceof FromCurrentTimeRule) {
+//                ((FromCurrentTimeRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
+//
+//            } else if (expected instanceof RegExpRule) {
+//                ((RegExpRule) expected).assertIt(testCaseData, dataSource, table, rowIdx, columnName, actual);
+//
+//            } else if (expected instanceof Date) {
+//                Assert.assertTrue(Messages.checkTableColDateType(dataSource.getId(), table.getName(), rowIdx, columnName), (actual instanceof Date));
+//                String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInZest((Date) expected, testCaseData));
+//                String actualDate = ZestDateUtil.formatDateNormal((Date) actual);
+//                Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName), expectedDate, actualDate);
+//
+//            } else {
+//                Assert.assertEquals(Messages.checkTableCol(dataSource.getId(), table.getName(), rowIdx, columnName), String.valueOf(expected), String.valueOf(actual));
+//            }
+//        }
     }
 
     protected List<Map<String, Object>> findData(Connection conn, Table table) {

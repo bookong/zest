@@ -144,15 +144,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- XML -->
-        <!-- zest-data.xsd to java code : -->
-        <!-- mvn exec:java -Dexec.mainClass="com.sun.tools.xjc.XJCFacade" -Dexec.args="-p xml -d ./tmp ./schema/zest-data.xsd" -->
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-            <version>2.2.1.1</version>
-        </dependency>
-
     </dependencies>
 
     <build>

@@ -205,6 +205,10 @@ public class Messages {
         return getString("parse.param.nonsupport.map");
     }
 
+    public static String verifyRowError(String sourceId, String tableName, int dataLine) {
+        return getString("verify.row.error", sourceId, tableName, dataLine);
+    }
+
     public static String parseDataError(int dataIdx) {
         return getString("parse.data.error", dataIdx);
     }
@@ -297,8 +301,7 @@ public class Messages {
         return getString("check.table.col.date.from", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName,
-                                             String regExp) {
+    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName, String regExp) {
         return getString("check.table.col.regexp", sourceId, tableName, rowIdx, columnName, regExp);
     }
 

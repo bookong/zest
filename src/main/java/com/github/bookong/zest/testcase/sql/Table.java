@@ -31,12 +31,16 @@ public class Table extends AbstractTable<Row> {
     /** 关系型数据库的 SqlType */
     private Map<String, Integer> sqlTypes = Collections.synchronizedMap(new HashMap<>());
 
-    public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn,
-                 boolean isVerifyElement){
+    public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn, boolean isVerifyElement){
         try {
+            SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
             List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
             Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-            loadSqlTypes(conn);
+            try {
+                sqlExecutor.loadSqlTypes(conn, sqlTypes);
+            } catch (UnsupportedOperationException e) {
+                loadSqlTypes(conn);
+            }
 
             init(worker, sourceId, nodeName, children, attrMap, isVerifyElement);
             ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);

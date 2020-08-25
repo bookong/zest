@@ -100,7 +100,7 @@ public class ZestJUnit4Worker extends ZestWorker {
             eachNotifier.addFailure(e);
 
         } catch (Throwable e) {
-            eachNotifier.addFailure(new ZestException(Messages.statementEvaluate(frameworkMethod.getTestCaseFilePath()), e));
+            eachNotifier.addFailure(new ZestException(Messages.statementEvaluate(frameworkMethod.getTestCasePath()), e));
         } finally {
             eachNotifier.fireTestFinished();
         }
@@ -122,7 +122,7 @@ public class ZestJUnit4Worker extends ZestWorker {
 
         loadAnnotation(test);
 
-        ZestData zestData = new ZestData(method.getTestCaseFilePath());
+        ZestData zestData = new ZestData(method.getTestCasePath());
         loadZestData(zestData, method);
 
         ZestStatement zestStatement = new ZestStatement(this, zestData, test, method);
@@ -130,7 +130,7 @@ public class ZestJUnit4Worker extends ZestWorker {
         statement = withAfters(test, statement);
 
         logger.info(Messages.statementRun(zestData.getDescription()));
-        logger.info(method.getTestCaseFilePath());
+        logger.info(method.getTestCasePath());
 
         return statement;
     }

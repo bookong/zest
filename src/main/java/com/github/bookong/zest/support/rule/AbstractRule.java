@@ -22,10 +22,10 @@ public abstract class AbstractRule {
         this.nullable = nullable;
     }
 
-    public abstract void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx, String columnName,
+    public abstract void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName,
                                   Object value);
 
-    long getActualDataTime(Source dataSource, Table table, int rowIdx, String columnName, Object value) {
+    long getActualDataTime(Source source, Table table, int rowIdx, String columnName, Object value) {
         long tmp = 0;
         if (value instanceof Date) {
             tmp = ((Date) value).getTime();
@@ -34,15 +34,15 @@ public abstract class AbstractRule {
             tmp = (Long) value;
 
         } else {
-            Assert.fail(Messages.checkTableColDate(dataSource.getId(), table.getName(), rowIdx, columnName));
+            Assert.fail(Messages.checkTableColDate(source.getId(), table.getName(), rowIdx, columnName));
         }
 
         return tmp;
     }
 
-    void assertNullable(Source dataSource, Table table, int rowIdx, String columnName, Object value) {
+    void assertNullable(Source source, Table table, int rowIdx, String columnName, Object value) {
         if (!nullable && value == null) {
-            Assert.fail(Messages.checkTableColNullable(dataSource.getId(), table.getName(), rowIdx, columnName));
+            Assert.fail(Messages.checkTableColNullable(source.getId(), table.getName(), rowIdx, columnName));
         }
     }
 

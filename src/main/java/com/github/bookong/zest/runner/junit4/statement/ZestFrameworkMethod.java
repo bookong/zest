@@ -9,13 +9,13 @@ import org.junit.runners.model.FrameworkMethod;
  */
 public class ZestFrameworkMethod extends FrameworkMethod {
 
-    private String testCaseFilePath;
+    private String testCasePath;
     private String testCaseFileName;
 
-    public ZestFrameworkMethod(FrameworkMethod method, String testCaseFilePath){
+    public ZestFrameworkMethod(FrameworkMethod method, String testCasePath){
         super(method.getMethod());
-        this.testCaseFilePath = testCaseFilePath;
-        this.testCaseFileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
+        this.testCasePath = testCasePath;
+        this.testCaseFileName = testCasePath.substring(testCasePath.lastIndexOf(File.separator) + 1);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class ZestFrameworkMethod extends FrameworkMethod {
         return String.format("%s [%s] ", super.getName(), testCaseFileName);
     }
 
-    public String getTestCaseFilePath() {
-        return testCaseFilePath;
+    public String getTestCasePath() {
+        return testCasePath;
     }
 }

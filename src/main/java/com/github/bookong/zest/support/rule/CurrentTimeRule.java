@@ -31,13 +31,13 @@ public class CurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(ZestData testCaseData, Source dataSource, Table table, int rowIdx, String columnName,
+    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName,
                          Object value) {
-        assertNullable(dataSource, table, rowIdx, columnName, value);
+        assertNullable(source, table, rowIdx, columnName, value);
 
-        long tmp = getActualDataTime(dataSource, table, rowIdx, columnName, value);
-        Assert.assertTrue(Messages.checkTableColDateCurrent(dataSource.getId(), table.getName(), rowIdx, columnName),
-                          (tmp >= testCaseData.getStartTime() && tmp <= testCaseData.getEndTime() + getOffset()));
+        long tmp = getActualDataTime(source, table, rowIdx, columnName, value);
+        Assert.assertTrue(Messages.checkTableColDateCurrent(source.getId(), table.getName(), rowIdx, columnName),
+                          (tmp >= zestData.getStartTime() && tmp <= zestData.getEndTime() + getOffset()));
 
     }
 
