@@ -25,7 +25,7 @@ import java.lang.annotation.*;
 /**
  * <p>
  * Use this annotation to register a database operator to <em>Zest</em>. This operator must implement {@link DataSource}
- * or {@link MongoOperations} interface and be autowired by <em>Spring</em>.
+ * or {@link MongoOperations} interface and be autowired by <em>Spring Framework</em>.
  * </p>
  *
  * <p>
