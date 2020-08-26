@@ -27,16 +27,15 @@ import java.lang.annotation.*;
  * Use this annotation to register a database operator to <em>Zest</em>. This operator must implement {@link DataSource}
  * or {@link MongoOperations} interface and be autowired by <em>Spring Framework</em>.
  * </p>
- *
  * <p>
- * The registered database operator will be bound to the &lt;Source&gt; element data in the unit test data.
- * <em>Zest</em> will then use it to complete the initialization and automatic verification of test data.
+ * The registered database operator will be bound to the &lt;Source&gt; element data in the unit test data. (The
+ * {@link #value} attribute corresponds to the <em>Id</em> attribute). <em>Zest</em> will then use it to complete the
+ * initialization and automatic verification of test data.
  * </p>
- *
  * <p>
  * Configuration example:
  * </p>
- *
+ * 
  * <pre class="code">
  * &#064;ActiveProfiles("test")
  * &#064;SpringBootTest
@@ -52,11 +51,10 @@ import java.lang.annotation.*;
  *   ...
  * }
  * </pre>
- *
  * <p>
  * The above code is bound to the unit test data as shown below
  * </p>
- *
+ * 
  * <pre class="code">
  * {@code
  *   <Zest xmlns="https://www.bookong.net/schema/zest/data" >

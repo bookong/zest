@@ -16,13 +16,73 @@
 package com.github.bookong.zest.annotation;
 
 import java.lang.annotation.*;
+import com.github.bookong.zest.runner.junit4.ZestSpringJUnit4ClassRunner;
+import com.github.bookong.zest.testcase.ZestParam;
+import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
 
 /**
- * 注释在被测试的方法方，标识这个方法是一个 Zest 支持的测试方法。<br>
- * 自动匹配和测试类相似的目录结构下查找参数 value 指定的文件。 例如：测试类为 zest.TicketSreviceTest 测试方法为 testApplyTicket 那么自动匹配路径为: <br>
- * $SOURCE/target/test-classes/zest/datas/TicketSreviceTest/testApplyTicket<br>
- * 以包名和类名作为目录名，中间加了一层 datas 目录目的是避免警告(The type XXXX collides with a package)<br>
- * 从找到的这些文件中（xml 格式）解析测试用例需要的数据，循环执行被测试方法。<br>
+ * <p>
+ * Use this annotation to mark a method, which means that the method uses <em>Zest</em> for testing.
+ * </p>
+ * <p>
+ * In the case of combining <em>Spring MVC</em> and <em>JUnit 4</em> for testing, you first need to specify the runner
+ * class as {@link ZestSpringJUnit4ClassRunner} through @RunWith. Then replace @Test with @ZestTest.
+ * </p>
+ * <p>
+ * The method annotated by @ZestTest must have one and only one parameter, which must be a subclass of
+ * {@link ZestParam}. for example:
+ * </p>
+ * 
+ * <pre class="code">
+ * &#064;RunWith(ZestSpringJUnit4ClassRunner.class)
+ * &#064;WebAppConfiguration
+ * &#064;ContextConfiguration(locations = { "classpath:applicationContext-test.xml" })
+ * public class ZestTest {
+ *   &#064;ZestTest
+ *   public void testXXX(Param param) {
+ *     // Execute the code under test ...
+ *   }
+ *
+ *   public static class Param extends ZestParam {
+ *     ...
+ *   }
+ * }
+ * </pre>
+ * <p>
+ * In the case of combining <em>Spring Boot</em> and <em>JUnit 5</em> for testing, you first need to create a
+ * {@link ZestJUnit5Worker} object. Then use @ZestTest to annotate the same method in @TestFactory, for example:
+ * </p>
+ * 
+ * <pre class="code">
+ * &#064;ActiveProfiles("test")
+ * &#064;SpringBootTest
+ * public class ZestTest {
+ *   protected ZestJUnit5Worker zestWorker = new ZestJUnit5Worker();
+ *
+ *   &#064;ZestTest
+ *   &#064;TestFactory
+ *   public Stream<DynamicTest> testXXX() {
+ *     return zestWorker.test(this, Param.class, param -> {
+ *       // Execute the code under test ...
+ *     });
+ *   }
+ *
+ *   public static class Param extends ZestParam {
+ *     ...
+ *   }
+ * }
+ * </pre>
+ * <p>
+ * When the test case name is specified by {@link #value}, the test data file will be searched in the default path (use
+ * {@link #extName} to specify the extension). If {@link #value} is not specified, all files matching the extension of
+ * {@link #extName} under the default path will be used
+ * </p>
+ * <p>
+ * The default path for searching test data files is defined as follows: If your test class is <em>com.abc.ZestTest</em>
+ * and the test method is <em>testXXX()</em>, then the default path is <em >com/abc/data/ZestTest/testXXX</em>. A word
+ * <em>data</em> is added between the package name and the class name to avoid warnings (The type ZestTest collides with
+ * a package).
+ * </p>
  * 
  * @author Jiang Xu
  */
@@ -31,9 +91,15 @@ import java.lang.annotation.*;
 @Documented
 public @interface ZestTest {
 
-    /** 测试用例文件名（不含扩展名)，如果不设置，则默认认为在指定路径下所有文件都是有效的 xml 文件 */
+    /**
+     * If empty, it will search for available files in the default path
+     *
+     * @return Test case file name  (without extension)
+     */
     String value() default "";
 
-    /** 测试用例扩展名 */
+    /**
+     * @return Test case extension
+     */
     String extName() default ".xml";
 }
