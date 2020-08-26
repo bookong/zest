@@ -2,17 +2,12 @@ package com.github.bookong.zest.executor;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
-import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.sql.Row;
 import com.github.bookong.zest.testcase.sql.Table;
-import com.github.bookong.zest.support.rule.CurrentTimeRule;
-import com.github.bookong.zest.support.rule.FromCurrentTimeRule;
-import com.github.bookong.zest.support.rule.RegExpRule;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
@@ -37,7 +32,7 @@ public class SqlExecutor extends AbstractExecutor {
         }
 
         Table table = (Table) data;
-        Connection conn = worker.getSourceOperation(source.getId(), Connection.class);
+        Connection conn = worker.getOperator(source.getId(), Connection.class);
         List<Row> rowList = table.getDataList();
         if (rowList.isEmpty()) {
             return;
@@ -67,7 +62,7 @@ public class SqlExecutor extends AbstractExecutor {
         }
 
         Table table = (Table) data;
-        Connection conn = worker.getSourceOperation(source.getId(), Connection.class);
+        Connection conn = worker.getOperator(source.getId(), Connection.class);
         List<Map<String, Object>> dataInDb = findData(conn, table);
         Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(),
                             dataInDb.size());
@@ -81,7 +76,7 @@ public class SqlExecutor extends AbstractExecutor {
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
         Set<String> tableNames = findAllTableNames(source);
-        Connection conn = worker.getSourceOperation(source.getId(), Connection.class);
+        Connection conn = worker.getOperator(source.getId(), Connection.class);
 
         for (String tableName : tableNames) {
             truncateTable(conn, tableName);

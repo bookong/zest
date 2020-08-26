@@ -13,7 +13,6 @@ import org.w3c.dom.Node;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Jiang Xu
@@ -23,7 +22,7 @@ public abstract class AbstractSourceData {
     protected List<AbstractTable> createTables(ZestWorker worker, String sourceId, String nodeName, Node node,
                                                boolean isVerifyElement) {
         List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
-        Object operation = worker.getSourceOperation(sourceId);
+        Object operation = worker.getOperator(sourceId);
         if (operation == null) {
             throw new ZestException(Messages.parseSourceOperationNone());
         }

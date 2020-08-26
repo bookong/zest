@@ -7,7 +7,6 @@ import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.mongo.Collection;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestReflectHelper;
 import org.junit.Assert;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
@@ -32,7 +31,7 @@ public class MongoExecutor extends AbstractExecutor {
             return;
         }
 
-        MongoOperations operation = worker.getSourceOperation(source.getId(), MongoOperations.class);
+        MongoOperations operation = worker.getOperator(source.getId(), MongoOperations.class);
         operation.insert(dataList, collection.getEntityClass());
     }
 
@@ -43,7 +42,7 @@ public class MongoExecutor extends AbstractExecutor {
         }
 
         Collection collection = (Collection) data;
-        MongoOperations operation = worker.getSourceOperation(source.getId(), MongoOperations.class);
+        MongoOperations operation = worker.getOperator(source.getId(), MongoOperations.class);
 
         Query query = new Query();
         if (collection.getSort() != null) {
@@ -64,7 +63,7 @@ public class MongoExecutor extends AbstractExecutor {
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
         Set<String> tableNames = findAllTableNames(source);
-        MongoOperations operation = worker.getSourceOperation(source.getId(), MongoOperations.class);
+        MongoOperations operation = worker.getOperator(source.getId(), MongoOperations.class);
 
         for (String tableName : tableNames) {
             operation.dropCollection(tableName);

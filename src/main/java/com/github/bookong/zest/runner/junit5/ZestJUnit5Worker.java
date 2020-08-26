@@ -106,6 +106,6 @@ public class ZestJUnit5Worker extends ZestWorker {
 
     private void after(ZestData zestData) {
         zestData.setEndTime(System.currentTimeMillis());
-        checkTargetDataSource(zestData);
+        verifyDataSource(zestData);
     }
 }

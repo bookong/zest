@@ -25,6 +25,6 @@ public class ZestStatement extends AbstractStatement {
         zestData.setStartTime(System.currentTimeMillis());
         invokeMethod(zestMethod, zestData);
         zestData.setEndTime(System.currentTimeMillis());
-        worker.checkTargetDataSource(zestData);
+        worker.verifyDataSource(zestData);
     }
 }

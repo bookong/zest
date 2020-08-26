@@ -25,15 +25,15 @@ import java.util.Map;
  */
 public abstract class ZestWorker {
 
-    protected static Logger                 logger           = LoggerFactory.getLogger(ZestWorker.class);
+    protected static Logger                 logger      = LoggerFactory.getLogger(ZestWorker.class);
 
-    protected Map<String, AbstractExecutor> executorMap      = new HashMap<>();
+    protected Map<String, AbstractExecutor> executorMap = new HashMap<>();
     /**
      * value 放两种东西: <br>
      * javax.sql.DataSource <br>
      * org.springframework.data.mongodb.core.MongoOperations
      */
-    private Map<String, Object>             sourceOperations = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, Object>             operatorMap = new HashMap<>();
 
     protected void loadAnnotation(Object test) {
         Class<?> clazz = test.getClass();
@@ -54,11 +54,11 @@ public abstract class ZestWorker {
                     throw new ZestException(Messages.parseOperation());
                 }
 
-                if (sourceOperations.containsKey(zestSource.value())) {
+                if (operatorMap.containsKey(zestSource.value())) {
                     throw new ZestException(Messages.duplicateOperation(zestSource.value()));
                 }
 
-                sourceOperations.put(zestSource.value(), value);
+                operatorMap.put(zestSource.value(), value);
                 try {
                     executorMap.put(zestSource.value(), zestSource.executorClass().newInstance());
                 } catch (Exception e) {
@@ -79,20 +79,20 @@ public abstract class ZestWorker {
         }
     }
 
-    public void checkTargetDataSource(ZestData zestData) {
+    public void verifyDataSource(ZestData zestData) {
         for (Source source : zestData.getSourceList()) {
             executorMap.get(source.getId()).verify(this, zestData, source);
         }
     }
 
-    public Object getSourceOperation(String sourceId) {
-        return sourceOperations.get(sourceId);
+    public Object getOperator(String sourceId) {
+        return operatorMap.get(sourceId);
     }
 
-    public <T> T getSourceOperation(String sourceId, Class<T> operationClass) {
-        Object operation = sourceOperations.get(sourceId);
-        if (operationClass.isAssignableFrom(operation.getClass())) {
-            return operationClass.cast(operation);
+    public <T> T getOperator(String sourceId, Class<T> operatorClass) {
+        Object operation = operatorMap.get(sourceId);
+        if (operatorClass.isAssignableFrom(operation.getClass())) {
+            return operatorClass.cast(operation);
         }
 
         return null;
