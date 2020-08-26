@@ -31,7 +31,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
                       Messages.parseCollectionError("tab"), //
-                      Messages.parseCommonAttrNeed("Collection", "EntityClass"));
+                      Messages.parseCommonAttrEmpty("EntityClass"));
     }
 
     @Test

@@ -23,7 +23,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseTableError("tab"), //
                       Messages.parseSortsError(), //
                       Messages.parseSortError(""), //
-                      Messages.parseCommonAttrNeed("Sort", "Field"));
+                      Messages.parseCommonAttrEmpty("Field"));
     }
 
     @Test

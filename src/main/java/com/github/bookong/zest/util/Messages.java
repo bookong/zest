@@ -49,10 +49,6 @@ public class Messages {
         return getString("parse.common.attr.unknown", nodeName, attrNames);
     }
 
-    public static String parseCommonAttrNeed(String nodeName, String attrName) {
-        return getString("parse.common.attr.need", nodeName, attrName);
-    }
-
     public static String parseCommonAttrDuplicate(String attrName, String attrValue) {
         return getString("parse.common.attr.duplicate", attrName, attrValue);
     }

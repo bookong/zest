@@ -92,7 +92,7 @@ public class ZestXmlUtil {
     public static String removeNotEmptyAttr(String nodeName, Map<String, String> attrMap, String attrName) {
         String value = removeAttr(nodeName, attrMap, attrName);
         if (StringUtils.isBlank(value)) {
-            throw new ZestException(Messages.parseCommonAttrNeed(nodeName, attrName));
+            throw new ZestException(Messages.parseCommonAttrEmpty(attrName));
         }
         return value;
     }

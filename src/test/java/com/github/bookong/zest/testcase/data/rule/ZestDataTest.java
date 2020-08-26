@@ -110,7 +110,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseTableError("tab"), //
                       Messages.parseRulesError(), //
                       Messages.parseRuleError(""), //
-                      Messages.parseCommonAttrNeed("Rule", "Path"));
+                      Messages.parseCommonAttrEmpty("Path"));
     }
 
     @Test

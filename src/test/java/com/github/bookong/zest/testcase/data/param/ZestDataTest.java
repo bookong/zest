@@ -26,7 +26,7 @@ public class ZestDataTest extends AbstractZestDataTest {
     @Test
     public void testLoad02() {
         testLoadError("02.xml", Messages.parseParamError(), //
-                      Messages.parseCommonAttrNeed("ParamField", "Name"));
+                      Messages.parseCommonAttrEmpty( "Name"));
     }
 
     @Test

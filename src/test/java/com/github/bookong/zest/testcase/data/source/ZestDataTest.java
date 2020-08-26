@@ -36,7 +36,7 @@ public class ZestDataTest extends AbstractZestDataTest {
     public void testLoad04() {
         testLoadError("04.xml", Messages.parseSourcesError(), //
                       Messages.parseSourceError(""), //
-                      Messages.parseCommonAttrNeed("Source", "Id"));
+                      Messages.parseCommonAttrEmpty("Id"));
     }
 
     @Test
