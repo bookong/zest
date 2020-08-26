@@ -3,24 +3,25 @@ package com.github.bookong.zest.testcase.sql;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.support.rule.AbstractRule;
+import com.github.bookong.zest.support.rule.CurrentTimeRule;
+import com.github.bookong.zest.support.rule.FromCurrentTimeRule;
 import com.github.bookong.zest.testcase.AbstractRowData;
 import com.github.bookong.zest.testcase.Source;
+import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestJsonUtil;
+import org.junit.Assert;
 
 import java.sql.Types;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Jiang Xu
  */
 public class Row extends AbstractRowData {
 
-    private Map<String, Object> fields = new LinkedHashMap<>();
+    private Map<String, Object> dataMap = new LinkedHashMap<>();
 
     public Row(SqlExecutor sqlExecutor, Map<String, Integer> sqlTypes, String tableName, String xmlContent){
         Map dataMap = ZestJsonUtil.fromJson(xmlContent, HashMap.class);
@@ -31,19 +32,48 @@ public class Row extends AbstractRowData {
             }
 
             Object value = parseValue(sqlExecutor, tableName, fieldName, (String) dataMap.get(key), sqlTypes);
-            fields.put(fieldName, value);
+            dataMap.put(fieldName, value);
         }
     }
 
-    public void verify(Source dataSource, Table table, int rowIdx, Map<String, Object> actualRow, List<String> columnNames) {
+    public void verify(ZestData zestData, Source source, Table table, int rowIdx, Map<String, Object> actualRow,
+                       List<String> verifyColumnNames) {
         try {
-            // TODO
+            List<String> columnNames = new ArrayList<>(verifyColumnNames);
+            for (AbstractRule rule : table.getRuleList()) {
+                if (dataMap.containsKey(rule.getPath())) {
+                    throw new ZestException(Messages.verifyRowRuleCollision(rule.getPath()));
+                }
+
+                columnNames.remove(rule.getPath());
+                rule.assertIt(zestData, source, table, rowIdx, rule.getPath(), actualRow.get(rule.getPath()));
+            }
+
+            for (String columnName : columnNames) {
+                Object expected = dataMap.get(columnName);
+                Object actual = actualRow.get(columnName);
+
+                if (expected == null) {
+                    Assert.assertNull(Messages.verifyRowDataNull(columnName), actual);
+                } else if (expected instanceof Date) {
+                    Assert.assertTrue(Messages.verifyRowDataDate(columnName), actual instanceof Date);
+                    String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInZest((Date) expected,
+                                                                                                   zestData));
+                    String actualDate = ZestDateUtil.formatDateNormal((Date) actual);
+                    Assert.assertEquals(Messages.verifyRowData(columnName, expectedDate), expectedDate, actualDate);
+                } else {
+                    Assert.assertEquals(Messages.verifyRowData(columnName, String.valueOf(expected)),
+                                        String.valueOf(expected), String.valueOf(actual));
+                }
+            }
+
         } catch (Exception e) {
-            throw new ZestException(Messages.verifyRowError(dataSource.getId(), table.getName(), rowIdx), e);
+            throw new ZestException(Messages.verifyRowError(source.getId(), table.getName(), rowIdx), e);
         }
     }
 
-    private Object parseValue(SqlExecutor sqlExecutor, String tableName, String fieldName, String xmlValue, Map<String, Integer> colSqlTypes) {
+    private Object parseValue(SqlExecutor sqlExecutor, String tableName, String fieldName, String xmlValue,
+                              Map<String, Integer> colSqlTypes) {
         if (xmlValue == null) {
             return null;
         }
@@ -93,6 +123,6 @@ public class Row extends AbstractRowData {
     }
 
     public Map<String, Object> getFields() {
-        return fields;
+        return dataMap;
     }
 }

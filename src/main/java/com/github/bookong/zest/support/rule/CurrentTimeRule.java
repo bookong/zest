@@ -31,9 +31,8 @@ public class CurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName,
-                         Object value) {
-        assertNullable(source, table, rowIdx, columnName, value);
+    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName, Object value) {
+        assertNullable(columnName, value);
 
         long tmp = getActualDataTime(source, table, rowIdx, columnName, value);
         Assert.assertTrue(Messages.checkTableColDateCurrent(source.getId(), table.getName(), rowIdx, columnName),

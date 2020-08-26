@@ -56,9 +56,8 @@ public class FromCurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName,
-                         Object value) {
-        assertNullable(source, table, rowIdx, columnName, value);
+    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName, Object value) {
+        assertNullable(columnName, value);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(zestData.getStartTime());

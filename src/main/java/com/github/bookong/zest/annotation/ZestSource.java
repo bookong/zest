@@ -23,11 +23,15 @@ import javax.sql.DataSource;
 import java.lang.annotation.*;
 
 /**
- * Use this annotation to register a database operator to <em>Zest</em>. This operator must be a subclass of {@link DataSource}
- * or {@link MongoOperations} and be autowired by <em>Spring</em>.
  * <p>
- * The registered database operator will be bound to the &lt;Source&gt; element data in the unit test data. <em>Zest</em> will then use
- * it to complete the initialization and automatic verification of test data.
+ * Use this annotation to register a database operator to <em>Zest</em>. This operator must implement {@link DataSource}
+ * or {@link MongoOperations} interface and be autowired by <em>Spring</em>.
+ * </p>
+ *
+ * <p>
+ * The registered database operator will be bound to the &lt;Source&gt; element data in the unit test data.
+ * <em>Zest</em> will then use it to complete the initialization and automatic verification of test data.
+ * </p>
  *
  * <p>
  * Configuration example:
@@ -55,8 +59,7 @@ import java.lang.annotation.*;
  *
  * <pre class="code">
  * {@code
- *   <Zest xmlns="https://www.bookong.net/schema/zest/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- *     xsi:schemaLocation="https://www.bookong.net/schema/zest/data jar://zest-1.0.0.jar!zest-data-1.0.xsd">
+ *   <Zest xmlns="https://www.bookong.net/schema/zest/data" >
  *     ...
  *     <Sources>
  *       <Source Id="mysql">

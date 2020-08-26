@@ -51,7 +51,7 @@ public class MongoExecutor extends AbstractExecutor {
         }
 
         List<?> actualList = operation.find(query, collection.getEntityClass());
-        Assert.assertEquals(Messages.checkDocSize(source.getId(), collection.getName()),
+        Assert.assertEquals(Messages.verifyDocSize(source.getId(), collection.getName()),
                             collection.getDocuments().size(), actualList.size());
 
         for (int i = 0; i < collection.getDocuments().size(); i++) {

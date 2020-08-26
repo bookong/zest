@@ -125,10 +125,6 @@ public class Messages {
         return getString("parse.table.meta");
     }
 
-    public static String parseTableData() {
-        return getString("parse.table.data");
-    }
-
     public static String parseTableSortExist(String fieldName) {
         return getString("parse.table.sort.exist", fieldName);
     }
@@ -205,8 +201,32 @@ public class Messages {
         return getString("parse.param.nonsupport.map");
     }
 
+    public static String verifyStart(String sourceId, String tableName) {
+        return getString("verify.start", sourceId, tableName);
+    }
+
     public static String verifyRowError(String sourceId, String tableName, int dataLine) {
         return getString("verify.row.error", sourceId, tableName, dataLine);
+    }
+
+    public static String verifyRowRuleCollision(String path) {
+        return getString("verify.row.rule.collision", path);
+    }
+
+    public static String verifyRowDataNull(String columnName) {
+        return getString("verify.row.data.null", columnName);
+    }
+
+    public static String verifyRowDataDate(String columnName) {
+        return getString("verify.row.data.date", columnName);
+    }
+
+    public static String verifyRowData(String columnName, String value) {
+        return getString("verify.row.data", columnName, value);
+    }
+
+    public static String verifyDocSize(String sourceId, String collectionId) {
+        return getString("verify.doc.size", sourceId, collectionId);
     }
 
     public static String parseDataError(int dataIdx) {
@@ -227,14 +247,6 @@ public class Messages {
 
     public static String parseDataSqlTypeUnsupported(String tableName, String fieldName, Integer colSqlType) {
         return getString("parse.data.sql.type.unsupported", tableName, fieldName, colSqlType);
-    }
-
-    public static String parseDataFieldDuplicate(String tableName, String fieldName) {
-        return getString("parse.data.field.duplicate", tableName, fieldName);
-    }
-
-    public static String parseDataFieldUnder(String tableName, String fieldName) {
-        return getString("parse.data.field.under", tableName, fieldName);
     }
 
     public static String parseOperation() {
@@ -277,10 +289,6 @@ public class Messages {
         return getString("ignore.target.col.unspecified", sourceId, tableName);
     }
 
-    public static String startCheckTable(String sourceId, String tableName) {
-        return getString("start.check.table", sourceId, tableName);
-    }
-
     public static String checkDs(String value) {
         return getString("check.ds", value);
     }
@@ -301,28 +309,9 @@ public class Messages {
         return getString("check.table.col.date.from", sourceId, tableName, rowIdx, columnName);
     }
 
-    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName, String regExp) {
+    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName,
+                                             String regExp) {
         return getString("check.table.col.regexp", sourceId, tableName, rowIdx, columnName, regExp);
-    }
-
-    public static String checkTableColNullable(String sourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.nullable", sourceId, tableName, rowIdx, columnName);
-    }
-
-    public static String checkTableColNull(String sourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.null", sourceId, tableName, rowIdx, columnName);
-    }
-
-    public static String checkTableColDateType(String sourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.date.type", sourceId, tableName, rowIdx, columnName);
-    }
-
-    public static String checkTableCol(String sourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col", sourceId, tableName, rowIdx, columnName);
-    }
-
-    public static String checkDocSize(String sourceId, String tableName) {
-        return getString("check.doc.size", sourceId, tableName);
     }
 
     private static String getString(String key) {

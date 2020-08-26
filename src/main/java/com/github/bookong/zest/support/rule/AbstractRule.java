@@ -40,9 +40,9 @@ public abstract class AbstractRule {
         return tmp;
     }
 
-    void assertNullable(Source source, Table table, int rowIdx, String columnName, Object value) {
+    void assertNullable(String columnName, Object value) {
         if (!nullable && value == null) {
-            Assert.fail(Messages.checkTableColNullable(source.getId(), table.getName(), rowIdx, columnName));
+            Assert.fail(Messages.verifyRowDataNull(columnName));
         }
     }
 

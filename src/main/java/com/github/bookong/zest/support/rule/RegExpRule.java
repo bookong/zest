@@ -32,9 +32,8 @@ public class RegExpRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName,
-                         Object value) {
-        assertNullable(source, table, rowIdx, columnName, value);
+    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName, Object value) {
+        assertNullable(columnName, value);
 
         Assert.assertTrue(Messages.checkTableColRegexp(source.getId(), table.getName(), rowIdx, columnName,
                                                        getRegExp()),

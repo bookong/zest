@@ -66,7 +66,7 @@ public abstract class AbstractExecutor {
             }
 
             try {
-                logger.info(Messages.startCheckTable(source.getId(), table.getName()));
+                logger.info(Messages.verifyStart(source.getId(), table.getName()));
                 verify(worker, zestData, source, table);
             } catch (AssertionError e) {
                 throw e;
