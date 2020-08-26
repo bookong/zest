@@ -21,50 +21,51 @@ import java.util.*;
  */
 public class Row extends AbstractRowData {
 
-    private Map<String, Object> dataMap = new LinkedHashMap<>();
+    private Map<String, Object> expectedDataMap = new LinkedHashMap<>();
 
     public Row(SqlExecutor sqlExecutor, Map<String, Integer> sqlTypes, String tableName, String xmlContent){
-        Map dataMap = ZestJsonUtil.fromJson(xmlContent, HashMap.class);
-        for (Object key : dataMap.keySet()) {
+        Map xmlDataMap = ZestJsonUtil.fromJson(xmlContent, HashMap.class);
+        for (Object key : xmlDataMap.keySet()) {
             String fieldName = String.valueOf(key);
-            if (!sqlTypes.containsKey(fieldName)) {
-                throw new ZestException(Messages.parseTableRowExist(tableName, fieldName));
+            Integer sqlType = sqlTypes.get(fieldName);
+            if (sqlType == null) {
+                throw new ZestException(Messages.parseDataTableRowExist(fieldName, tableName));
             }
 
-            Object value = parseValue(sqlExecutor, tableName, fieldName, (String) dataMap.get(key), sqlTypes);
-            dataMap.put(fieldName, value);
+            expectedDataMap.put(fieldName, parseValue(sqlExecutor, sqlType, tableName, fieldName, xmlDataMap.get(key)));
         }
     }
 
-    public void verify(ZestData zestData, Source source, Table table, int rowIdx, Map<String, Object> actualRow,
-                       List<String> verifyColumnNames) {
+    public void verify(ZestData zestData, Source source, Table table, int rowIdx, Map<String, Object> actualRow) {
         try {
-            List<String> columnNames = new ArrayList<>(verifyColumnNames);
-            for (AbstractRule rule : table.getRuleList()) {
-                if (dataMap.containsKey(rule.getPath())) {
-                    throw new ZestException(Messages.verifyRowRuleCollision(rule.getPath()));
-                }
+            Set<String> verified = new HashSet<>(expectedDataMap.size() + 1);
+            for (Map.Entry<String, Object> entry : expectedDataMap.entrySet()) {
+                String fieldName = entry.getKey();
+                Object expectedValue = entry.getValue();
+                Object actualValue = actualRow.get(fieldName);
+                verified.add(fieldName);
 
-                columnNames.remove(rule.getPath());
-                rule.assertIt(zestData, source, table, rowIdx, rule.getPath(), actualRow.get(rule.getPath()));
+                if (expectedValue == null) {
+                    Assert.assertNull(Messages.verifyRowDataNull(fieldName), actualValue);
+                } else if (expectedValue instanceof Date) {
+                    Assert.assertTrue(Messages.verifyRowDataDate(fieldName), actualValue instanceof Date);
+                    String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInZest((Date) expectedValue,
+                                                                                                   zestData));
+                    String actualDate = ZestDateUtil.formatDateNormal((Date) actualValue);
+                    Assert.assertEquals(Messages.verifyRowData(fieldName, expectedDate), expectedDate, actualDate);
+                } else {
+                    Assert.assertEquals(Messages.verifyRowData(fieldName, String.valueOf(expectedValue)),
+                                        String.valueOf(expectedValue), String.valueOf(actualValue));
+                }
             }
 
-            for (String columnName : columnNames) {
-                Object expected = dataMap.get(columnName);
-                Object actual = actualRow.get(columnName);
-
-                if (expected == null) {
-                    Assert.assertNull(Messages.verifyRowDataNull(columnName), actual);
-                } else if (expected instanceof Date) {
-                    Assert.assertTrue(Messages.verifyRowDataDate(columnName), actual instanceof Date);
-                    String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInZest((Date) expected,
-                                                                                                   zestData));
-                    String actualDate = ZestDateUtil.formatDateNormal((Date) actual);
-                    Assert.assertEquals(Messages.verifyRowData(columnName, expectedDate), expectedDate, actualDate);
-                } else {
-                    Assert.assertEquals(Messages.verifyRowData(columnName, String.valueOf(expected)),
-                                        String.valueOf(expected), String.valueOf(actual));
+            for (AbstractRule rule : table.getRuleMap().values()) {
+                if (verified.contains(rule.getPath())) {
+                    logger.info(Messages.verifyRowRuleNonuse(rule.getPath(), rowIdx));
+                    continue;
                 }
+
+                rule.assertIt(zestData, source, table, rowIdx, rule.getPath(), actualRow.get(rule.getPath()));
             }
 
         } catch (Exception e) {
@@ -72,57 +73,28 @@ public class Row extends AbstractRowData {
         }
     }
 
-    private Object parseValue(SqlExecutor sqlExecutor, String tableName, String fieldName, String xmlValue,
-                              Map<String, Integer> colSqlTypes) {
-        if (xmlValue == null) {
+    private Object parseValue(SqlExecutor sqlExecutor, Integer fieldSqlType, String tableName, String fieldName,
+                              Object value) {
+        if (value == null) {
             return null;
         }
 
-        Integer colSqlType = colSqlTypes.get(fieldName.toLowerCase());
-        if (colSqlType == null) {
-            throw new ZestException(Messages.parseDataSqlType(tableName, fieldName));
-        }
-
         try {
-            return sqlExecutor.parseRowValue(tableName, fieldName, colSqlType, xmlValue);
-
+            return sqlExecutor.parseRowValue(tableName, fieldName, fieldSqlType, value);
         } catch (UnsupportedOperationException e) {
-            switch (colSqlType) {
-                case Types.BIT:
-                case Types.TINYINT:
-                case Types.SMALLINT:
-                case Types.INTEGER:
-                    return Integer.valueOf(xmlValue);
-
-                case Types.BIGINT:
-                    return Long.valueOf(xmlValue);
-
-                case Types.FLOAT:
-                    return Float.valueOf(xmlValue);
-
-                case Types.REAL:
-                case Types.DOUBLE:
-                case Types.NUMERIC:
-                case Types.DECIMAL:
-                    return Double.valueOf(xmlValue);
-
+            switch (fieldSqlType) {
                 case Types.DATE:
                 case Types.TIME:
                 case Types.TIMESTAMP:
-                    return ZestDateUtil.parseDate(xmlValue);
-
-                case Types.CHAR:
-                case Types.VARCHAR:
-                case Types.LONGVARCHAR:
-                    return xmlValue;
+                    return ZestDateUtil.parseDate(String.valueOf(value));
 
                 default:
-                    throw new ZestException(Messages.parseDataSqlTypeUnsupported(tableName, fieldName, colSqlType));
+                    return value;
             }
         }
     }
 
-    public Map<String, Object> getFields() {
-        return dataMap;
+    public Map<String, Object> getExpectedDataMap() {
+        return expectedDataMap;
     }
 }

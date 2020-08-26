@@ -18,15 +18,15 @@ import java.util.*;
  */
 public abstract class AbstractTable<T extends AbstractRowData> {
 
-    private List<T>            dataList;
+    private List<T>                   dataList;
 
-    private List<AbstractRule> ruleList;
+    private Map<String, AbstractRule> ruleMap;
 
     /** 广义的表名 */
-    private String             name;
+    private String                    name;
 
     /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
-    private boolean            ignoreVerify;
+    private boolean                   ignoreVerify;
 
     protected abstract void loadSorts(List<Sort> sortList);
 
@@ -98,14 +98,14 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         try {
             ZestXmlUtil.attrMapMustEmpty(nodeName, ZestXmlUtil.getAllAttrs(node));
             List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
-            this.ruleList = new ArrayList<>(children.size() + 1);
+            this.ruleMap = new HashMap<>(children.size() + 1);
             Set<String> rulePaths = new HashSet<>(children.size() + 1);
             for (Node child : children) {
                 if (!Xml.RULE.equals(child.getNodeName())) {
                     throw new ZestException(Messages.parseCommonChildrenList(Xml.RULES, Xml.RULE));
                 }
 
-                this.ruleList.add(parseRule(child.getNodeName(), child, rulePaths));
+                parseRule(child.getNodeName(), child, rulePaths);
             }
         } catch (Exception e) {
             throw new ZestException(Messages.parseRulesError(), e);
@@ -141,7 +141,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         }
     }
 
-    private AbstractRule parseRule(String nodeName, Node node, Set<String> rulePaths) {
+    private void parseRule(String nodeName, Node node, Set<String> rulePaths) {
         String path = null;
         try {
             Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
@@ -149,7 +149,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
             AbstractRule rule = RuleFactory.create(node);
             ZestXmlUtil.duplicateCheck(Xml.PATH, rulePaths, rule.getPath());
             checkRule(rule);
-            return rule;
+            ruleMap.put(rule.getPath(), rule);
         } catch (Exception e) {
             throw new ZestException(Messages.parseRuleError(path), e);
         }
@@ -164,11 +164,11 @@ public abstract class AbstractTable<T extends AbstractRowData> {
     }
 
     public List<T> getDataList() {
-        return dataList == null ? Collections.emptyList() : dataList;
+        return dataList;
     }
 
-    public List<AbstractRule> getRuleList() {
-        return ruleList == null ? Collections.emptyList() : ruleList;
+    public Map<String, AbstractRule> getRuleMap() {
+        return ruleMap;
     }
 
     protected class Sort {

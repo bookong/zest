@@ -28,17 +28,17 @@ public class ZestDataTest extends AbstractZestDataTest {
         Assert.assertEquals(1, obj.getVerifyDataMap().size());
         Assert.assertTrue(obj.getVerifyDataMap().get("tab") instanceof Table);
         Table table = (Table) obj.getVerifyDataMap().get("tab");
-        Assert.assertEquals(3, table.getRuleList().size());
+        Assert.assertEquals(3, table.getRuleMap().size());
 
-        RegExpRule regExpRule = (RegExpRule) table.getRuleList().get(0);
+        RegExpRule regExpRule = (RegExpRule) table.getRuleMap().get("f_varchar");
         Assert.assertEquals("f_varchar", regExpRule.getPath());
         Assert.assertEquals("^[0-9]*$", regExpRule.getRegExp());
 
-        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleList().get(1);
+        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleMap().get("f_time");
         Assert.assertEquals("f_time", currentTimeRule.getPath());
         Assert.assertEquals(1000, currentTimeRule.getOffset());
 
-        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleList().get(2);
+        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleMap().get("f_date");
         Assert.assertEquals("f_date", fromCurrentTimeRule.getPath());
         Assert.assertEquals(1000, fromCurrentTimeRule.getOffset());
         Assert.assertEquals(1, fromCurrentTimeRule.getMin());
@@ -54,17 +54,17 @@ public class ZestDataTest extends AbstractZestDataTest {
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
         Assert.assertEquals(1, obj.getVerifyDataMap().size());
         Collection table = (Collection) obj.getVerifyDataMap().get("tab");
-        Assert.assertEquals(3, table.getRuleList().size());
+        Assert.assertEquals(3, table.getRuleMap().size());
 
-        RegExpRule regExpRule = (RegExpRule) table.getRuleList().get(0);
+        RegExpRule regExpRule = (RegExpRule) table.getRuleMap().get("obj.str");
         Assert.assertEquals("obj.str", regExpRule.getPath());
         Assert.assertEquals("^[0-9]*$", regExpRule.getRegExp());
 
-        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleList().get(1);
+        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleMap().get("date1");
         Assert.assertEquals("date1", currentTimeRule.getPath());
         Assert.assertEquals(1000, currentTimeRule.getOffset());
 
-        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleList().get(2);
+        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleMap().get("date2");
         Assert.assertEquals("date2", fromCurrentTimeRule.getPath());
         Assert.assertEquals(1000, fromCurrentTimeRule.getOffset());
         Assert.assertEquals(1, fromCurrentTimeRule.getMin());
@@ -79,11 +79,11 @@ public class ZestDataTest extends AbstractZestDataTest {
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
         Table table = (Table) obj.getVerifyDataMap().get("tab");
 
-        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleList().get(0);
+        CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleMap().get("f_time");
         Assert.assertEquals("f_time", currentTimeRule.getPath());
         Assert.assertEquals(2000, currentTimeRule.getOffset());
 
-        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleList().get(1);
+        FromCurrentTimeRule fromCurrentTimeRule = (FromCurrentTimeRule) table.getRuleMap().get("f_date");
         Assert.assertEquals("f_date", fromCurrentTimeRule.getPath());
         Assert.assertEquals(2000, fromCurrentTimeRule.getOffset());
         Assert.assertEquals(1, fromCurrentTimeRule.getMin());

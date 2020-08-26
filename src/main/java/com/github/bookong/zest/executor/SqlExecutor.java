@@ -49,7 +49,7 @@ public class SqlExecutor extends AbstractExecutor {
             Object[] params = new Object[columnNames.size()];
             int idx = 0;
             for (String columnName : columnNames) {
-                params[idx++] = row.getFields().get(columnName);
+                params[idx++] = row.getExpectedDataMap().get(columnName);
             }
             insert(conn, sql, params);
         }
@@ -88,13 +88,13 @@ public class SqlExecutor extends AbstractExecutor {
      *
      * @param tableName
      * @param fieldName
-     * @param colSqlType
-     * @param xmlFieldValue
+     * @param fieldSqlType
+     * @param value
      * @return
      * @throws UnsupportedOperationException
      */
-    public Object parseRowValue(String tableName, String fieldName, Integer colSqlType,
-                                String xmlFieldValue) throws UnsupportedOperationException {
+    public Object parseRowValue(String tableName, String fieldName, Integer fieldSqlType,
+                                Object value) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
@@ -109,9 +109,9 @@ public class SqlExecutor extends AbstractExecutor {
     }
 
     protected Set<String> getColumnNames(Table table) {
-        Set<String> columnNames = new LinkedHashSet<>(table.getDataList().get(0).getFields().size() + 1);
+        Set<String> columnNames = new LinkedHashSet<>(table.getDataList().get(0).getExpectedDataMap().size() + 1);
         for (Row row : table.getDataList()) {
-            columnNames.addAll(row.getFields().keySet());
+            columnNames.addAll(row.getExpectedDataMap().keySet());
         }
         return columnNames;
     }
@@ -156,15 +156,7 @@ public class SqlExecutor extends AbstractExecutor {
 
     protected void verifyRow(ZestData zestData, Source source, Table table, int rowIdx, Row expectedRow,
                              Map<String, Object> actualRow) {
-        List<String> columnNames = new ArrayList<>(actualRow.size() + 1);
-        if (source.getVerifyData().isOnlyCheckCoreData()) {
-            logger.info(Messages.ignoreTargetColUnspecified(source.getId(), table.getName()));
-            columnNames.addAll(expectedRow.getFields().keySet());
-        } else {
-            columnNames.addAll(actualRow.keySet());
-        }
-
-        expectedRow.verify(zestData, source, table, rowIdx, actualRow, columnNames);
+        expectedRow.verify(zestData, source, table, rowIdx, actualRow);
     }
 
     protected List<Map<String, Object>> findData(Connection conn, Table table) {

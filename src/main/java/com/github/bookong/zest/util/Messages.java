@@ -129,10 +129,6 @@ public class Messages {
         return getString("parse.table.rule", path);
     }
 
-    public static String parseTableRowExist(String tableName, String fieldName) {
-        return getString("parse.table.row.exist", tableName, fieldName);
-    }
-
     public static String parseCollectionError(String name) {
         return getString("parse.collection.error", name);
     }
@@ -197,16 +193,24 @@ public class Messages {
         return getString("parse.param.nonsupport.map");
     }
 
+    public static String parseDataError(int dataIdx) {
+        return getString("parse.data.error", dataIdx);
+    }
+
+    public static String parseDataTableRowExist(String fieldName, String tableName) {
+        return getString("parse.data.table.row.exist", fieldName, tableName);
+    }
+
     public static String verifyStart(String sourceId, String tableName) {
         return getString("verify.start", sourceId, tableName);
     }
 
-    public static String verifyRowError(String sourceId, String tableName, int dataLine) {
-        return getString("verify.row.error", sourceId, tableName, dataLine);
+    public static String verifyRowRuleNonuse(String rulePath, int rowIdx) {
+        return getString("verify.row.rule.nonuse", rulePath, rowIdx);
     }
 
-    public static String verifyRowRuleCollision(String path) {
-        return getString("verify.row.rule.collision", path);
+    public static String verifyRowError(String sourceId, String tableName, int dataLine) {
+        return getString("verify.row.error", sourceId, tableName, dataLine);
     }
 
     public static String verifyRowDataNull(String columnName) {
@@ -225,24 +229,12 @@ public class Messages {
         return getString("verify.doc.size", sourceId, collectionId);
     }
 
-    public static String parseDataError(int dataIdx) {
-        return getString("parse.data.error", dataIdx);
-    }
-
     public static String parseParamObjLoad(String fieldName) {
         return getString("parse.param.obj.load", fieldName);
     }
 
     public static String parseDate(String value) {
         return getString("parse.date", value);
-    }
-
-    public static String parseDataSqlType(String tableName, String fieldName) {
-        return getString("parse.data.sql.type", tableName, fieldName);
-    }
-
-    public static String parseDataSqlTypeUnsupported(String tableName, String fieldName, Integer colSqlType) {
-        return getString("parse.data.sql.type.unsupported", tableName, fieldName, colSqlType);
     }
 
     public static String parseOperation() {
@@ -279,10 +271,6 @@ public class Messages {
 
     public static String ignoreTargetTable(String sourceId, String tableName) {
         return getString("ignore.target.table", sourceId, tableName);
-    }
-
-    public static String ignoreTargetColUnspecified(String sourceId, String tableName) {
-        return getString("ignore.target.col.unspecified", sourceId, tableName);
     }
 
     public static String checkDs(String value) {
