@@ -94,7 +94,7 @@ public @interface ZestTest {
     /**
      * If empty, it will search for available files in the default path
      *
-     * @return Test case file name  (without extension)
+     * @return Test case file name (without extension)
      */
     String value() default "";
 

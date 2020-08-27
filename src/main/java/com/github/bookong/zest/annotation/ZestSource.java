@@ -80,12 +80,14 @@ import java.lang.annotation.*;
 public @interface ZestSource {
 
     /**
-     * Associated to the &lt;Source&gt; element in the test data as an Id attribute
+     * @return Associated to the &lt;Source&gt; element in the test data as an <em>Id</em> attribute
      */
     String value() default "";
 
     /**
      * Executors of different database types can be replaced by custom subclasses
+     * 
+     * @return The core logic of initial data and automatic comparison
      */
     Class<? extends AbstractExecutor> executorClass() default SqlExecutor.class;
 }
