@@ -76,8 +76,6 @@ public class ZestJUnit5Worker extends ZestWorker {
             }
             return list.iterator();
 
-        } catch (ZestException e) {
-            throw e;
         } catch (Exception e) {
             throw new ZestException(Messages.failRun(), e);
         }
@@ -90,15 +88,12 @@ public class ZestJUnit5Worker extends ZestWorker {
             param.setZestData(zestData);
             ZestUtil.loadFromAbsolutePath(this, zestData);
 
-            logger.info(Messages.statementRun(zestData.getDescription()));
+            logger.info(Messages.run(zestData.getDescription()));
             logger.info(zestData.getFilePath());
             initDataSource(zestData);
             zestData.setStartTime(System.currentTimeMillis());
-
             return param;
 
-        } catch (ZestException e) {
-            throw e;
         } catch (Exception e) {
             throw new ZestException(Messages.failRun(), e);
         }

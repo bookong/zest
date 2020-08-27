@@ -72,7 +72,8 @@ public class ZestJUnit4Worker extends ZestWorker {
     }
 
     void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
-        Description description = Description.createTestDescription(testClass.getJavaClass(), frameworkMethod.getName(), frameworkMethod.getAnnotations());
+        Description description = Description.createTestDescription(testClass.getJavaClass(), frameworkMethod.getName(),
+                                                                    frameworkMethod.getAnnotations());
 
         if (ignoreTest()) {
             // 整个测试类忽略
@@ -96,11 +97,9 @@ public class ZestJUnit4Worker extends ZestWorker {
         } catch (AssumptionViolatedException e) {
             eachNotifier.addFailedAssumption(e);
 
-        } catch (AssertionError e) {
+        } catch (Throwable e) {
             eachNotifier.addFailure(e);
 
-        } catch (Throwable e) {
-            eachNotifier.addFailure(new ZestException(Messages.statementEvaluate(frameworkMethod.getTestCasePath()), e));
         } finally {
             eachNotifier.fireTestFinished();
         }
@@ -129,7 +128,7 @@ public class ZestJUnit4Worker extends ZestWorker {
         Statement statement = withBefores(test, zestStatement);
         statement = withAfters(test, statement);
 
-        logger.info(Messages.statementRun(zestData.getDescription()));
+        logger.info(Messages.run(zestData.getDescription()));
         logger.info(method.getTestCasePath());
 
         return statement;
@@ -140,12 +139,12 @@ public class ZestJUnit4Worker extends ZestWorker {
             Class<?>[] paramClasses = method.getMethod().getParameterTypes();
 
             if (paramClasses.length > 1) {
-                throw new ZestException(Messages.initParam());
+                throw new ZestException(Messages.parseParamInit(method.getName()));
             }
 
             Class<?> paramClass = paramClasses[0];
             if (!ZestParam.class.isAssignableFrom(paramClass)) {
-                throw new ZestException(Messages.initParam());
+                throw new ZestException(Messages.parseParamInit(method.getName()));
             }
 
             ZestParam param = (ZestParam) paramClass.newInstance();
@@ -154,8 +153,6 @@ public class ZestJUnit4Worker extends ZestWorker {
 
             ZestUtil.loadFromAbsolutePath(this, zestData);
 
-        } catch (ZestException e) {
-            throw e;
         } catch (Exception e) {
             throw new ZestException(Messages.failRun(), e);
         }

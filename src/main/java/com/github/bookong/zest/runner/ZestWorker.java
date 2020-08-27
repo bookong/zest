@@ -7,16 +7,13 @@ import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,19 +22,19 @@ import java.util.Map;
  */
 public abstract class ZestWorker {
 
-    protected static Logger                 logger      = LoggerFactory.getLogger(ZestWorker.class);
+    protected static Logger               logger      = LoggerFactory.getLogger(ZestWorker.class);
 
-    protected Map<String, AbstractExecutor> executorMap = new HashMap<>();
+    private Map<String, AbstractExecutor> executorMap = new HashMap<>();
     /**
      * value 放两种东西: <br>
      * javax.sql.DataSource <br>
      * org.springframework.data.mongodb.core.MongoOperations
      */
-    private Map<String, Object>             operatorMap = new HashMap<>();
+    private Map<String, Object>           operatorMap = new HashMap<>();
 
     protected void loadAnnotation(Object test) {
         Class<?> clazz = test.getClass();
-        while (!StringUtils.equals(Object.class.getName(), clazz.getName())) {
+        while (!Object.class.getName().equals(clazz.getName())) {
             for (Field f : clazz.getDeclaredFields()) {
                 ZestSource zestSource = f.getAnnotation(ZestSource.class);
                 if (zestSource == null) {
@@ -48,21 +45,23 @@ public abstract class ZestWorker {
                 Object obj = ZestReflectHelper.getValue(test, f.getName());
                 if (obj instanceof DataSource) {
                     value = DataSourceUtils.getConnection((DataSource) obj);
-                } else if (obj instanceof MongoOperations || obj instanceof RedisOperations) {
+                } else if (obj instanceof MongoOperations) {
                     value = obj;
                 } else {
-                    throw new ZestException(Messages.parseOperation());
+                    throw new ZestException(Messages.parseOperator(zestSource.value()));
                 }
 
                 if (operatorMap.containsKey(zestSource.value())) {
-                    throw new ZestException(Messages.duplicateOperation(zestSource.value()));
+                    throw new ZestException(Messages.parseOperatorDuplicate(zestSource.value()));
                 }
 
                 operatorMap.put(zestSource.value(), value);
                 try {
                     executorMap.put(zestSource.value(), zestSource.executorClass().newInstance());
                 } catch (Exception e) {
-                    throw new ZestException(Messages.initExecutor(zestSource.executorClass().getName()), e);
+                    throw new ZestException(Messages.parseExecutor(zestSource.value(),
+                                                                   zestSource.executorClass().getName()),
+                                            e);
                 }
             }
 
@@ -86,16 +85,22 @@ public abstract class ZestWorker {
     }
 
     public Object getOperator(String sourceId) {
-        return operatorMap.get(sourceId);
+        Object operation = operatorMap.get(sourceId);
+        if (operation == null) {
+            throw new ZestException(Messages.operatorUnbound(sourceId));
+        }
+        return operation;
     }
 
     public <T> T getOperator(String sourceId, Class<T> operatorClass) {
-        Object operation = operatorMap.get(sourceId);
+        Object operation = getOperator(sourceId);
+
         if (operatorClass.isAssignableFrom(operation.getClass())) {
             return operatorClass.cast(operation);
+        } else {
+            throw new ZestException(Messages.operatorCast(sourceId, operation.getClass().getName(),
+                                                          operatorClass.getName()));
         }
-
-        return null;
     }
 
     public <E extends AbstractExecutor> E getExecutor(String sourceId, Class<E> executorClass) {

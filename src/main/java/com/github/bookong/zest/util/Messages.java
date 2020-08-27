@@ -1,7 +1,5 @@
 package com.github.bookong.zest.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -35,6 +33,10 @@ public class Messages {
 
     public static String noData() {
         return getString("no.data");
+    }
+
+    public static String run(String desc) {
+        return getString("run", desc);
     }
 
     public static String parse(String filePath) {
@@ -173,6 +175,18 @@ public class Messages {
         return getString("parse.rule.from.unit.unknown", unit);
     }
 
+    public static String parseOperator(String value) {
+        return getString("parse.operator", value);
+    }
+
+    public static String parseOperatorDuplicate(String value) {
+        return getString("parse.operator.duplicate", value);
+    }
+
+    public static String parseExecutor(String value, String className) {
+        return getString("parse.executor", value, className);
+    }
+
     public static String parseParamError() {
         return getString("parse.param.error");
     }
@@ -193,12 +207,24 @@ public class Messages {
         return getString("parse.param.nonsupport.map");
     }
 
+    public static String parseParamInit(String methodName) {
+        return getString("parse.param.init", methodName);
+    }
+
     public static String parseDataError(int dataIdx) {
         return getString("parse.data.error", dataIdx);
     }
 
     public static String parseDataTableRowExist(String fieldName, String tableName) {
         return getString("parse.data.table.row.exist", fieldName, tableName);
+    }
+
+    public static String operatorUnbound(String value) {
+        return getString("operator.unbound", value);
+    }
+
+    public static String operatorCast(String value, String fromCalss, String toClass) {
+        return getString("operator.cast", value, fromCalss, toClass);
     }
 
     public static String verifyStart(String sourceId, String tableName) {
@@ -237,32 +263,8 @@ public class Messages {
         return getString("parse.date", value);
     }
 
-    public static String parseOperation() {
-        return getString("parse.operation");
-    }
-
-    public static String duplicateOperation(String value) {
-        return getString("duplicate.operation", value);
-    }
-
-    public static String initExecutor(String className) {
-        return getString("init.executor", className);
-    }
-
-    public static String initParam() {
-        return getString("init.param");
-    }
-
     public static String executorMatch() {
         return getString("executor.match");
-    }
-
-    public static String statementEvaluate(String testCaseFilePath) {
-        return getString("statement.evaluate", testCaseFilePath);
-    }
-
-    public static String statementRun(String desc) {
-        return getString("statement.run", desc);
     }
 
     public static String ignoreTargetData(String id) {
