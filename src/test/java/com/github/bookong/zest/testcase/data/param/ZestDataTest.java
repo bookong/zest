@@ -26,7 +26,7 @@ public class ZestDataTest extends AbstractZestDataTest {
     @Test
     public void testLoad02() {
         testLoadError("02.xml", Messages.parseParamError(), //
-                      Messages.parseCommonAttrEmpty( "Name"));
+                      Messages.parseCommonAttrEmpty("Name"));
     }
 
     @Test
@@ -52,7 +52,8 @@ public class ZestDataTest extends AbstractZestDataTest {
     public void testLoad06() {
         testLoadError("06.xml", Messages.parseParamError(), //
                       Messages.parseParamObjLoad("date1"), //
-                      Messages.parseDate("str value"));
+                      Messages.parseDataDate("str value"), //
+                      Messages.parseDataDatePattern());
     }
 
     @Test
@@ -101,6 +102,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     @Test
     public void testLoad09() {
         testLoadError("09.xml", Messages.parseParamError(), //
-                Messages.parseCommonAttrUnknown("Param", "U"));
+                      Messages.parseCommonAttrUnknown("Param", "U"));
     }
 }

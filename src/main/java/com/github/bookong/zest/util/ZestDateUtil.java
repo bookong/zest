@@ -22,10 +22,8 @@ public class ZestDateUtil {
     public static Date parseDate(String time) {
         try {
             return getDateFormat(time).parse(time);
-        } catch (ZestException e) {
-            throw e;
         } catch (Exception e) {
-            throw new ZestException(e);
+            throw new ZestException(Messages.parseDataDate(time), e);
         }
     }
 
@@ -44,7 +42,7 @@ public class ZestDateUtil {
             case 10:
                 return getDateFormat(TYPE_DAY, "yyyy-MM-dd");
             default:
-                throw new ZestException(Messages.parseDate(time));
+                throw new ZestException(Messages.parseDataDatePattern());
         }
     }
 

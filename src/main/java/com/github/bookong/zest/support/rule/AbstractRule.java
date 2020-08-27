@@ -41,7 +41,7 @@ public abstract class AbstractRule {
     }
 
     void assertNullable(String columnName, Object value) {
-        if (!nullable && value == null) {
+        if (!isNullable() && value == null) {
             Assert.fail(Messages.verifyRowDataNull(columnName));
         }
     }

@@ -219,6 +219,14 @@ public class Messages {
         return getString("parse.data.table.row.exist", fieldName, tableName);
     }
 
+    public static String parseDataDate(String value) {
+        return getString("parse.data.date", value);
+    }
+
+    public static String parseDataDatePattern() {
+        return getString("parse.data.date.pattern");
+    }
+
     public static String operatorUnbound(String value) {
         return getString("operator.unbound", value);
     }
@@ -257,10 +265,6 @@ public class Messages {
 
     public static String parseParamObjLoad(String fieldName) {
         return getString("parse.param.obj.load", fieldName);
-    }
-
-    public static String parseDate(String value) {
-        return getString("parse.date", value);
     }
 
     public static String executorMatch() {

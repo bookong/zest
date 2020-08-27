@@ -121,7 +121,7 @@ public class ZestJUnit4Worker extends ZestWorker {
 
         loadAnnotation(test);
 
-        ZestData zestData = new ZestData(method.getTestCasePath());
+        ZestData zestData = new ZestData(method.getFilePath());
         loadZestData(zestData, method);
 
         ZestStatement zestStatement = new ZestStatement(this, zestData, test, method);
@@ -129,7 +129,7 @@ public class ZestJUnit4Worker extends ZestWorker {
         statement = withAfters(test, statement);
 
         logger.info(Messages.run(zestData.getDescription()));
-        logger.info(method.getTestCasePath());
+        logger.info(method.getFilePath());
 
         return statement;
     }

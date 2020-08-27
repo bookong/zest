@@ -1,11 +1,10 @@
 package com.github.bookong.zest.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.bookong.zest.exception.ZestException;
-import com.github.bookong.zest.testcase.ZestData;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +22,10 @@ public class ZestJsonUtil {
     private static final ThreadLocal<ObjectMapper> OBJECT_MAPPER_CACHE = new ThreadLocal<>();
 
     public static String toJson(Object obj) {
-        if (obj == null) {
-            return null;
-        }
-
         try {
+            if (obj == null) {
+                return null;
+            }
             return getObjectMapper().writeValueAsString(obj);
         } catch (Exception e) {
             throw new ZestException(e);
@@ -35,11 +33,10 @@ public class ZestJsonUtil {
     }
 
     public static String toPrettyJson(Object obj) {
-        if (obj == null) {
-            return null;
-        }
-
         try {
+            if (obj == null) {
+                return null;
+            }
             return getObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(obj);
         } catch (Exception e) {
             throw new ZestException(e);
@@ -47,23 +44,22 @@ public class ZestJsonUtil {
     }
 
     public static <T> List<T> fromJsonArray(String content, Class<T> valueType) {
-        if (StringUtils.isBlank(content)) {
-            return Collections.emptyList();
-        }
-
         try {
-            return getObjectMapper().readValue(content, getObjectMapper().getTypeFactory().constructParametricType(List.class, valueType));
+            if (StringUtils.isBlank(content)) {
+                return Collections.emptyList();
+            }
+            JavaType javaType = getObjectMapper().getTypeFactory().constructParametricType(List.class, valueType);
+            return getObjectMapper().readValue(content, javaType);
         } catch (Exception e) {
             throw new ZestException(e);
         }
     }
 
     public static <T> T fromJson(String content, Class<T> valueType) {
-        if (StringUtils.isBlank(content)) {
-            return null;
-        }
-
         try {
+            if (StringUtils.isBlank(content)) {
+                return null;
+            }
             return getObjectMapper().readValue(content, valueType);
         } catch (Exception e) {
             throw new ZestException(e);
@@ -80,5 +76,4 @@ public class ZestJsonUtil {
         }
         return objectMapper;
     }
-
 }

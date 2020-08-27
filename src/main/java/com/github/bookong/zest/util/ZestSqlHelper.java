@@ -5,7 +5,9 @@ import com.github.bookong.zest.exception.ZestException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 /**
@@ -21,7 +23,7 @@ public class ZestSqlHelper {
         if (stat != null) {
             try {
                 stat.close();
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 logger.warn("Statement close, {}:{}", e.getClass().getName(), e.getMessage());
             }
         }
@@ -31,7 +33,7 @@ public class ZestSqlHelper {
         if (rs != null) {
             try {
                 rs.close();
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 logger.warn("ResultSet close, {}:{}", e.getClass().getName(), e.getMessage());
             }
         }
@@ -89,6 +91,10 @@ public class ZestSqlHelper {
         }
     }
 
+    public static String query(DataSource dataSource, String sql) {
+        return query(DataSourceUtils.getConnection(dataSource), sql);
+    }
+
     public static String query(Connection conn, String sql) {
         Statement stat = null;
         ResultSet rs = null;
@@ -98,17 +104,16 @@ public class ZestSqlHelper {
             rs = stat.executeQuery(sql);
 
             while (rs.next()) {
-                sb.append("-------------------------------------------\n"); //$NON-NLS-1$
+                sb.append("-------------------------------------------\n");
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                     String colName = rs.getMetaData().getColumnName(i).toLowerCase();
                     Object colValue = rs.getObject(i);
-                    String colType = (colValue == null ? "UNKNOWN" : colValue.getClass().getName()); //$NON-NLS-1$
+                    String colType = (colValue == null ? "UNKNOWN" : colValue.getClass().getName());
                     colValue = colValue == null ? "NULL" : parseValue(colValue);
-                    sb.append(String.format("%s (%s) : %s", colName, colType, //$NON-NLS-1$
-                                            colValue)).append("\n"); // $NON-NLS-1$
+                    sb.append(String.format("%s (%s) : %s", colName, colType, colValue)).append("\n");
                 }
             }
-            sb.append("==========================================="); //$NON-NLS-1$
+            sb.append("===========================================");
 
         } catch (Exception e) {
             logger.error("", e);

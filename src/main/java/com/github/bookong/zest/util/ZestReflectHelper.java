@@ -117,7 +117,7 @@ public class ZestReflectHelper {
         do {
             list.add(clazz);
             clazz = clazz.getSuperclass();
-        } while (!clazz.getName().equals(Object.class.getName()));
+        } while (!Object.class.getName().equals(clazz.getName()));
 
         return list;
     }

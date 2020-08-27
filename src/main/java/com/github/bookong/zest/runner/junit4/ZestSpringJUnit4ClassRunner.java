@@ -17,11 +17,11 @@ import java.util.List;
  */
 public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner implements ZestClassRunner {
 
-    private ZestJUnit4Worker zestWorker;
+    private ZestJUnit4Worker worker;
 
     public ZestSpringJUnit4ClassRunner(Class<?> clazz) throws InitializationError{
         super(clazz);
-        zestWorker = new ZestJUnit4Worker(getTestClass(), this);
+        worker = new ZestJUnit4Worker(getTestClass(), this);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ZestSpringJUnit4ClassRunner extends SpringJUnit4ClassRunner impleme
         if (zestTest == null) {
             super.runChild(frameworkMethod, notifier);
         } else {
-            zestWorker.runChild(frameworkMethod, notifier);
+            worker.runChild(frameworkMethod, notifier);
         }
     }
 

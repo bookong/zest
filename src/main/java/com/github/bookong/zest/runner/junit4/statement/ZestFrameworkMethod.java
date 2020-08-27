@@ -9,21 +9,21 @@ import org.junit.runners.model.FrameworkMethod;
  */
 public class ZestFrameworkMethod extends FrameworkMethod {
 
-    private String testCasePath;
-    private String testCaseFileName;
+    private String filePath;
+    private String fileName;
 
-    public ZestFrameworkMethod(FrameworkMethod method, String testCasePath){
+    public ZestFrameworkMethod(FrameworkMethod method, String filePath){
         super(method.getMethod());
-        this.testCasePath = testCasePath;
-        this.testCaseFileName = testCasePath.substring(testCasePath.lastIndexOf(File.separator) + 1);
+        this.filePath = filePath;
+        this.fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
     }
 
     @Override
     public String getName() {
-        return String.format("%s [%s] ", super.getName(), testCaseFileName);
+        return String.format("%s [%s] ", super.getName(), fileName);
     }
 
-    public String getTestCasePath() {
-        return testCasePath;
+    public String getFilePath() {
+        return filePath;
     }
 }

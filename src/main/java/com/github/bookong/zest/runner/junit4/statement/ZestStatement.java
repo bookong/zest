@@ -2,18 +2,21 @@ package com.github.bookong.zest.runner.junit4.statement;
 
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.ZestData;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.Statement;
 
 /**
  * @author Jiang Xu
  */
-public class ZestStatement extends AbstractStatement {
+public class ZestStatement extends Statement {
 
     private final ZestFrameworkMethod zestMethod;
+    private final Object              target;
     private ZestWorker                worker;
     private ZestData                  zestData;
 
     public ZestStatement(ZestWorker worker, ZestData zestData, Object target, ZestFrameworkMethod zestMethod){
-        super(target);
+        this.target = target;
         this.worker = worker;
         this.zestMethod = zestMethod;
         this.zestData = zestData;
@@ -26,5 +29,11 @@ public class ZestStatement extends AbstractStatement {
         invokeMethod(zestMethod, zestData);
         zestData.setEndTime(System.currentTimeMillis());
         worker.verifyDataSource(zestData);
+    }
+
+    private void invokeMethod(FrameworkMethod method, ZestData zestData) throws Throwable {
+        Object[] paramArrayOfObject = new Object[1];
+        paramArrayOfObject[0] = zestData.getParam();
+        method.invokeExplosively(target, paramArrayOfObject);
     }
 }
