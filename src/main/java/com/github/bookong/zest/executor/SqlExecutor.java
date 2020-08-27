@@ -27,10 +27,8 @@ public class SqlExecutor extends AbstractExecutor {
 
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
-        Set<String> tableNames = findAllTableNames(source);
         Connection conn = worker.getOperator(source.getId(), Connection.class);
-
-        for (String tableName : tableNames) {
+        for (String tableName : findAllTableNames(source)) {
             ZestSqlHelper.execute(conn, String.format("truncate table `%s`", tableName));
         }
     }
@@ -54,44 +52,30 @@ public class SqlExecutor extends AbstractExecutor {
 
         Table table = (Table) data;
         Connection conn = worker.getOperator(source.getId(), Connection.class);
-        List<Map<String, Object>> dataInDb = ZestSqlHelper.find(conn, table);
-        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(),
-                            dataInDb.size());
+        List<Map<String, Object>> actualList = ZestSqlHelper.find(conn, table);
+        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(), actualList.size());
         for (int i = 0; i < table.getDataList().size(); i++) {
             Row expected = table.getDataList().get(i);
-            Map<String, Object> actual = dataInDb.get(i);
+            Map<String, Object> actual = actualList.get(i);
             verifyRow(zestData, source, table, i + 1, expected, actual);
         }
     }
 
     /**
      * 自定义的数据转换
-     *
-     * @param tableName
-     * @param fieldName
-     * @param fieldSqlType
-     * @param value
-     * @return
-     * @throws UnsupportedOperationException
      */
-    public Object parseRowValue(String tableName, String fieldName, Integer fieldSqlType,
-                                Object value) throws UnsupportedOperationException {
+    public Object parseRowValue(String tableName, String fieldName, Integer fieldSqlType, Object value) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
     /**
      * 自定义加载数据库的 SqlType
-     * 
-     * @param conn
-     * @param sqlTypes
      */
     public void loadSqlTypes(Connection conn, Map<String, Integer> sqlTypes) {
         throw new UnsupportedOperationException();
     }
 
-    protected void verifyRow(ZestData zestData, Source source, Table table, int rowIdx, Row expectedRow,
-                             Map<String, Object> actualRow) {
+    protected void verifyRow(ZestData zestData, Source source, Table table, int rowIdx, Row expectedRow, Map<String, Object> actualRow) {
         expectedRow.verify(zestData, source, table, rowIdx, actualRow);
     }
-
 }

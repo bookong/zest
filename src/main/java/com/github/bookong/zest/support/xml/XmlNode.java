@@ -126,7 +126,7 @@ public class XmlNode {
     public int getAttrInt(String name, int defValue) {
         try {
             String value = attributes.get(name);
-            return value != null ? Integer.valueOf(value) : defValue;
+            return value != null ? Integer.parseInt(value) : defValue;
         } catch (Exception e) {
             throw new ZestException(Messages.parseCommonAttr(nodeName, name), e);
         }
@@ -134,7 +134,7 @@ public class XmlNode {
 
     public int getAttrInt(String name) {
         try {
-            return Integer.valueOf(getAttrNotEmpty(name));
+            return Integer.parseInt(getAttrNotEmpty(name));
         } catch (Exception e) {
             throw new ZestException(Messages.parseCommonAttr(nodeName, name), e);
         }
@@ -143,7 +143,7 @@ public class XmlNode {
     public float getAttrFloat(String name, float defValue) {
         try {
             String value = attributes.get(name);
-            return value != null ? Float.valueOf(value) : defValue;
+            return value != null ? Float.parseFloat(value) : defValue;
         } catch (Exception e) {
             throw new ZestException(Messages.parseCommonAttr(nodeName, name), e);
         }

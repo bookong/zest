@@ -20,6 +20,14 @@ import java.util.Set;
 public class MongoExecutor extends AbstractExecutor {
 
     @Override
+    public void clear(ZestWorker worker, ZestData zestData, Source source) {
+        MongoOperations operation = worker.getOperator(source.getId(), MongoOperations.class);
+        for (String tableName : findAllTableNames(source)) {
+            operation.dropCollection(tableName);
+        }
+    }
+
+    @Override
     protected void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
         if (!(data instanceof Collection)) {
             throw new ZestException(Messages.executorMatch());
@@ -60,23 +68,10 @@ public class MongoExecutor extends AbstractExecutor {
         }
     }
 
-    @Override
-    public void clear(ZestWorker worker, ZestData zestData, Source source) {
-        Set<String> tableNames = findAllTableNames(source);
-        MongoOperations operation = worker.getOperator(source.getId(), MongoOperations.class);
 
-        for (String tableName : tableNames) {
-            operation.dropCollection(tableName);
-        }
-    }
 
     /**
      * 根据测试用例中数据构建 Document 对象
-     * 
-     * @param entityClass
-     * @param collectionName
-     * @param xmlContent
-     * @return
      */
     public Object createDocument(Class<?> entityClass, String collectionName, String xmlContent) {
         throw new UnsupportedOperationException();
@@ -87,7 +82,7 @@ public class MongoExecutor extends AbstractExecutor {
      */
     public void verify(ZestWorker worker, ZestData zestData, Source source, MongoOperations operation,
                        Collection collection, int rowIdx, Object expected, Object actual) {
-        System.out.println("TODO");
+        System.out.println("TODO"); // TODO
     }
 
 }

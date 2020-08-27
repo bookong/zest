@@ -75,9 +75,9 @@ public class ZestDataTest extends AbstractZestDataTest {
         ZestData zestData = load("06.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
-        Assert.assertEquals(1, obj.getVerifyDataMap().size());
-        Assert.assertTrue(obj.getVerifyDataMap().get("tab") instanceof Table);
-        Table table = (Table) obj.getVerifyDataMap().get("tab");
+        Assert.assertEquals(1, obj.getTableMap().size());
+        Assert.assertTrue(obj.getTableMap().get("tab") instanceof Table);
+        Table table = (Table) obj.getTableMap().get("tab");
         Assert.assertEquals(" order by f_varchar desc, f_double asc, f_bigint asc", table.getSort());
     }
 
@@ -86,7 +86,7 @@ public class ZestDataTest extends AbstractZestDataTest {
         logger.info("Normal data");
         ZestData zestData = load("07.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
-        AbstractTable obj = zestData.getSourceList().get(0).getVerifyData().getVerifyDataMap().get("tab");
+        AbstractTable obj = zestData.getSourceList().get(0).getVerifyData().getTableMap().get("tab");
         Assert.assertTrue(obj instanceof Collection);
         Collection tab = (Collection) obj;
         Assert.assertEquals("intObjValue: DESC,longObjValue: ASC,doubleObjValue: ASC", tab.getSort().toString());

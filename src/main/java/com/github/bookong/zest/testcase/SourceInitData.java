@@ -15,20 +15,20 @@ import java.util.List;
 public class SourceInitData extends AbstractSourceData {
 
     /** 执行前，初始化数据源用的数据 */
-    private List<AbstractTable> initDataList = new ArrayList<>();
+    private List<AbstractTable> tableList = new ArrayList<>();
 
     public SourceInitData(ZestWorker worker, String sourceId, Node node){
         try {
             XmlNode xmlNode = new XmlNode(node);
             xmlNode.checkSupportedAttrs();
 
-            initDataList.addAll(createTables(worker, sourceId, node, false));
+            tableList.addAll(createTables(worker, sourceId, node, false));
         } catch (Exception e) {
             throw new ZestException(Messages.parseSourceInitError(), e);
         }
     }
 
-    public List<AbstractTable> getInitDataList() {
-        return initDataList;
+    public List<AbstractTable> getTableList() {
+        return tableList;
     }
 }

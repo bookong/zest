@@ -26,13 +26,13 @@ public class Row extends AbstractRowData {
     public Row(SqlExecutor sqlExecutor, Map<String, Integer> sqlTypes, String tableName, String xmlContent){
         Map xmlDataMap = ZestJsonUtil.fromJson(xmlContent, HashMap.class);
         for (Object key : xmlDataMap.keySet()) {
-            String fieldName = String.valueOf(key);
-            Integer sqlType = sqlTypes.get(fieldName);
+            String columnName = String.valueOf(key);
+            Integer sqlType = sqlTypes.get(columnName);
             if (sqlType == null) {
-                throw new ZestException(Messages.parseDataTableRowExist(fieldName, tableName));
+                throw new ZestException(Messages.parseDataTableRowExist(columnName, tableName));
             }
 
-            getDataMap().put(fieldName, parseValue(sqlExecutor, sqlType, tableName, fieldName, xmlDataMap.get(key)));
+            getDataMap().put(columnName, parseValue(sqlExecutor, sqlType, tableName, columnName, xmlDataMap.get(key)));
         }
     }
 
@@ -40,22 +40,25 @@ public class Row extends AbstractRowData {
         try {
             Set<String> verified = new HashSet<>(getDataMap().size() + 1);
             for (Map.Entry<String, Object> entry : getDataMap().entrySet()) {
-                String fieldName = entry.getKey();
-                Object expectedValue = entry.getValue();
-                Object actualValue = actualRow.get(fieldName);
-                verified.add(fieldName);
+                String columnName = entry.getKey();
+                Object expected = entry.getValue();
+                Object actual = actualRow.get(columnName);
+                verified.add(columnName);
 
-                if (expectedValue == null) {
-                    Assert.assertNull(Messages.verifyRowDataNull(fieldName), actualValue);
-                } else if (expectedValue instanceof Date) {
-                    Assert.assertTrue(Messages.verifyRowDataDate(fieldName), actualValue instanceof Date);
-                    String expectedDate = ZestDateUtil.formatDateNormal(ZestDateUtil.getDateInZest((Date) expectedValue,
-                                                                                                   zestData));
-                    String actualDate = ZestDateUtil.formatDateNormal((Date) actualValue);
-                    Assert.assertEquals(Messages.verifyRowData(fieldName, expectedDate), expectedDate, actualDate);
+                if (expected == null) {
+                    Assert.assertNull(Messages.verifyRowDataNull(columnName), actual);
+
+                } else if (expected instanceof Date) {
+                    Assert.assertTrue(Messages.verifyRowDataDate(columnName), actual instanceof Date);
+                    Date expectedDateInZest = ZestDateUtil.getDateInZest(zestData, (Date) expected);
+                    String expectedValue = ZestDateUtil.formatDateNormal(expectedDateInZest);
+                    String actualValue = ZestDateUtil.formatDateNormal((Date) actual);
+                    Assert.assertEquals(Messages.verifyRowData(columnName, expectedValue), expectedValue, actualValue);
+
                 } else {
-                    Assert.assertEquals(Messages.verifyRowData(fieldName, String.valueOf(expectedValue)),
-                                        String.valueOf(expectedValue), String.valueOf(actualValue));
+                    String expectedValue = String.valueOf(expected);
+                    String actualValue = String.valueOf(actual);
+                    Assert.assertEquals(Messages.verifyRowData(columnName, expectedValue), expectedValue, actualValue);
                 }
             }
 
@@ -65,7 +68,7 @@ public class Row extends AbstractRowData {
                     continue;
                 }
 
-                rule.assertIt(zestData, source, table, rowIdx, rule.getPath(), actualRow.get(rule.getPath()));
+                rule.verify(zestData, source, table, rowIdx, rule.getPath(), actualRow.get(rule.getPath()));
             }
 
         } catch (Exception e) {
@@ -73,21 +76,19 @@ public class Row extends AbstractRowData {
         }
     }
 
-    private Object parseValue(SqlExecutor sqlExecutor, Integer fieldSqlType, String tableName, String fieldName,
-                              Object value) {
+    private Object parseValue(SqlExecutor sqlExecutor, Integer fieldSqlType, String tableName, String columnName, Object value) {
         if (value == null) {
             return null;
         }
 
         try {
-            return sqlExecutor.parseRowValue(tableName, fieldName, fieldSqlType, value);
+            return sqlExecutor.parseRowValue(tableName, columnName, fieldSqlType, value);
         } catch (UnsupportedOperationException e) {
             switch (fieldSqlType) {
                 case Types.DATE:
                 case Types.TIME:
                 case Types.TIMESTAMP:
                     return ZestDateUtil.parseDate(String.valueOf(value));
-
                 default:
                     return value;
             }

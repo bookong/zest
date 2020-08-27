@@ -22,27 +22,26 @@ public abstract class AbstractRule {
         this.nullable = nullable;
     }
 
-    public abstract void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName,
-                                  Object value);
+    public abstract void verify(ZestData zestData, Source source, Table table, int rowIdx, String path, Object actual);
 
-    long getActualDataTime(Source source, Table table, int rowIdx, String columnName, Object value) {
+    long getActualDataTime(Source source, Table table, int rowIdx, String path, Object actual) {
         long tmp = 0;
-        if (value instanceof Date) {
-            tmp = ((Date) value).getTime();
+        if (actual instanceof Date) {
+            tmp = ((Date) actual).getTime();
 
-        } else if (value instanceof Long) {
-            tmp = (Long) value;
+        } else if (actual instanceof Long) {
+            tmp = (Long) actual;
 
         } else {
-            Assert.fail(Messages.checkTableColDate(source.getId(), table.getName(), rowIdx, columnName));
+            Assert.fail(Messages.checkTableColDate(source.getId(), table.getName(), rowIdx, path));
         }
 
         return tmp;
     }
 
-    void assertNullable(String columnName, Object value) {
-        if (!isNullable() && value == null) {
-            Assert.fail(Messages.verifyRowDataNull(columnName));
+    void assertNullable(String path, Object actual) {
+        if (!isNullable() && actual == null) {
+            Assert.fail(Messages.verifyRowDataNull(path));
         }
     }
 

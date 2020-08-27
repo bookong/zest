@@ -92,6 +92,6 @@ public class ZestDataTest extends AbstractZestDataTest {
         ZestData zestData = load("11.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
-        Assert.assertTrue(obj.isIgnoreCheck());
+        Assert.assertTrue(obj.isIgnoreVerify());
     }
 }

@@ -52,8 +52,8 @@ public class FromCurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName, Object value) {
-        assertNullable(columnName, value);
+    public void verify(ZestData zestData, Source source, Table table, int rowIdx, String path, Object actual) {
+        assertNullable(path, actual);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(zestData.getStartTime());
@@ -66,8 +66,8 @@ public class FromCurrentTimeRule extends AbstractRule {
         cal.add(Calendar.MILLISECOND, getOffset());
         long expectedMax = cal.getTimeInMillis();
 
-        long tmp = getActualDataTime(source, table, rowIdx, columnName, value);
-        Assert.assertTrue(Messages.checkTableColDateFrom(source.getId(), table.getName(), rowIdx, columnName),
+        long tmp = getActualDataTime(source, table, rowIdx, path, actual);
+        Assert.assertTrue(Messages.checkTableColDateFrom(source.getId(), table.getName(), rowIdx, path), //
                           (tmp >= expectedMin && tmp <= expectedMax));
     }
 

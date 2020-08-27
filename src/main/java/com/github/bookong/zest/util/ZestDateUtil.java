@@ -57,12 +57,12 @@ public class ZestDateUtil {
 
     /**
      * 计算要录入到数据库中的日期值（经过 currDbTimeDiff 修正过）
-     * 
+     *
+     * @param zestData 测试用例数据
      * @param date 待转换的日期对象
-     * @param testCaseData 测试用例数据
      * @return 转换后的日期对象
      */
-    public static Date getDateInZest(Date date, ZestData zestData) {
+    public static Date getDateInZest(ZestData zestData, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.MILLISECOND, 0);

@@ -20,46 +20,25 @@ public abstract class AbstractExecutor {
 
     protected static Logger logger = LoggerFactory.getLogger(AbstractExecutor.class);
 
+    public abstract void clear(ZestWorker worker, ZestData zestData, Source source);
+
     protected abstract void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable data);
 
     protected abstract void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable data);
 
-    /**
-     * 清除数据
-     * 
-     * @param worker
-     * @param zestData
-     * @param source
-     */
-    public abstract void clear(ZestWorker worker, ZestData zestData, Source source);
-
-    /**
-     * 初始化数据
-     * 
-     * @param worker
-     * @param zestData
-     * @param source
-     */
     public void init(ZestWorker worker, ZestData zestData, Source source) {
-        for (AbstractTable table : source.getInitData().getInitDataList()) {
+        for (AbstractTable table : source.getInitData().getTableList()) {
             init(worker, zestData, source, table);
         }
     }
 
-    /**
-     * 验证数据
-     * 
-     * @param worker
-     * @param zestData
-     * @param source
-     */
     public void verify(ZestWorker worker, ZestData zestData, Source source) {
-        if (source.getVerifyData().isIgnoreCheck()) {
+        if (source.getVerifyData().isIgnoreVerify()) {
             logger.info(Messages.ignoreTargetData(source.getId()));
             return;
         }
 
-        for (AbstractTable table : source.getVerifyData().getVerifyDataMap().values()) {
+        for (AbstractTable table : source.getVerifyData().getTableMap().values()) {
             if (table.isIgnoreVerify()) {
                 logger.info(Messages.ignoreTargetTable(source.getId(), table.getName()));
                 continue;
@@ -78,8 +57,8 @@ public abstract class AbstractExecutor {
 
     protected Set<String> findAllTableNames(Source source) {
         Set<String> tableNames = new LinkedHashSet<>();
-        source.getInitData().getInitDataList().forEach(table -> tableNames.add(table.getName()));
-        source.getVerifyData().getVerifyDataMap().values().forEach(table -> tableNames.add(table.getName()));
+        source.getInitData().getTableList().forEach(table -> tableNames.add(table.getName()));
+        source.getVerifyData().getTableMap().values().forEach(table -> tableNames.add(table.getName()));
         return tableNames;
     }
 

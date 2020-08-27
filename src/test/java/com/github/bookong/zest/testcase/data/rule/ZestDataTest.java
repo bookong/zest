@@ -25,9 +25,9 @@ public class ZestDataTest extends AbstractZestDataTest {
         ZestData zestData = load("01.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
-        Assert.assertEquals(1, obj.getVerifyDataMap().size());
-        Assert.assertTrue(obj.getVerifyDataMap().get("tab") instanceof Table);
-        Table table = (Table) obj.getVerifyDataMap().get("tab");
+        Assert.assertEquals(1, obj.getTableMap().size());
+        Assert.assertTrue(obj.getTableMap().get("tab") instanceof Table);
+        Table table = (Table) obj.getTableMap().get("tab");
         Assert.assertEquals(3, table.getRuleMap().size());
 
         RegExpRule regExpRule = (RegExpRule) table.getRuleMap().get("f_varchar");
@@ -52,8 +52,8 @@ public class ZestDataTest extends AbstractZestDataTest {
         ZestData zestData = load("02.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
-        Assert.assertEquals(1, obj.getVerifyDataMap().size());
-        Collection table = (Collection) obj.getVerifyDataMap().get("tab");
+        Assert.assertEquals(1, obj.getTableMap().size());
+        Collection table = (Collection) obj.getTableMap().get("tab");
         Assert.assertEquals(3, table.getRuleMap().size());
 
         RegExpRule regExpRule = (RegExpRule) table.getRuleMap().get("obj.str");
@@ -77,7 +77,7 @@ public class ZestDataTest extends AbstractZestDataTest {
         logger.info("Normal data");
         ZestData zestData = load("03.xml");
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
-        Table table = (Table) obj.getVerifyDataMap().get("tab");
+        Table table = (Table) obj.getTableMap().get("tab");
 
         CurrentTimeRule currentTimeRule = (CurrentTimeRule) table.getRuleMap().get("f_time");
         Assert.assertEquals("f_time", currentTimeRule.getPath());

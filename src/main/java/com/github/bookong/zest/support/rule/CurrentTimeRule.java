@@ -9,7 +9,6 @@ import com.github.bookong.zest.util.Messages;
 import org.junit.Assert;
 import org.w3c.dom.Node;
 
-
 /**
  * @author Jiang Xu
  */
@@ -27,11 +26,11 @@ public class CurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName, Object value) {
-        assertNullable(columnName, value);
+    public void verify(ZestData zestData, Source source, Table table, int rowIdx, String path, Object actual) {
+        assertNullable(path, actual);
 
-        long tmp = getActualDataTime(source, table, rowIdx, columnName, value);
-        Assert.assertTrue(Messages.checkTableColDateCurrent(source.getId(), table.getName(), rowIdx, columnName),
+        long tmp = getActualDataTime(source, table, rowIdx, path, actual);
+        Assert.assertTrue(Messages.checkTableColDateCurrent(source.getId(), table.getName(), rowIdx, path),
                           (tmp >= zestData.getStartTime() && tmp <= zestData.getEndTime() + getOffset()));
 
     }

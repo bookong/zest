@@ -27,12 +27,11 @@ public class RegExpRule extends AbstractRule {
     }
 
     @Override
-    public void assertIt(ZestData zestData, Source source, Table table, int rowIdx, String columnName, Object value) {
-        assertNullable(columnName, value);
+    public void verify(ZestData zestData, Source source, Table table, int rowIdx, String path, Object actual) {
+        assertNullable(path, actual);
 
-        Assert.assertTrue(Messages.checkTableColRegexp(source.getId(), table.getName(), rowIdx, columnName,
-                                                       getRegExp()),
-                          Pattern.matches(getRegExp(), String.valueOf(value)));
+        Assert.assertTrue(Messages.checkTableColRegexp(source.getId(), table.getName(), rowIdx, path, getRegExp()), //
+                          Pattern.matches(getRegExp(), String.valueOf(actual)));
     }
 
     public String getRegExp() {

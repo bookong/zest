@@ -15,20 +15,20 @@ import java.util.Map;
  */
 public class SourceVerifyData extends AbstractSourceData {
 
-    private boolean                    ignoreCheck;
+    private boolean                    ignoreVerify;
 
     /** 执行完，检测数据源的数据 */
-    private Map<String, AbstractTable> verifyDataMap = new LinkedHashMap<>();
+    private Map<String, AbstractTable> tableMap = new LinkedHashMap<>();
 
     public SourceVerifyData(ZestWorker worker, String sourceId, Node node){
         try {
             XmlNode xmlNode = new XmlNode(node);
             xmlNode.checkSupportedAttrs(Xml.IGNORE);
 
-            this.ignoreCheck = xmlNode.getAttrBoolean(Xml.IGNORE, false);
+            this.ignoreVerify = xmlNode.getAttrBoolean(Xml.IGNORE, false);
 
             for (AbstractTable table : createTables(worker, sourceId, node, true)) {
-                verifyDataMap.put(table.getName(), table);
+                tableMap.put(table.getName(), table);
             }
 
         } catch (Exception e) {
@@ -36,11 +36,11 @@ public class SourceVerifyData extends AbstractSourceData {
         }
     }
 
-    public boolean isIgnoreCheck() {
-        return ignoreCheck;
+    public boolean isIgnoreVerify() {
+        return ignoreVerify;
     }
 
-    public Map<String, AbstractTable> getVerifyDataMap() {
-        return verifyDataMap;
+    public Map<String, AbstractTable> getTableMap() {
+        return tableMap;
     }
 }

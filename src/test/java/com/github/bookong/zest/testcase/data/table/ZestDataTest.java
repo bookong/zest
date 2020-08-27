@@ -36,9 +36,9 @@ public class ZestDataTest extends AbstractZestDataTest {
         ZestData zestData = load("03.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceInitData obj = zestData.getSourceList().get(0).getInitData();
-        Assert.assertEquals(1, obj.getInitDataList().size());
-        Assert.assertEquals("tab", obj.getInitDataList().get(0).getName());
-        Assert.assertFalse(obj.getInitDataList().get(0).isIgnoreVerify());
+        Assert.assertEquals(1, obj.getTableList().size());
+        Assert.assertEquals("tab", obj.getTableList().get(0).getName());
+        Assert.assertFalse(obj.getTableList().get(0).isIgnoreVerify());
     }
 
     @Test

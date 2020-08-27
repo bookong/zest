@@ -52,7 +52,6 @@ public class Table extends AbstractTable<Row> {
 
     @Override
     protected void loadSorts(List<Sort> sortList) {
-
         if (sortList.isEmpty()) {
             return;
         }
