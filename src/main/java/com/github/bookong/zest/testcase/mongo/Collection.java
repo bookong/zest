@@ -35,7 +35,7 @@ public class Collection extends AbstractTable<Document> {
                       boolean isVerifyElement){
         String name = null;
         try {
-            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            List<Node> children = ZestXmlUtil.getChildren(node);
             Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
             name = attrMap.get(Xml.NAME);
             String entityClassAttr = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.ENTITY_CLASS);

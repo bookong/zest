@@ -23,7 +23,7 @@ public class RegExpRule extends AbstractRule {
     RegExpRule(String nodeName, Node node, String path, boolean nullable){
         super(path, nullable);
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+        List<Node> children = ZestXmlUtil.getChildren(node);
 
         this.regExp = ZestXmlUtil.getValue(node);
 

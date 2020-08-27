@@ -13,16 +13,19 @@ import java.util.*;
  */
 public class ZestXmlUtil {
 
-    public static List<Node> getElements(NodeList nodeList) {
-        List<Node> list = new ArrayList<>(nodeList.getLength() + 1);
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            Node node = nodeList.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                list.add(node);
+    public static List<Node> getChildren(Node node) {
+        NodeList childNodes = node.getChildNodes();
+        List<Node> list = new ArrayList<>(childNodes.getLength() + 1);
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            if (item.getNodeType() == Node.ELEMENT_NODE) {
+                list.add(item);
             }
         }
         return list;
     }
+
+    // ---------------------------------------------------
 
     public static String getValue(Node node) {
         if (node == null || node.getFirstChild() == null) {

@@ -23,10 +23,10 @@ public class Source {
 
     private SourceVerifyData verifyData;
 
-    public Source(ZestWorker worker, String nodeName, Node sourceNode, Set<String> sourceIds){
+    public Source(ZestWorker worker, String nodeName, Node node, Set<String> sourceIds){
         try {
-            List<Node> children = ZestXmlUtil.getElements(sourceNode.getChildNodes());
-            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(sourceNode);
+            List<Node> children = ZestXmlUtil.getChildren(node);
+            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
             this.id = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.ID);
             ZestXmlUtil.duplicateCheck(Xml.ID, sourceIds, getId());
 

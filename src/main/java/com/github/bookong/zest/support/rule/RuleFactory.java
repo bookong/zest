@@ -15,9 +15,9 @@ import java.util.Map;
  */
 public class RuleFactory {
 
-    public static AbstractRule create(Node ruleNode) {
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(ruleNode);
-        List<Node> elements = ZestXmlUtil.getElements(ruleNode.getChildNodes());
+    public static AbstractRule create(Node node) {
+        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
+        List<Node> elements = ZestXmlUtil.getChildren(node);
 
         if (elements.size() != 1) {
             throw new ZestException(Messages.parseRuleChoice());

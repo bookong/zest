@@ -34,7 +34,7 @@ public class Table extends AbstractTable<Row> {
     public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn, boolean isVerifyElement){
         try {
             SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
-            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            List<Node> children = ZestXmlUtil.getChildren(node);
             Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
             try {
                 sqlExecutor.loadSqlTypes(conn, sqlTypes);

@@ -75,7 +75,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
 
     private void parseSorts(String nodeName, Node node) {
         try {
-            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            List<Node> children = ZestXmlUtil.getChildren(node);
             List<Sort> list = new ArrayList<>(children.size() + 1);
 
             ZestXmlUtil.attrMapMustEmpty(nodeName, ZestXmlUtil.getAllAttrs(node));
@@ -97,7 +97,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
     private void parseRules(String nodeName, Node node) {
         try {
             ZestXmlUtil.attrMapMustEmpty(nodeName, ZestXmlUtil.getAllAttrs(node));
-            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            List<Node> children = ZestXmlUtil.getChildren(node);
             this.ruleMap = new HashMap<>(children.size() + 1);
             Set<String> rulePaths = new HashSet<>(children.size() + 1);
             for (Node child : children) {
@@ -123,7 +123,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
     private Sort parseSort(String nodeName, Node node, Set<String> fieldNames) {
         String fieldName = null;
         try {
-            List<Node> sortChildren = ZestXmlUtil.getElements(node.getChildNodes());
+            List<Node> sortChildren = ZestXmlUtil.getChildren(node);
             Map<String, String> sortAttrMap = ZestXmlUtil.getAllAttrs(node);
 
             fieldName = ZestXmlUtil.removeNotEmptyAttr(nodeName, sortAttrMap, Xml.FIELD);

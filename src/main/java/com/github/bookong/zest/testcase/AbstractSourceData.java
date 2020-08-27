@@ -21,7 +21,7 @@ public abstract class AbstractSourceData {
 
     protected List<AbstractTable> createTables(ZestWorker worker, String sourceId, String nodeName, Node node,
                                                boolean isVerifyElement) {
-        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+        List<Node> children = ZestXmlUtil.getChildren(node);
         Object operation = worker.getOperator(sourceId);
         if (operation == null) {
             throw new ZestException(Messages.parseSourceOperationNone());

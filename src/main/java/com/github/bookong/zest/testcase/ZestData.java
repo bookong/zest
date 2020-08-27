@@ -52,15 +52,15 @@ public class ZestData {
     /** 测试结束的时间 */
     private long         endTime;
 
-    public ZestData(String testCaseFilePath){
-        this.filePath = testCaseFilePath;
-        this.fileName = testCaseFilePath.substring(testCaseFilePath.lastIndexOf(File.separator) + 1);
+    public ZestData(String filePath){
+        this.filePath = filePath;
+        this.fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
     }
 
     public void load(ZestWorker worker) {
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(getFilePath()));
-            List<Node> rootElements = ZestXmlUtil.getElements(doc.getChildNodes());
+            List<Node> rootElements = ZestXmlUtil.getChildren(doc);
 
             if (rootElements.size() != 1 || !Xml.ZEST.equals(rootElements.get(0).getNodeName())) {
                 throw new ZestException(Messages.parseZest());
@@ -73,7 +73,7 @@ public class ZestData {
     }
 
     private void loadZest(ZestWorker worker, String nodeName, Node node) {
-        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+        List<Node> children = ZestXmlUtil.getChildren(node);
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
 
         if (children.size() != 3 //
@@ -101,7 +101,7 @@ public class ZestData {
 
     private void loadSources(ZestWorker worker, String nodeName, Node node) {
         try {
-            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            List<Node> children = ZestXmlUtil.getChildren(node);
             Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
 
             for (Node item : children) {
@@ -122,7 +122,7 @@ public class ZestData {
 
     private void loadParam(String nodeName, Node node) {
         try {
-            List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+            List<Node> children = ZestXmlUtil.getChildren(node);
             Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
 
             for (Node item : children) {
@@ -240,32 +240,6 @@ public class ZestData {
 
     public void setEndTime(long endTime) {
         this.endTime = endTime;
-    }
-
-    // FIXME
-    /** 比较时间（考虑数据偏移情况) */
-    public void assertDateEquals(String msg, String dateFormat, String expect, String actual) {
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        try {
-            if (StringUtils.isBlank(expect) && StringUtils.isBlank(actual)) {
-                return;
-            }
-            assertDateEquals(msg, sdf.parse(expect), sdf.parse(actual));
-        } catch (ParseException e) {
-            throw new ZestException(e);
-        }
-    }
-
-    // FIXME
-    /** 比较时间（考虑数据偏移情况) */
-    public void assertDateEquals(String msg, Date expect, Date actual) {
-
-        long expectMillisecond = expect.getTime();
-        if (isTransferTime()) {
-            expectMillisecond += getCurrentTimeDiff();
-        }
-
-        Assert.assertEquals(msg, expectMillisecond, actual.getTime());
     }
 
     public float getVersion() {

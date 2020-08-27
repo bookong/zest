@@ -22,7 +22,7 @@ public class CurrentTimeRule extends AbstractRule {
     CurrentTimeRule(String nodeName, Node node, String path, boolean nullable){
         super(path, nullable);
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+        List<Node> children = ZestXmlUtil.getChildren(node);
 
         this.offset = ZestXmlUtil.removeIntAttr(nodeName, attrMap, "Offset", 1000);
 

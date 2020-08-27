@@ -27,7 +27,7 @@ public class FromCurrentTimeRule extends AbstractRule {
     FromCurrentTimeRule(String nodeName, Node node, String path, boolean nullable){
         super(path, nullable);
         Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> children = ZestXmlUtil.getElements(node.getChildNodes());
+        List<Node> children = ZestXmlUtil.getChildren(node);
 
         this.min = ZestXmlUtil.removeNotNullIntAttr(nodeName, attrMap, "Min");
         this.max = ZestXmlUtil.removeNotNullIntAttr(nodeName, attrMap, "Max");
