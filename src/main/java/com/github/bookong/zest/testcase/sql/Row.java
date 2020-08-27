@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class Row extends AbstractRowData {
 
-    private Map<String, Object> expectedDataMap = new LinkedHashMap<>();
+    private Map<String, Object> dataMap = new LinkedHashMap<>();
 
     public Row(SqlExecutor sqlExecutor, Map<String, Integer> sqlTypes, String tableName, String xmlContent){
         Map xmlDataMap = ZestJsonUtil.fromJson(xmlContent, HashMap.class);
@@ -32,14 +32,14 @@ public class Row extends AbstractRowData {
                 throw new ZestException(Messages.parseDataTableRowExist(fieldName, tableName));
             }
 
-            expectedDataMap.put(fieldName, parseValue(sqlExecutor, sqlType, tableName, fieldName, xmlDataMap.get(key)));
+            getDataMap().put(fieldName, parseValue(sqlExecutor, sqlType, tableName, fieldName, xmlDataMap.get(key)));
         }
     }
 
     public void verify(ZestData zestData, Source source, Table table, int rowIdx, Map<String, Object> actualRow) {
         try {
-            Set<String> verified = new HashSet<>(expectedDataMap.size() + 1);
-            for (Map.Entry<String, Object> entry : expectedDataMap.entrySet()) {
+            Set<String> verified = new HashSet<>(getDataMap().size() + 1);
+            for (Map.Entry<String, Object> entry : getDataMap().entrySet()) {
                 String fieldName = entry.getKey();
                 Object expectedValue = entry.getValue();
                 Object actualValue = actualRow.get(fieldName);
@@ -94,7 +94,7 @@ public class Row extends AbstractRowData {
         }
     }
 
-    public Map<String, Object> getExpectedDataMap() {
-        return expectedDataMap;
+    public Map<String, Object> getDataMap() {
+        return dataMap;
     }
 }

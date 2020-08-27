@@ -2,13 +2,18 @@ package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.common.ZestGlobalConstant;
 import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.testcase.sql.Row;
+import com.github.bookong.zest.testcase.sql.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.*;
+import java.sql.Date;
+import java.util.*;
 
 /**
  * 辅助操作 SQL
@@ -37,6 +42,83 @@ public class ZestSqlHelper {
                 logger.warn("ResultSet close, {}:{}", e.getClass().getName(), e.getMessage());
             }
         }
+    }
+
+    public static void insert(Connection conn, Table table) {
+        for (Row row : table.getDataList()) {
+            insert(conn, table, row);
+        }
+    }
+
+    public static void insert(Connection conn, Table table, Row row) {
+        StringBuilder sqlBuff = new StringBuilder(128);
+        StringBuilder valueBuff = new StringBuilder(128);
+        sqlBuff.append("insert into ").append("`").append(table.getName()).append("`(");
+
+        int idx = 0;
+        Object[] params = new Object[row.getDataMap().size()];
+        Iterator<String> it = row.getDataMap().keySet().iterator();
+        while (it.hasNext()) {
+            String columnName = it.next();
+            Object value = row.getDataMap().get(columnName);
+            params[idx++] = value;
+            sqlBuff.append("`").append(columnName).append("`");
+            valueBuff.append("?");
+            if (it.hasNext()) {
+                sqlBuff.append(", ");
+                valueBuff.append(", ");
+            }
+        }
+        sqlBuff.append(") values(").append(valueBuff.toString()).append(")");
+        execute(conn, sqlBuff.toString(), params);
+    }
+
+    public static List<Map<String, Object>> find(Connection conn, Table table) {
+        String sql = String.format("select * from `%s`", table.getName());
+        if (StringUtils.isNotBlank(table.getSort())) {
+            sql = sql.concat(table.getSort());
+        }
+
+        Statement stat = null;
+        ResultSet rs = null;
+        try {
+            List<Map<String, Object>> list = new ArrayList<>();
+            stat = conn.createStatement();
+            rs = stat.executeQuery(sql);
+
+            while (rs.next()) {
+                Map<String, Object> obj = new HashMap<>();
+                list.add(obj);
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    String name = rs.getMetaData().getColumnName(i).toLowerCase();
+                    Object value = rs.getObject(i);
+                    obj.put(name, findValue(value));
+                }
+            }
+
+            return list;
+        } catch (Exception e) {
+            ZestSqlHelper.close(rs);
+            ZestSqlHelper.close(stat);
+            throw new ZestException(e);
+        }
+    }
+
+    private static Object findValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof Integer || value instanceof Long || value instanceof Byte) {
+            return ((Number) value).longValue();
+        }
+
+        if (value instanceof Double || value instanceof Float || value instanceof BigDecimal) {
+            return ((Number) value).doubleValue();
+        }
+
+        // Timestamp , String
+        return value;
     }
 
     public static void execute(Connection conn, String sql) {
