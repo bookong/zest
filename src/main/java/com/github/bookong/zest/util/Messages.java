@@ -111,10 +111,6 @@ public class Messages {
         return getString("parse.source.operation.unknown", operation);
     }
 
-    public static String parseSourceOperationNone() {
-        return getString("parse.source.operation.none");
-    }
-
     public static String parseTableError(String name) {
         return getString("parse.table.error", name);
     }

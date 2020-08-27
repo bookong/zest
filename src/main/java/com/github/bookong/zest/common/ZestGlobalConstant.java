@@ -25,7 +25,6 @@ public interface ZestGlobalConstant {
         String INIT              = "Init";
         String VERIFY            = "Verify";
         String IGNORE            = "Ignore";
-        String ONLY_CORE_DATA    = "OnlyCoreData";
         String TABLE             = "Table";
         String COLLECTION        = "Collection";
         String ENTITY_CLASS      = "EntityClass";
@@ -40,8 +39,16 @@ public interface ZestGlobalConstant {
         String NULLABLE          = "Nullable";
         String REG_EXP           = "RegExp";
         String FROM_CURRENT_TIME = "FromCurrentTime";
+        String MIN               = "Min";
+        String MAX               = "Max";
+        String UNIT              = "Unit";
+        String OFFSET            = "Offset";
         String ASC               = "asc";
         String DESC              = "desc";
+        String DAY               = "day";
+        String HOUR              = "hour";
+        String MINUTE            = "minute";
+        String SECOND            = "second";
 
     }
 }

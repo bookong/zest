@@ -2,13 +2,12 @@ package com.github.bookong.zest.testcase;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestXmlUtil;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Jiang Xu
@@ -18,11 +17,12 @@ public class SourceInitData extends AbstractSourceData {
     /** 执行前，初始化数据源用的数据 */
     private List<AbstractTable> initDataList = new ArrayList<>();
 
-    public SourceInitData(ZestWorker worker, String sourceId, String nodeName, Node node){
+    public SourceInitData(ZestWorker worker, String sourceId, Node node){
         try {
-            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-            initDataList.addAll(createTables(worker, sourceId, nodeName, node, false));
-            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+            XmlNode xmlNode = new XmlNode(node);
+            xmlNode.checkSupportedAttrs();
+
+            initDataList.addAll(createTables(worker, sourceId, node, false));
         } catch (Exception e) {
             throw new ZestException(Messages.parseSourceInitError(), e);
         }

@@ -5,11 +5,10 @@ import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.MongoExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestJsonUtil;
 import com.github.bookong.zest.util.ZestReflectHelper;
-import com.github.bookong.zest.util.ZestXmlUtil;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -31,25 +30,24 @@ public class Collection extends AbstractTable<Document> {
 
     private List<Object>                         documents = Collections.synchronizedList(new ArrayList<>());
 
-    public Collection(ZestWorker worker, String sourceId, String nodeName, Node node, MongoOperations mongoOperations,
+    public Collection(ZestWorker worker, String sourceId, Node node, MongoOperations mongoOperations,
                       boolean isVerifyElement){
-        String name = null;
         try {
-            List<Node> children = ZestXmlUtil.getChildren(node);
-            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-            name = attrMap.get(Xml.NAME);
-            String entityClassAttr = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.ENTITY_CLASS);
+            XmlNode xmlNode = new XmlNode(node);
+            setName(xmlNode.getAttr(Xml.NAME));
+            xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE, Xml.ENTITY_CLASS);
+
+            String entityClassAttr = xmlNode.getAttrNotEmpty(Xml.ENTITY_CLASS);
             try {
                 this.entityClass = Class.forName(entityClassAttr);
             } catch (ClassNotFoundException e) {
                 throw new ZestException(Messages.parseCommonClassFound(entityClassAttr));
             }
 
-            init(worker, sourceId, nodeName, children, attrMap, isVerifyElement);
-            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+            init(worker, sourceId, xmlNode, isVerifyElement);
 
         } catch (Exception e) {
-            throw new ZestException(Messages.parseCollectionError(name), e);
+            throw new ZestException(Messages.parseCollectionError(getName()), e);
         }
     }
 

@@ -5,8 +5,9 @@ import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
 import com.github.bookong.zest.support.rule.RuleFactory;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestXmlUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 
 import java.util.*;
@@ -34,17 +35,15 @@ public abstract class AbstractTable<T extends AbstractRowData> {
 
     protected abstract void loadData(ZestWorker worker, String sourceId, String content);
 
-    protected void init(ZestWorker worker, String sourceId, String nodeName, List<Node> children,
-                        Map<String, String> attrMap, boolean isVerifyElement) {
-        this.name = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.NAME);
-        this.ignoreVerify = ZestXmlUtil.removeBooleanAttr(nodeName, attrMap, Xml.IGNORE, false);
-        this.dataList = new ArrayList<>(children.size() + 1);
+    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, boolean isVerifyElement) {
+        this.ignoreVerify = xmlNode.getAttrBoolean(Xml.IGNORE, false);
+        this.dataList = new ArrayList<>(xmlNode.getChildren().size() + 1);
 
         boolean parseSorts = false;
         boolean parseRules = false;
         boolean parseData = false;
         int dataIdx = 1;
-        for (Node child : children) {
+        for (Node child : xmlNode.getChildren()) {
             if (Xml.SORTS.equals(child.getNodeName())) {
                 if (!isVerifyElement) {
                     throw new ZestException(Messages.parseSortsPosition());
@@ -53,14 +52,14 @@ public abstract class AbstractTable<T extends AbstractRowData> {
                 if (parseSorts || parseRules || parseData) {
                     throw new ZestException(Messages.parseSortsOrder());
                 }
-                parseSorts(child.getNodeName(), child);
+                parseSorts(child);
                 parseSorts = true;
 
             } else if (Xml.RULES.equals(child.getNodeName())) {
                 if (parseRules || parseData) {
                     throw new ZestException(Messages.parseRulesPosition());
                 }
-                parseRules(child.getNodeName(), child);
+                parseRules(child);
                 parseRules = true;
 
             } else if (Xml.DATA.equals(child.getNodeName())) {
@@ -68,24 +67,23 @@ public abstract class AbstractTable<T extends AbstractRowData> {
                 parseData = true;
 
             } else {
-                throw new ZestException(Messages.parseCommonChildrenUnknown(nodeName, child.getNodeName()));
+                throw new ZestException(Messages.parseCommonChildrenUnknown(xmlNode.getNodeName(),
+                                                                            child.getNodeName()));
             }
         }
     }
 
-    private void parseSorts(String nodeName, Node node) {
+    private void parseSorts(Node node) {
         try {
-            List<Node> children = ZestXmlUtil.getChildren(node);
+            XmlNode xmlNode = new XmlNode(node);
+            xmlNode.checkSupportedAttrs();
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(xmlNode.getNodeName(),
+                                                                                            Xml.SORT),
+                                                           Xml.SORT);
             List<Sort> list = new ArrayList<>(children.size() + 1);
-
-            ZestXmlUtil.attrMapMustEmpty(nodeName, ZestXmlUtil.getAllAttrs(node));
-
             Set<String> fieldNames = new HashSet<>(children.size() + 1);
             for (Node child : children) {
-                if (!Xml.SORT.equals(child.getNodeName())) {
-                    throw new ZestException(Messages.parseCommonChildrenList(nodeName, Xml.SORT));
-                }
-                list.add(parseSort(child.getNodeName(), child, fieldNames));
+                list.add(parseSort(child, fieldNames));
             }
 
             loadSorts(list);
@@ -94,18 +92,16 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         }
     }
 
-    private void parseRules(String nodeName, Node node) {
+    private void parseRules(Node node) {
         try {
-            ZestXmlUtil.attrMapMustEmpty(nodeName, ZestXmlUtil.getAllAttrs(node));
-            List<Node> children = ZestXmlUtil.getChildren(node);
+            XmlNode xmlNode = new XmlNode(node);
+            xmlNode.checkSupportedAttrs();
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(Xml.RULES, Xml.RULE),
+                                                           Xml.RULE);
             this.ruleMap = new HashMap<>(children.size() + 1);
             Set<String> rulePaths = new HashSet<>(children.size() + 1);
             for (Node child : children) {
-                if (!Xml.RULE.equals(child.getNodeName())) {
-                    throw new ZestException(Messages.parseCommonChildrenList(Xml.RULES, Xml.RULE));
-                }
-
-                parseRule(child.getNodeName(), child, rulePaths);
+                parseRule(child, rulePaths);
             }
         } catch (Exception e) {
             throw new ZestException(Messages.parseRulesError(), e);
@@ -114,26 +110,30 @@ public abstract class AbstractTable<T extends AbstractRowData> {
 
     private void parseData(ZestWorker worker, String sourceId, Node node, int dataIdx) {
         try {
-            loadData(worker, sourceId, ZestXmlUtil.getValue(node));
+            XmlNode xmlNode = new XmlNode(node);
+            loadData(worker, sourceId, xmlNode.getNodeValue());
         } catch (Exception e) {
             throw new ZestException(Messages.parseDataError(dataIdx), e);
         }
     }
 
-    private Sort parseSort(String nodeName, Node node, Set<String> fieldNames) {
+    private Sort parseSort(Node node, Set<String> fieldNames) {
         String fieldName = null;
         try {
-            List<Node> sortChildren = ZestXmlUtil.getChildren(node);
-            Map<String, String> sortAttrMap = ZestXmlUtil.getAllAttrs(node);
+            XmlNode xmlNode = new XmlNode(node);
+            fieldName = xmlNode.getAttr(Xml.FIELD);
+            if (StringUtils.isBlank(fieldName)) {
+                throw new ZestException(Messages.parseCommonAttrEmpty(Xml.FIELD));
+            }
 
-            fieldName = ZestXmlUtil.removeNotEmptyAttr(nodeName, sortAttrMap, Xml.FIELD);
-            String direction = ZestXmlUtil.removeAttr(nodeName, sortAttrMap, Xml.DIRECTION, Xml.ASC);
+            xmlNode.checkSupportedAttrs(Xml.FIELD, Xml.DIRECTION);
+            String direction = xmlNode.getAttr(Xml.DIRECTION, Xml.ASC);
             if (!Xml.ASC.equals(direction) && !Xml.DESC.equals(direction)) {
                 throw new ZestException(Messages.parseSortDirection());
             }
 
-            ZestXmlUtil.mustHaveNoChildrenElements(Xml.SORT, sortChildren);
-            ZestXmlUtil.duplicateCheck(Xml.FIELD, fieldNames, fieldName);
+            xmlNode.mustNoChildren();
+            XmlNode.duplicateCheck(Xml.FIELD, fieldNames, fieldName);
 
             return new Sort(fieldName, direction);
         } catch (Exception e) {
@@ -141,13 +141,18 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         }
     }
 
-    private void parseRule(String nodeName, Node node, Set<String> rulePaths) {
+    private void parseRule(Node node, Set<String> rulePaths) {
         String path = null;
         try {
-            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-            path = ZestXmlUtil.removeAttr(nodeName, attrMap, Xml.PATH);
-            AbstractRule rule = RuleFactory.create(node);
-            ZestXmlUtil.duplicateCheck(Xml.PATH, rulePaths, rule.getPath());
+            XmlNode xmlNode = new XmlNode(node);
+            path = xmlNode.getAttr(Xml.PATH);
+            if (StringUtils.isBlank(path)) {
+                throw new ZestException(Messages.parseCommonAttrEmpty(Xml.PATH));
+            }
+
+            xmlNode.checkSupportedAttrs(Xml.PATH, Xml.NULLABLE);
+            AbstractRule rule = RuleFactory.create(xmlNode, path);
+            XmlNode.duplicateCheck(Xml.PATH, rulePaths, rule.getPath());
             checkRule(rule);
             ruleMap.put(rule.getPath(), rule);
         } catch (Exception e) {
@@ -157,6 +162,13 @@ public abstract class AbstractTable<T extends AbstractRowData> {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        if (StringUtils.isBlank(name)) {
+            throw new ZestException(Messages.parseCommonAttrEmpty(name));
+        }
     }
 
     public boolean isIgnoreVerify() {

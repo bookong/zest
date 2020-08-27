@@ -186,14 +186,6 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="OnlyCoreData" type="xsd:boolean" default="false">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        If true, only the key data listed will be verified after the code under test is executed.
-                        If it is false, other unwritten data will also be treated as a NULL value for verification.
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
 

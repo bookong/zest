@@ -3,13 +3,12 @@ package com.github.bookong.zest.testcase;
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestXmlUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -23,23 +22,23 @@ public class Source {
 
     private SourceVerifyData verifyData;
 
-    public Source(ZestWorker worker, String nodeName, Node node, Set<String> sourceIds){
+    public Source(ZestWorker worker, Node node, Set<String> sourceIds){
         try {
-            List<Node> children = ZestXmlUtil.getChildren(node);
-            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-            this.id = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, Xml.ID);
-            ZestXmlUtil.duplicateCheck(Xml.ID, sourceIds, getId());
-
-            if (children.size() != 2 //
-                || !Xml.INIT.equals(children.get(0).getNodeName()) //
-                || !Xml.VERIFY.equals(children.get(1).getNodeName())) {
-                throw new ZestException(Messages.parseSourceNecessary());
+            XmlNode xmlNode = new XmlNode(node);
+            this.id = xmlNode.getAttr(Xml.ID);
+            if (StringUtils.isBlank(getId())) {
+                throw new ZestException(Messages.parseCommonAttrEmpty(Xml.ID));
             }
 
-            this.initData = new SourceInitData(worker, getId(), children.get(0).getNodeName(), children.get(0));
-            this.verifyData = new SourceVerifyData(worker, getId(), children.get(1).getNodeName(), children.get(1));
+            xmlNode.checkSupportedAttrs(Xml.ID);
+            XmlNode.duplicateCheck(Xml.ID, sourceIds, getId());
 
-            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+            List<Node> children = xmlNode.getSpecifiedNodes(Messages.parseSourceNecessary(), //
+                                                            Xml.INIT, Xml.VERIFY);
+
+            this.initData = new SourceInitData(worker, getId(), children.get(0));
+            this.verifyData = new SourceVerifyData(worker, getId(), children.get(1));
+
         } catch (Exception e) {
             throw new ZestException(Messages.parseSourceError(getId()), e);
         }

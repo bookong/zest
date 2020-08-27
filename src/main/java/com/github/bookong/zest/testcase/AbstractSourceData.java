@@ -3,10 +3,10 @@ package com.github.bookong.zest.testcase;
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.mongo.Collection;
 import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestXmlUtil;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.w3c.dom.Node;
 
@@ -19,33 +19,29 @@ import java.util.List;
  */
 public abstract class AbstractSourceData {
 
-    protected List<AbstractTable> createTables(ZestWorker worker, String sourceId, String nodeName, Node node,
-                                               boolean isVerifyElement) {
-        List<Node> children = ZestXmlUtil.getChildren(node);
-        Object operation = worker.getOperator(sourceId);
-        if (operation == null) {
-            throw new ZestException(Messages.parseSourceOperationNone());
-        }
+    protected List<AbstractTable> createTables(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement) {
+        XmlNode xmlNode = new XmlNode(node);
+        String nodeName = node.getNodeName();
 
-        List<AbstractTable> list = new ArrayList<>(children.size() + 1);
+        Object operation = worker.getOperator(sourceId);
+        List<AbstractTable> list = new ArrayList<>();
 
         if (operation instanceof Connection) {
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseSourceOperationMatch(Connection.class.getName(),
+                                                                                              nodeName, Xml.TABLE),
+                                                           Xml.TABLE);
+
             for (Node item : children) {
-                if (!Xml.TABLE.equals(item.getNodeName())) {
-                    throw new ZestException(Messages.parseSourceOperationMatch(Connection.class.getName(), nodeName,
-                                                                               Xml.TABLE));
-                }
-                list.add(new Table(worker, sourceId, item.getNodeName(), item, (Connection) operation,
-                                   isVerifyElement));
+                list.add(new Table(worker, sourceId, item, (Connection) operation, isVerifyElement));
             }
+
         } else if (operation instanceof MongoOperations) {
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseSourceOperationMatch(MongoOperations.class.getName(),
+                                                                                              nodeName, Xml.COLLECTION),
+                                                           Xml.COLLECTION);
+
             for (Node item : children) {
-                if (!Xml.COLLECTION.equals(item.getNodeName())) {
-                    throw new ZestException(Messages.parseSourceOperationMatch(MongoOperations.class.getName(),
-                                                                               nodeName, Xml.COLLECTION));
-                }
-                list.add(new Collection(worker, sourceId, item.getNodeName(), item, (MongoOperations) operation,
-                                        isVerifyElement));
+                list.add(new Collection(worker, sourceId, item, (MongoOperations) operation, isVerifyElement));
             }
         } else {
             throw new ZestException(Messages.parseSourceOperationUnknown(operation.getClass().getName()));

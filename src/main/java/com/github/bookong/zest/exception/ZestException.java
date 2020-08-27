@@ -19,4 +19,5 @@ public class ZestException extends RuntimeException {
     public ZestException(Throwable cause){
         super(cause.getMessage(), cause);
     }
+
 }

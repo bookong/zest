@@ -1,18 +1,16 @@
 package com.github.bookong.zest.support.rule;
 
+import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestXmlUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.w3c.dom.Node;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Jiang Xu
@@ -24,35 +22,33 @@ public class FromCurrentTimeRule extends AbstractRule {
     private int unit;
     private int offset;
 
-    FromCurrentTimeRule(String nodeName, Node node, String path, boolean nullable){
+    FromCurrentTimeRule(Node node, String path, boolean nullable){
         super(path, nullable);
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> children = ZestXmlUtil.getChildren(node);
+        XmlNode xmlNode = new XmlNode(node);
+        xmlNode.checkSupportedAttrs(Xml.MIN, Xml.MAX, Xml.UNIT, Xml.OFFSET);
+        xmlNode.mustNoChildren();
 
-        this.min = ZestXmlUtil.removeNotNullIntAttr(nodeName, attrMap, "Min");
-        this.max = ZestXmlUtil.removeNotNullIntAttr(nodeName, attrMap, "Max");
-        String str = ZestXmlUtil.removeNotEmptyAttr(nodeName, attrMap, "Unit");
-        this.offset = ZestXmlUtil.removeIntAttr(nodeName, attrMap, "Offset", 1000);
+        this.min = xmlNode.getAttrInt(Xml.MIN);
+        this.max = xmlNode.getAttrInt(Xml.MAX);
+        this.offset = xmlNode.getAttrInt(Xml.OFFSET, 1000);
 
+        String str = xmlNode.getAttrNotEmpty(Xml.UNIT);
         switch (str) {
-            case "day":
+            case Xml.DAY:
                 unit = Calendar.DAY_OF_YEAR;
                 break;
-            case "hour":
+            case Xml.HOUR:
                 unit = Calendar.HOUR_OF_DAY;
                 break;
-            case "minute":
+            case Xml.MINUTE:
                 unit = Calendar.MINUTE;
                 break;
-            case "second":
+            case Xml.SECOND:
                 unit = Calendar.SECOND;
                 break;
             default:
                 throw new ZestException(Messages.parseRuleFromUnitUnknown(str));
         }
-
-        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
-        ZestXmlUtil.mustHaveNoChildrenElements(nodeName, children);
     }
 
     @Override

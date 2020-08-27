@@ -15,7 +15,8 @@ public class ZestDataTest extends AbstractZestDataTest {
     @Test
     public void testLoad01() {
         testLoadError("01.xml", Messages.parseSourcesError(), //
-                      Messages.parseSourceError("mysql"), Messages.parseSourceNecessary());
+                      Messages.parseSourceError("mysql"), //
+                      Messages.parseSourceNecessary());
     }
 
     @Test
@@ -92,6 +93,5 @@ public class ZestDataTest extends AbstractZestDataTest {
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
         Assert.assertTrue(obj.isIgnoreCheck());
-        Assert.assertTrue(obj.isOnlyCheckCoreData());
     }
 }

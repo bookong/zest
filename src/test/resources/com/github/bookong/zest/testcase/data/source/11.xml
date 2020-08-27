@@ -4,7 +4,7 @@
     <Sources>
         <Source Id="mysql">
             <Init/>
-            <Verify Ignore="true" OnlyCoreData="true" />
+            <Verify Ignore="true" />
         </Source>
     </Sources>
     <Param/>

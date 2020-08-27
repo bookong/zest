@@ -98,7 +98,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseSourceVerifyError(), //
                       Messages.parseTableError("tab"), //
                       Messages.parseRulesError(), //
-                      Messages.parseRuleError(""), //
+                      Messages.parseRuleError("f_char"), //
                       Messages.parseRuleChoice());
     }
 

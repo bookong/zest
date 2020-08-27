@@ -1,15 +1,14 @@
 package com.github.bookong.zest.testcase.sql;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.rule.AbstractRule;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestJsonUtil;
 import com.github.bookong.zest.util.ZestSqlHelper;
-import com.github.bookong.zest.util.ZestXmlUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 
@@ -31,19 +30,20 @@ public class Table extends AbstractTable<Row> {
     /** 关系型数据库的 SqlType */
     private Map<String, Integer> sqlTypes = Collections.synchronizedMap(new HashMap<>());
 
-    public Table(ZestWorker worker, String sourceId, String nodeName, Node node, Connection conn, boolean isVerifyElement){
+    public Table(ZestWorker worker, String sourceId, Node node, Connection conn, boolean isVerifyElement){
         try {
+            XmlNode xmlNode = new XmlNode(node);
+            setName(xmlNode.getAttr(Xml.NAME));
+            xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE);
+
             SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
-            List<Node> children = ZestXmlUtil.getChildren(node);
-            Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
             try {
-                sqlExecutor.loadSqlTypes(conn, sqlTypes);
+                sqlExecutor.loadSqlTypes(conn, getSqlTypes());
             } catch (UnsupportedOperationException e) {
                 loadSqlTypes(conn);
             }
 
-            init(worker, sourceId, nodeName, children, attrMap, isVerifyElement);
-            ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
+            init(worker, sourceId, xmlNode, isVerifyElement);
 
         } catch (Exception e) {
             throw new ZestException(Messages.parseTableError(getName()), e);

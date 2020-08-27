@@ -2,40 +2,32 @@ package com.github.bookong.zest.support.rule;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestXmlUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Jiang Xu
  */
 public class RuleFactory {
 
-    public static AbstractRule create(Node node) {
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> elements = ZestXmlUtil.getChildren(node);
-
-        if (elements.size() != 1) {
+    public static AbstractRule create(XmlNode xmlNode, String path) {
+        if (xmlNode.getChildren().size() != 1) {
             throw new ZestException(Messages.parseRuleChoice());
         }
 
-        String path = ZestXmlUtil.removeNotEmptyAttr(Xml.RULE, attrMap, Xml.PATH);
-        boolean nullable = ZestXmlUtil.removeBooleanAttr(Xml.RULE, attrMap, Xml.NULLABLE, true);
-        ZestXmlUtil.attrMapMustEmpty(Xml.RULE, attrMap);
+        boolean nullable = xmlNode.getAttrBoolean(Xml.NULLABLE, true);
 
-        Node childNode = elements.get(0);
+        Node childNode = xmlNode.getChildren().get(0);
         String childName = childNode.getNodeName();
         switch (childName) {
             case Xml.REG_EXP:
-                return new RegExpRule(childName, childNode, path, nullable);
+                return new RegExpRule(childNode, path, nullable);
             case Xml.CURRENT_TIME:
-                return new CurrentTimeRule(childName, childNode, path, nullable);
+                return new CurrentTimeRule(childNode, path, nullable);
             case Xml.FROM_CURRENT_TIME:
-                return new FromCurrentTimeRule(childName, childNode, path, nullable);
+                return new FromCurrentTimeRule(childNode, path, nullable);
             default:
                 throw new ZestException(Messages.parseRuleChoice());
         }

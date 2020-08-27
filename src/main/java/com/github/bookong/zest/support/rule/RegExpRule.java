@@ -1,16 +1,13 @@
 package com.github.bookong.zest.support.rule;
 
-import com.github.bookong.zest.exception.ZestException;
+import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestXmlUtil;
 import org.junit.Assert;
 import org.w3c.dom.Node;
 
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -20,15 +17,13 @@ public class RegExpRule extends AbstractRule {
 
     private String regExp;
 
-    RegExpRule(String nodeName, Node node, String path, boolean nullable){
+    RegExpRule(Node node, String path, boolean nullable){
         super(path, nullable);
-        Map<String, String> attrMap = ZestXmlUtil.getAllAttrs(node);
-        List<Node> children = ZestXmlUtil.getChildren(node);
+        XmlNode xmlNode = new XmlNode(node);
+        xmlNode.checkSupportedAttrs();
+        xmlNode.mustNoChildren();
 
-        this.regExp = ZestXmlUtil.getValue(node);
-
-        ZestXmlUtil.attrMapMustEmpty(nodeName, attrMap);
-        ZestXmlUtil.mustHaveNoChildrenElements(nodeName, children);
+        this.regExp = xmlNode.getNodeValue();
     }
 
     @Override
