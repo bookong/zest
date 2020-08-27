@@ -26,12 +26,11 @@ public class Collection extends AbstractTable<Document> {
 
     private Class<?>                             entityClass;
 
-    private Map<String, AbstractRule>            ruleMap   = Collections.synchronizedMap(new LinkedHashMap<>());
+    private List<Object>                         documents      = new ArrayList<>();
 
-    private List<Object>                         documents = Collections.synchronizedList(new ArrayList<>());
+    private List<Map<String, Object>>            verifyDataList = new ArrayList<>();
 
-    public Collection(ZestWorker worker, String sourceId, Node node, MongoOperations mongoOperations,
-                      boolean isVerifyElement){
+    public Collection(ZestWorker worker, String sourceId, Node node, MongoOperations mongoOperations, boolean isVerifyElement){
         try {
             XmlNode xmlNode = new XmlNode(node);
             setName(xmlNode.getAttr(Xml.NAME));
@@ -82,13 +81,13 @@ public class Collection extends AbstractTable<Document> {
     }
 
     @Override
-    protected void loadData(ZestWorker worker, String sourceId, String content) {
+    protected void loadData(ZestWorker worker, String sourceId, String content, boolean isVerifyElement) {
         MongoExecutor mongoExecutor = worker.getExecutor(sourceId, MongoExecutor.class);
         getDocuments().add(new Document(mongoExecutor, entityClass, getName(), content));
     }
 
     private Order getOrder(Sort item) {
-        if ("asc".equalsIgnoreCase(item.getDirection())) {
+        if (Xml.ASC.equalsIgnoreCase(item.getDirection())) {
             return new Order(Direction.ASC, item.getField());
         } else {
             return new Order(Direction.DESC, item.getField());
@@ -105,5 +104,9 @@ public class Collection extends AbstractTable<Document> {
 
     public List<Object> getDocuments() {
         return documents;
+    }
+
+    public List<Map<String, Object>> getVerifyDataList() {
+        return verifyDataList;
     }
 }

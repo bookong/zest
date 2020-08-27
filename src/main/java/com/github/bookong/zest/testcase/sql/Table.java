@@ -79,7 +79,7 @@ public class Table extends AbstractTable<Row> {
     }
 
     @Override
-    protected void loadData(ZestWorker worker, String sourceId, String xmlContent) {
+    protected void loadData(ZestWorker worker, String sourceId, String xmlContent, boolean isVerifyElement) {
         SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
         getDataList().add(new Row(sqlExecutor, getSqlTypes(), getName(), xmlContent));
     }

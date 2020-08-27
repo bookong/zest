@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -58,11 +59,11 @@ public class MongoExecutor extends AbstractExecutor {
         }
 
         List<?> actualList = operation.find(query, collection.getEntityClass());
-        Assert.assertEquals(Messages.verifyDocSize(source.getId(), collection.getName()),
+        Assert.assertEquals(Messages.verifyDocSize(source.getId(), collection.getName()), //
                             collection.getDocuments().size(), actualList.size());
 
-        for (int i = 0; i < collection.getDocuments().size(); i++) {
-            Object expected = collection.getDocuments().get(i);
+        for (int i = 0; i < collection.getVerifyDataList().size(); i++) {
+            Map<String, Object> expected = collection.getVerifyDataList().get(i);
             Object actual = actualList.get(i);
             verify(worker, zestData, source, operation, collection, i + 1, expected, actual);
         }
@@ -81,7 +82,7 @@ public class MongoExecutor extends AbstractExecutor {
      * 简单验证数据，如果对验证有特殊需求，需要在子类里覆盖这个方法
      */
     public void verify(ZestWorker worker, ZestData zestData, Source source, MongoOperations operation,
-                       Collection collection, int rowIdx, Object expected, Object actual) {
+                       Collection collection, int rowIdx, Map<String, Object> expected, Object actual) {
         System.out.println("TODO"); // TODO
     }
 

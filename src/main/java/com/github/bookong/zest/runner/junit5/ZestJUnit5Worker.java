@@ -86,7 +86,7 @@ public class ZestJUnit5Worker extends ZestWorker {
             T param = zestParamClass.newInstance();
             zestData.setParam(param);
             param.setZestData(zestData);
-            ZestUtil.loadFromAbsolutePath(this, zestData);
+            ZestUtil.loadZestData(this, zestData);
 
             logger.info(Messages.run(zestData.getDescription()));
             logger.info(zestData.getFilePath());

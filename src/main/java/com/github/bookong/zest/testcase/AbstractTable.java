@@ -33,7 +33,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
 
     protected abstract void checkRule(AbstractRule rule);
 
-    protected abstract void loadData(ZestWorker worker, String sourceId, String content);
+    protected abstract void loadData(ZestWorker worker, String sourceId, String content, boolean isVerifyElement);
 
     protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, boolean isVerifyElement) {
         this.ignoreVerify = xmlNode.getAttrBoolean(Xml.IGNORE, false);
@@ -63,12 +63,11 @@ public abstract class AbstractTable<T extends AbstractRowData> {
                 parseRules = true;
 
             } else if (Xml.DATA.equals(child.getNodeName())) {
-                parseData(worker, sourceId, child, dataIdx++);
+                parseData(worker, sourceId, child, dataIdx++, isVerifyElement);
                 parseData = true;
 
             } else {
-                throw new ZestException(Messages.parseCommonChildrenUnknown(xmlNode.getNodeName(),
-                                                                            child.getNodeName()));
+                throw new ZestException(Messages.parseCommonChildrenUnknown(xmlNode.getNodeName(), child.getNodeName()));
             }
         }
     }
@@ -77,8 +76,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         try {
             XmlNode xmlNode = new XmlNode(node);
             xmlNode.checkSupportedAttrs();
-            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(xmlNode.getNodeName(),
-                                                                                            Xml.SORT),
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(xmlNode.getNodeName(), Xml.SORT), //
                                                            Xml.SORT);
             List<Sort> list = new ArrayList<>(children.size() + 1);
             Set<String> fieldNames = new HashSet<>(children.size() + 1);
@@ -96,7 +94,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         try {
             XmlNode xmlNode = new XmlNode(node);
             xmlNode.checkSupportedAttrs();
-            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(Xml.RULES, Xml.RULE),
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(Xml.RULES, Xml.RULE), //
                                                            Xml.RULE);
             this.ruleMap = new HashMap<>(children.size() + 1);
             Set<String> rulePaths = new HashSet<>(children.size() + 1);
@@ -108,10 +106,10 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         }
     }
 
-    private void parseData(ZestWorker worker, String sourceId, Node node, int dataIdx) {
+    private void parseData(ZestWorker worker, String sourceId, Node node, int dataIdx, boolean isVerifyElement) {
         try {
             XmlNode xmlNode = new XmlNode(node);
-            loadData(worker, sourceId, xmlNode.getNodeValue());
+            loadData(worker, sourceId, xmlNode.getNodeValue(), isVerifyElement);
         } catch (Exception e) {
             throw new ZestException(Messages.parseDataError(dataIdx), e);
         }

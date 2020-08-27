@@ -151,7 +151,7 @@ public class ZestJUnit4Worker extends ZestWorker {
             zestData.setParam(param);
             param.setZestData(zestData);
 
-            ZestUtil.loadFromAbsolutePath(this, zestData);
+            ZestUtil.loadZestData(this, zestData);
 
         } catch (Exception e) {
             throw new ZestException(Messages.failRun(), e);
