@@ -4,7 +4,7 @@ import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
-import com.github.bookong.zest.support.rule.AbstractRule;
+import com.github.bookong.zest.rule.AbstractRule;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;

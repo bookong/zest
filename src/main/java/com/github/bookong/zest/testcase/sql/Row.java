@@ -2,7 +2,7 @@ package com.github.bookong.zest.testcase.sql;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
-import com.github.bookong.zest.support.rule.AbstractRule;
+import com.github.bookong.zest.rule.AbstractRule;
 import com.github.bookong.zest.testcase.AbstractRowData;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;

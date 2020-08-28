@@ -4,14 +4,13 @@ import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.MongoExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
-import com.github.bookong.zest.support.rule.AbstractRule;
+import com.github.bookong.zest.rule.AbstractRule;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.w3c.dom.Node;
 
 import java.lang.reflect.Field;

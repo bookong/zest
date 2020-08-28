@@ -1,8 +1,8 @@
 package com.github.bookong.zest.testcase.data.rule;
 
-import com.github.bookong.zest.support.rule.CurrentTimeRule;
-import com.github.bookong.zest.support.rule.FromCurrentTimeRule;
-import com.github.bookong.zest.support.rule.RegExpRule;
+import com.github.bookong.zest.rule.CurrentTimeRule;
+import com.github.bookong.zest.rule.FromCurrentTimeRule;
+import com.github.bookong.zest.rule.RegExpRule;
 import com.github.bookong.zest.testcase.SourceVerifyData;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.data.AbstractZestDataTest;

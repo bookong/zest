@@ -1,4 +1,4 @@
-package com.github.bookong.zest.support.rule;
+package com.github.bookong.zest.rule;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.support.xml.XmlNode;
