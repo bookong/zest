@@ -41,7 +41,7 @@ public abstract class AbstractSourceData {
                                                            Xml.COLLECTION);
 
             for (Node item : children) {
-                list.add(new Collection(worker, sourceId, item, (MongoOperations) operation, isVerifyElement));
+                list.add(new Collection(worker, sourceId, item, isVerifyElement));
             }
         } else {
             throw new ZestException(Messages.parseSourceOperationUnknown(operation.getClass().getName()));

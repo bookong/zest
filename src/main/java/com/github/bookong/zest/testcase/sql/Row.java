@@ -3,8 +3,6 @@ package com.github.bookong.zest.testcase.sql;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.support.rule.AbstractRule;
-import com.github.bookong.zest.support.rule.CurrentTimeRule;
-import com.github.bookong.zest.support.rule.FromCurrentTimeRule;
 import com.github.bookong.zest.testcase.AbstractRowData;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
@@ -13,6 +11,7 @@ import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestJsonUtil;
 import org.junit.Assert;
 
+import java.sql.Connection;
 import java.sql.Types;
 import java.util.*;
 
@@ -36,39 +35,52 @@ public class Row extends AbstractRowData {
         }
     }
 
-    public void verify(ZestData zestData, Source source, Table table, int rowIdx, Map<String, Object> actualRow) {
+    public void verify(SqlExecutor executor, Connection conn, ZestData zestData, Source source, Table table, int rowIdx,
+                       Map<String, Object> actualRow) {
         try {
-            Set<String> verified = new HashSet<>(getDataMap().size() + 1);
-            for (Map.Entry<String, Object> entry : getDataMap().entrySet()) {
+            executor.verifyRow(conn, zestData, source, table, rowIdx, actualRow);
+        } catch (UnsupportedOperationException e) {
+            verify(zestData, source, table, rowIdx, actualRow);
+        }
+    }
+
+    private void verify(ZestData zestData, Source source, Table table, int rowIdx, Map<String, Object> actualRow) {
+        try {
+            for (Map.Entry<String, Object> entry : actualRow.entrySet()) {
                 String columnName = entry.getKey();
-                Object expected = entry.getValue();
-                Object actual = actualRow.get(columnName);
-                verified.add(columnName);
+                Object actual = entry.getValue();
 
-                if (expected == null) {
-                    Assert.assertNull(Messages.verifyRowDataNull(columnName), actual);
+                Object expected = getDataMap().get(columnName);
+                AbstractRule rule = table.getRuleMap().get(columnName);
 
-                } else if (expected instanceof Date) {
-                    Assert.assertTrue(Messages.verifyRowDataDate(columnName), actual instanceof Date);
-                    Date expectedDateInZest = ZestDateUtil.getDateInZest(zestData, (Date) expected);
-                    String expectedValue = ZestDateUtil.formatDateNormal(expectedDateInZest);
-                    String actualValue = ZestDateUtil.formatDateNormal((Date) actual);
-                    Assert.assertEquals(Messages.verifyRowData(columnName, expectedValue), expectedValue, actualValue);
+                if (expected != null) {
+                    if (rule != null) {
+                        logger.info(Messages.verifyRowRuleNonuse(rule.getPath(), rowIdx));
+                    }
+
+                    if (expected instanceof Date) {
+                        Assert.assertTrue(Messages.verifyRowDataDate(columnName), actual instanceof Date);
+                        Date expectedDateInZest = ZestDateUtil.getDateInZest(zestData, (Date) expected);
+                        String expectedValue = ZestDateUtil.formatDateNormal(expectedDateInZest);
+                        String actualValue = ZestDateUtil.formatDateNormal((Date) actual);
+                        Assert.assertEquals(Messages.verifyRowData(columnName, expectedValue), expectedValue,
+                                            actualValue);
+
+                    } else {
+                        String expectedValue = String.valueOf(expected);
+                        String actualValue = String.valueOf(actual);
+                        Assert.assertEquals(Messages.verifyRowData(columnName, expectedValue), expectedValue,
+                                            actualValue);
+                    }
 
                 } else {
-                    String expectedValue = String.valueOf(expected);
-                    String actualValue = String.valueOf(actual);
-                    Assert.assertEquals(Messages.verifyRowData(columnName, expectedValue), expectedValue, actualValue);
+                    // expected == null
+                    if (rule != null) {
+                        rule.verify(zestData, source, table, rowIdx, rule.getPath(), actualRow.get(rule.getPath()));
+                    } else {
+                        Assert.assertNull(Messages.verifyRowDataNull(columnName), actual);
+                    }
                 }
-            }
-
-            for (AbstractRule rule : table.getRuleMap().values()) {
-                if (verified.contains(rule.getPath())) {
-                    logger.info(Messages.verifyRowRuleNonuse(rule.getPath(), rowIdx));
-                    continue;
-                }
-
-                rule.verify(zestData, source, table, rowIdx, rule.getPath(), actualRow.get(rule.getPath()));
             }
 
         } catch (Exception e) {

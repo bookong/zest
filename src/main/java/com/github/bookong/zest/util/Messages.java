@@ -259,6 +259,10 @@ public class Messages {
         return getString("verify.doc.size", sourceId, collectionId);
     }
 
+    public static String verifyDocError(String sourceId, String collectionId, int dataLine) {
+        return getString("verify.doc.error", sourceId, collectionId, dataLine);
+    }
+
     public static String parseParamObjLoad(String fieldName) {
         return getString("parse.param.obj.load", fieldName);
     }

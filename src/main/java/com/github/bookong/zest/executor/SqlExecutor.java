@@ -50,12 +50,14 @@ public class SqlExecutor extends AbstractExecutor {
         Table table = (Table) data;
         Connection conn = worker.getOperator(source.getId(), Connection.class);
         List<Map<String, Object>> actualList = ZestSqlHelper.find(conn, table);
+
         Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(),
                             actualList.size());
+
         for (int i = 0; i < table.getDataList().size(); i++) {
             Row expected = table.getDataList().get(i);
             Map<String, Object> actual = actualList.get(i);
-            verifyRow(zestData, source, table, i + 1, expected, actual);
+            expected.verify(this, conn, zestData, source, table, i + 1, actual);
         }
     }
 
@@ -74,8 +76,11 @@ public class SqlExecutor extends AbstractExecutor {
         throw new UnsupportedOperationException();
     }
 
-    protected void verifyRow(ZestData zestData, Source source, Table table, int rowIdx, Row expectedRow,
-                             Map<String, Object> actualRow) {
-        expectedRow.verify(zestData, source, table, rowIdx, actualRow);
+    /**
+     * 自定义验证 Row ，子类可以覆盖
+     */
+    public void verifyRow(Connection conn, ZestData zestData, Source source, Table table, int rowIdx,
+                          Map<String, Object> actualRow) {
+        throw new UnsupportedOperationException();
     }
 }

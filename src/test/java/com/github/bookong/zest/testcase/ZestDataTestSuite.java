@@ -8,7 +8,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ com.github.bookong.zest.testcase.data.collection.ZestDataTest.class, //
-                      com.github.bookong.zest.testcase.data.data.ZestDataTest.class, //
                       com.github.bookong.zest.testcase.data.param.ZestDataTest.class, //
                       com.github.bookong.zest.testcase.data.root.ZestDataTest.class, //
                       com.github.bookong.zest.testcase.data.rule.ZestDataTest.class, //

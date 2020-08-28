@@ -26,12 +26,7 @@ public class Collection extends AbstractTable<Document> {
 
     private Class<?>                             entityClass;
 
-    private List<Object>                         documents      = new ArrayList<>();
-
-    private List<Map<String, Object>>            verifyDataList = new ArrayList<>();
-
-    public Collection(ZestWorker worker, String sourceId, Node node, MongoOperations mongoOperations,
-                      boolean isVerifyElement){
+    public Collection(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement){
         try {
             XmlNode xmlNode = new XmlNode(node);
             setName(xmlNode.getAttr(Xml.NAME));
@@ -84,7 +79,7 @@ public class Collection extends AbstractTable<Document> {
     @Override
     protected void loadData(ZestWorker worker, String sourceId, String content, boolean isVerifyElement) {
         MongoExecutor mongoExecutor = worker.getExecutor(sourceId, MongoExecutor.class);
-        getDocuments().add(new Document(mongoExecutor, entityClass, getName(), content));
+        getDataList().add(new Document(mongoExecutor, entityClass, getName(), content));
     }
 
     private Order getOrder(Sort item) {
@@ -103,11 +98,4 @@ public class Collection extends AbstractTable<Document> {
         return entityClass;
     }
 
-    public List<Object> getDocuments() {
-        return documents;
-    }
-
-    public List<Map<String, Object>> getVerifyDataList() {
-        return verifyDataList;
-    }
 }
