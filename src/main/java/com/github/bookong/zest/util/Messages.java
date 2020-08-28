@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
  */
 public class Messages {
 
-    private static final String   BUNDLE_NAME     = "com.github.bookong.zest.util.messages"; //$NON-NLS-1$
+    private static final String   BUNDLE_NAME     = "com.github.bookong.zest.util.messages";
 
     private static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 

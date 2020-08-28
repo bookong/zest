@@ -67,7 +67,7 @@ public class FromCurrentTimeRule extends AbstractRule {
         long expectedMax = cal.getTimeInMillis();
 
         long tmp = getActualDataTime(source, table, rowIdx, path, actual);
-        Assert.assertTrue(Messages.checkTableColDateFrom(source.getId(), table.getName(), rowIdx, path), //
+        Assert.assertTrue(Messages.checkTableColDateFrom(source.getId(), table.getName(), rowIdx, path),
                           (tmp >= expectedMin && tmp <= expectedMax));
     }
 

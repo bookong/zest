@@ -30,7 +30,8 @@ public class Collection extends AbstractTable<Document> {
 
     private List<Map<String, Object>>            verifyDataList = new ArrayList<>();
 
-    public Collection(ZestWorker worker, String sourceId, Node node, MongoOperations mongoOperations, boolean isVerifyElement){
+    public Collection(ZestWorker worker, String sourceId, Node node, MongoOperations mongoOperations,
+                      boolean isVerifyElement){
         try {
             XmlNode xmlNode = new XmlNode(node);
             setName(xmlNode.getAttr(Xml.NAME));

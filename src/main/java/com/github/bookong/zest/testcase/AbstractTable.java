@@ -67,7 +67,8 @@ public abstract class AbstractTable<T extends AbstractRowData> {
                 parseData = true;
 
             } else {
-                throw new ZestException(Messages.parseCommonChildrenUnknown(xmlNode.getNodeName(), child.getNodeName()));
+                throw new ZestException(Messages.parseCommonChildrenUnknown(xmlNode.getNodeName(),
+                                                                            child.getNodeName()));
             }
         }
     }
@@ -76,7 +77,8 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         try {
             XmlNode xmlNode = new XmlNode(node);
             xmlNode.checkSupportedAttrs();
-            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(xmlNode.getNodeName(), Xml.SORT), //
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(xmlNode.getNodeName(),
+                                                                                            Xml.SORT),
                                                            Xml.SORT);
             List<Sort> list = new ArrayList<>(children.size() + 1);
             Set<String> fieldNames = new HashSet<>(children.size() + 1);
@@ -94,7 +96,7 @@ public abstract class AbstractTable<T extends AbstractRowData> {
         try {
             XmlNode xmlNode = new XmlNode(node);
             xmlNode.checkSupportedAttrs();
-            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(Xml.RULES, Xml.RULE), //
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseCommonChildrenList(Xml.RULES, Xml.RULE),
                                                            Xml.RULE);
             this.ruleMap = new HashMap<>(children.size() + 1);
             Set<String> rulePaths = new HashSet<>(children.size() + 1);

@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Jiang Xu
@@ -59,7 +58,7 @@ public class MongoExecutor extends AbstractExecutor {
         }
 
         List<?> actualList = operation.find(query, collection.getEntityClass());
-        Assert.assertEquals(Messages.verifyDocSize(source.getId(), collection.getName()), //
+        Assert.assertEquals(Messages.verifyDocSize(source.getId(), collection.getName()),
                             collection.getDocuments().size(), actualList.size());
 
         for (int i = 0; i < collection.getVerifyDataList().size(); i++) {
@@ -68,8 +67,6 @@ public class MongoExecutor extends AbstractExecutor {
             verify(worker, zestData, source, operation, collection, i + 1, expected, actual);
         }
     }
-
-
 
     /**
      * 根据测试用例中数据构建 Document 对象

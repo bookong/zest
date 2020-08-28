@@ -6,7 +6,6 @@ import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.util.Messages;
 import org.w3c.dom.Node;
 
-
 /**
  * @author Jiang Xu
  */

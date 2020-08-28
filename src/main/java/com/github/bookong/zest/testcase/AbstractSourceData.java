@@ -27,7 +27,8 @@ public abstract class AbstractSourceData {
         List<AbstractTable> list = new ArrayList<>();
 
         if (operation instanceof Connection) {
-            List<Node> children = xmlNode.getFixedNodeList(Messages.parseSourceOperationMatch(Connection.class.getName(), nodeName, Xml.TABLE), //
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseSourceOperationMatch(Connection.class.getName(),
+                                                                                              nodeName, Xml.TABLE),
                                                            Xml.TABLE);
 
             for (Node item : children) {
@@ -35,7 +36,8 @@ public abstract class AbstractSourceData {
             }
 
         } else if (operation instanceof MongoOperations) {
-            List<Node> children = xmlNode.getFixedNodeList(Messages.parseSourceOperationMatch(MongoOperations.class.getName(), nodeName, Xml.COLLECTION), //
+            List<Node> children = xmlNode.getFixedNodeList(Messages.parseSourceOperationMatch(MongoOperations.class.getName(),
+                                                                                              nodeName, Xml.COLLECTION),
                                                            Xml.COLLECTION);
 
             for (Node item : children) {

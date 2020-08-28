@@ -7,6 +7,7 @@ import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
 import com.github.bookong.zest.testcase.ZestData;
+import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.testcase.mock.MockConnection;
 import com.github.bookong.zest.testcase.mock.MockMongoOperations;
 import com.github.bookong.zest.testcase.param.Param;
@@ -54,14 +55,22 @@ public abstract class AbstractZestDataTest {
     }
 
     protected ZestData load(String filename) {
-        String filePath = getClass().getResource(filename).getPath();
-        ZestData zestData = new ZestData(filePath);
-        Param param = new Param();
-        zestData.setParam(param);
-        param.setZestData(zestData);
-        initZestData(filename, zestData);
-        zestData.load(worker);
-        return zestData;
+        return load(filename, Param.class);
+    }
+
+    protected <T extends ZestParam> ZestData load(String filename, Class<T> paramClass) {
+        try {
+            String filePath = getClass().getResource(filename).getPath();
+            ZestData zestData = new ZestData(filePath);
+            T param = paramClass.newInstance();
+            zestData.setParam(param);
+            param.setZestData(zestData);
+            initZestData(filename, zestData);
+            zestData.load(worker);
+            return zestData;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getExpectMessage(String filename, String... errorMessages) {

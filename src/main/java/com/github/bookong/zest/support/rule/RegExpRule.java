@@ -30,7 +30,7 @@ public class RegExpRule extends AbstractRule {
     public void verify(ZestData zestData, Source source, Table table, int rowIdx, String path, Object actual) {
         assertNullable(path, actual);
 
-        Assert.assertTrue(Messages.checkTableColRegexp(source.getId(), table.getName(), rowIdx, path, getRegExp()), //
+        Assert.assertTrue(Messages.checkTableColRegexp(source.getId(), table.getName(), rowIdx, path, getRegExp()),
                           Pattern.matches(getRegExp(), String.valueOf(actual)));
     }
 

@@ -4,19 +4,16 @@ import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
+import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.sql.Row;
 import com.github.bookong.zest.testcase.sql.Table;
-import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 简单的 Sql 的执行器
@@ -53,7 +50,8 @@ public class SqlExecutor extends AbstractExecutor {
         Table table = (Table) data;
         Connection conn = worker.getOperator(source.getId(), Connection.class);
         List<Map<String, Object>> actualList = ZestSqlHelper.find(conn, table);
-        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(), actualList.size());
+        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(),
+                            actualList.size());
         for (int i = 0; i < table.getDataList().size(); i++) {
             Row expected = table.getDataList().get(i);
             Map<String, Object> actual = actualList.get(i);
@@ -64,7 +62,8 @@ public class SqlExecutor extends AbstractExecutor {
     /**
      * 自定义的数据转换
      */
-    public Object parseRowValue(String tableName, String fieldName, Integer fieldSqlType, Object value) throws UnsupportedOperationException {
+    public Object parseRowValue(String tableName, String fieldName, Integer fieldSqlType,
+                                Object value) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
@@ -75,7 +74,8 @@ public class SqlExecutor extends AbstractExecutor {
         throw new UnsupportedOperationException();
     }
 
-    protected void verifyRow(ZestData zestData, Source source, Table table, int rowIdx, Row expectedRow, Map<String, Object> actualRow) {
+    protected void verifyRow(ZestData zestData, Source source, Table table, int rowIdx, Row expectedRow,
+                             Map<String, Object> actualRow) {
         expectedRow.verify(zestData, source, table, rowIdx, actualRow);
     }
 }

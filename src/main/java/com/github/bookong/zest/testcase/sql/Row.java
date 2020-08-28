@@ -76,7 +76,8 @@ public class Row extends AbstractRowData {
         }
     }
 
-    private Object parseValue(SqlExecutor sqlExecutor, Integer fieldSqlType, String tableName, String columnName, Object value) {
+    private Object parseValue(SqlExecutor sqlExecutor, Integer fieldSqlType, String tableName, String columnName,
+                              Object value) {
         if (value == null) {
             return null;
         }

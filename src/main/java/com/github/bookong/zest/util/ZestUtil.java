@@ -10,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,7 +48,8 @@ public class ZestUtil {
         return path2ObjMap;
     }
 
-    private static void parsePathObjsFromJson(Map<String, Object> path2ObjMap, String parentPath, String subPath, Object obj) {
+    private static void parsePathObjsFromJson(Map<String, Object> path2ObjMap, String parentPath, String subPath,
+                                              Object obj) {
         String path = String.format("%s.%s", parentPath, subPath);
         if (obj instanceof Map) {
             Map map = (Map) obj;

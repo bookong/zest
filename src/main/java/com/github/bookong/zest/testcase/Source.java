@@ -33,8 +33,7 @@ public class Source {
             xmlNode.checkSupportedAttrs(Xml.ID);
             XmlNode.duplicateCheck(Xml.ID, sourceIds, getId());
 
-            List<Node> children = xmlNode.getSpecifiedNodes(Messages.parseSourceNecessary(), //
-                                                            Xml.INIT, Xml.VERIFY);
+            List<Node> children = xmlNode.getSpecifiedNodes(Messages.parseSourceNecessary(), Xml.INIT, Xml.VERIFY);
 
             this.initData = new SourceInitData(worker, getId(), children.get(0));
             this.verifyData = new SourceVerifyData(worker, getId(), children.get(1));
