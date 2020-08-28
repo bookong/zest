@@ -1,8 +1,6 @@
 package com.github.bookong.zest.support.rule;
 
-import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
-import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
 import org.junit.Assert;
 
@@ -22,9 +20,9 @@ public abstract class AbstractRule {
         this.nullable = nullable;
     }
 
-    public abstract void verify(ZestData zestData, Source source, Table table, int rowIdx, String path, Object actual);
+    public abstract void verify(ZestData zestData, String path, Object actual);
 
-    long getActualDataTime(Source source, Table table, int rowIdx, String path, Object actual) {
+    long getActualDataTime(String path, Object actual) {
         long tmp = 0;
         if (actual instanceof Date) {
             tmp = ((Date) actual).getTime();
@@ -33,7 +31,7 @@ public abstract class AbstractRule {
             tmp = (Long) actual;
 
         } else {
-            Assert.fail(Messages.checkTableColDate(source.getId(), table.getName(), rowIdx, path));
+            Assert.fail(Messages.verifyRuleDateType(path));
         }
 
         return tmp;
@@ -41,7 +39,7 @@ public abstract class AbstractRule {
 
     void assertNullable(String path, Object actual) {
         if (!isNullable() && actual == null) {
-            Assert.fail(Messages.verifyRowDataNull(path));
+            Assert.fail(Messages.verifyRuleNotNull(path));
         }
     }
 

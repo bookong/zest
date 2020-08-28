@@ -84,7 +84,7 @@ public class Row extends AbstractRowData {
                 } else {
                     // expected == null
                     if (rule != null) {
-                        rule.verify(zestData, source, table, rowIdx, rule.getPath(), actualRow.get(rule.getPath()));
+                        rule.verify(zestData, rule.getPath(), actualRow.get(rule.getPath()));
                     } else {
                         Assert.assertNull(Messages.verifyRowDataNull(columnName), actual);
                     }

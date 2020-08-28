@@ -3,9 +3,7 @@ package com.github.bookong.zest.support.rule;
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.support.xml.XmlNode;
-import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
-import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
 import org.junit.Assert;
 import org.w3c.dom.Node;
@@ -52,7 +50,7 @@ public class FromCurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void verify(ZestData zestData, Source source, Table table, int rowIdx, String path, Object actual) {
+    public void verify(ZestData zestData, String path, Object actual) {
         assertNullable(path, actual);
 
         Calendar cal = Calendar.getInstance();
@@ -66,9 +64,8 @@ public class FromCurrentTimeRule extends AbstractRule {
         cal.add(Calendar.MILLISECOND, getOffset());
         long expectedMax = cal.getTimeInMillis();
 
-        long tmp = getActualDataTime(source, table, rowIdx, path, actual);
-        Assert.assertTrue(Messages.checkTableColDateFrom(source.getId(), table.getName(), rowIdx, path),
-                          (tmp >= expectedMin && tmp <= expectedMax));
+        long tmp = getActualDataTime(path, actual);
+        Assert.assertTrue(Messages.verifyRuleDateFrom(path), (tmp >= expectedMin && tmp <= expectedMax));
     }
 
     public int getMin() {

@@ -1,9 +1,7 @@
 package com.github.bookong.zest.support.rule;
 
 import com.github.bookong.zest.support.xml.XmlNode;
-import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
-import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
 import org.junit.Assert;
 import org.w3c.dom.Node;
@@ -27,10 +25,10 @@ public class RegExpRule extends AbstractRule {
     }
 
     @Override
-    public void verify(ZestData zestData, Source source, Table table, int rowIdx, String path, Object actual) {
+    public void verify(ZestData zestData, String path, Object actual) {
         assertNullable(path, actual);
 
-        Assert.assertTrue(Messages.checkTableColRegexp(source.getId(), table.getName(), rowIdx, path, getRegExp()),
+        Assert.assertTrue(Messages.verifyRuleRegExp(path, getRegExp()),
                           Pattern.matches(getRegExp(), String.valueOf(actual)));
     }
 

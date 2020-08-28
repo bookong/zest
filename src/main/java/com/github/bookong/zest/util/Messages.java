@@ -235,6 +235,26 @@ public class Messages {
         return getString("verify.ignore", sourceId);
     }
 
+    public static String verifyRuleNotNull(String path) {
+        return getString("verify.rule.not.null", path);
+    }
+
+    public static String verifyRuleDateType(String path) {
+        return getString("verify.rule.date.type", path);
+    }
+
+    public static String verifyRuleDateCurrent(String path) {
+        return getString("verify.rule.date.current", path);
+    }
+
+    public static String verifyRuleDateFrom(String path) {
+        return getString("verify.rule.date.from", path);
+    }
+
+    public static String verifyRuleRegExp(String path, String regExp) {
+        return getString("verify.rule.regexp", path, regExp);
+    }
+
     public static String verifyTableIgnore(String sourceId, String tableName) {
         return getString("verify.table.ignore", sourceId, tableName);
     }
@@ -293,23 +313,6 @@ public class Messages {
 
     public static String parseParamObjLoad(String fieldName) {
         return getString("parse.param.obj.load", fieldName);
-    }
-
-    public static String checkTableColDate(String sourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.date", sourceId, tableName, rowIdx, columnName);
-    }
-
-    public static String checkTableColDateCurrent(String sourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.date.current", sourceId, tableName, rowIdx, columnName);
-    }
-
-    public static String checkTableColDateFrom(String sourceId, String tableName, int rowIdx, String columnName) {
-        return getString("check.table.col.date.from", sourceId, tableName, rowIdx, columnName);
-    }
-
-    public static String checkTableColRegexp(String sourceId, String tableName, int rowIdx, String columnName,
-                                             String regExp) {
-        return getString("check.table.col.regexp", sourceId, tableName, rowIdx, columnName, regExp);
     }
 
     private static String getString(String key) {
