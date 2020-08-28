@@ -3,7 +3,6 @@ package com.github.bookong.zest.testcase.sql;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.rule.AbstractRule;
-import com.github.bookong.zest.testcase.AbstractRowData;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
@@ -15,12 +14,15 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.Types;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Jiang Xu
  */
-public class Row extends AbstractRowData {
+public class Row {
 
     protected Logger            logger  = LoggerFactory.getLogger(getClass());
 
@@ -63,7 +65,7 @@ public class Row extends AbstractRowData {
 
                 if (expected != null) {
                     if (rule != null) {
-                        logger.info(Messages.verifyRowRuleNonuse(rule.getPath(), rowIdx));
+                        logger.info(Messages.verifyRuleIgnore(rule.getPath(), rowIdx));
                     }
 
                     if (expected instanceof Date) {

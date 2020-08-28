@@ -17,7 +17,7 @@ import java.util.*;
  * 
  * @author Jiang Xu
  */
-public abstract class AbstractTable<T extends AbstractRowData> {
+public abstract class AbstractTable<T> {
 
     private List<T>                   dataList;
 

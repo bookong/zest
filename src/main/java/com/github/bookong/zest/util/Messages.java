@@ -255,6 +255,10 @@ public class Messages {
         return getString("verify.rule.regexp", path, regExp);
     }
 
+    public static String verifyRuleIgnore(String path, int rowIdx) {
+        return getString("verify.rule.ignore", path, rowIdx);
+    }
+
     public static String verifyTableIgnore(String sourceId, String tableName) {
         return getString("verify.table.ignore", sourceId, tableName);
     }
@@ -273,10 +277,6 @@ public class Messages {
 
     public static String verifyRowError(String sourceId, String tableName, int rowIdx) {
         return getString("verify.row.error", sourceId, tableName, rowIdx);
-    }
-
-    public static String verifyRowRuleNonuse(String rulePath, int rowIdx) {
-        return getString("verify.row.rule.nonuse", rulePath, rowIdx);
     }
 
     public static String verifyRowDataNull(String columnName) {
@@ -313,6 +313,22 @@ public class Messages {
 
     public static String parseParamObjLoad(String fieldName) {
         return getString("parse.param.obj.load", fieldName);
+    }
+
+    public static String verifyDocumentType(String expectedClass, String actualClass) {
+        return getString("verify.document.type", expectedClass, actualClass);
+    }
+
+    public static String verifyDocumentDataNull(String path) {
+        return getString("verify.document.data.null", path);
+    }
+
+    public static String verifyDocumentDataDate(String path) {
+        return getString("verify.document.data.date", path);
+    }
+
+    public static String verifyDocumentData(String path, String value) {
+        return getString("verify.document.data", path, value);
     }
 
     private static String getString(String key) {

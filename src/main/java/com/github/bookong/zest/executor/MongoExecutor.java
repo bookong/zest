@@ -12,9 +12,8 @@ import org.junit.Assert;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 
-import javax.print.Doc;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Jiang Xu
@@ -36,13 +35,16 @@ public class MongoExecutor extends AbstractExecutor {
         }
 
         Collection collection = (Collection) data;
-        List<Document> dataList = collection.getDataList();
-        if (dataList.isEmpty()) {
+        List<Object> initDataList = new ArrayList<>(collection.getDataList().size());
+        for (Document doc : collection.getDataList()) {
+            initDataList.add(doc.getData());
+        }
+        if (initDataList.isEmpty()) {
             return;
         }
 
         MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
-        operator.insert(dataList, collection.getEntityClass());
+        operator.insert(initDataList, collection.getEntityClass());
     }
 
     @Override
@@ -80,7 +82,8 @@ public class MongoExecutor extends AbstractExecutor {
     /**
      * 根据测试用例中数据构建 Document 对象，子类可以覆盖
      */
-    public Object createDocumentData(Class<?> entityClass, String collectionName, String xmlContent) {
+    public Object createDocumentData(Class<?> entityClass, String collectionName, String xmlContent,
+                                     boolean isVerifyElement) {
         throw new UnsupportedOperationException();
     }
 
@@ -88,7 +91,7 @@ public class MongoExecutor extends AbstractExecutor {
      * 自定义验证 Document 对象，子类可以覆盖
      */
     public void verifyDocument(MongoOperations operator, ZestData zestData, Source source, Collection collection,
-                               int rowIdx, Object actualDocument) {
+                               int rowIdx, Document expectedDocument, Object actualData) {
         throw new UnsupportedOperationException();
     }
 }

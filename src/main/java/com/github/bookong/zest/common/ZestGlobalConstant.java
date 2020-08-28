@@ -5,6 +5,9 @@ package com.github.bookong.zest.common;
  */
 public interface ZestGlobalConstant {
 
+    String FIX_SUB_DIR    = "data";
+    String PATH_SEPARATOR = ".";
+
     interface Logger {
 
         String SQL = "zest_sql";

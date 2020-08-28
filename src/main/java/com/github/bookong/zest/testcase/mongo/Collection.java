@@ -78,7 +78,7 @@ public class Collection extends AbstractTable<Document> {
     @Override
     protected void loadData(ZestWorker worker, String sourceId, String content, boolean isVerifyElement) {
         MongoExecutor mongoExecutor = worker.getExecutor(sourceId, MongoExecutor.class);
-        getDataList().add(new Document(mongoExecutor, entityClass, getName(), content));
+        getDataList().add(new Document(mongoExecutor, entityClass, getName(), content, isVerifyElement));
     }
 
     private Order getOrder(Sort item) {

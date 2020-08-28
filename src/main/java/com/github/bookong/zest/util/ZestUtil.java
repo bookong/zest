@@ -1,24 +1,23 @@
 package com.github.bookong.zest.util;
 
+import com.github.bookong.zest.common.ZestGlobalConstant;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.ZestData;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Jiang Xu
  */
 public class ZestUtil {
-
-    private static Logger logger = LoggerFactory.getLogger(ZestUtil.class);
 
     /**
      * 从绝对路径加载 xml 文件
@@ -39,36 +38,56 @@ public class ZestUtil {
         }
     }
 
-    public static Map<String, Object> parsePathObjsFromJson(String content) {
-        Map<String, Object> path2ObjMap = new LinkedHashMap<>();
+    public static Set<String> parsePathsFromJson(String content) {
+        Set<String> paths = new LinkedHashSet<>();
         Map map = ZestJsonUtil.fromJson(content, Map.class);
         for (Object key : map.keySet()) {
-            parsePathObjsFromJson(path2ObjMap, StringUtils.EMPTY, String.valueOf(key), map.get(key));
+            parsePathsFromJson(paths, StringUtils.EMPTY, String.valueOf(key), map.get(key));
         }
-        return path2ObjMap;
+        return paths;
     }
 
-    private static void parsePathObjsFromJson(Map<String, Object> path2ObjMap, String parentPath, String subPath,
-                                              Object obj) {
-        String path = String.format("%s.%s", parentPath, subPath);
-        if (obj instanceof Map) {
+    private static void parsePathsFromJson(Set<String> paths, String parentPath, String subPath, Object obj) {
+        String path = ZestUtil.getPath(parentPath, subPath);
+        if (obj == null) {
+            paths.add(path);
+        } else if (obj instanceof Map) {
             Map map = (Map) obj;
             for (Object key : map.keySet()) {
-                parsePathObjsFromJson(path2ObjMap, path, String.valueOf(key), map.get(key));
+                parsePathsFromJson(paths, path, String.valueOf(key), map.get(key));
+            }
+        } else if (obj instanceof List) {
+            List list = (List) obj;
+            for (Object item : list) {
+                parsePathsFromJson(paths, path, StringUtils.EMPTY, item);
             }
         } else {
-            path2ObjMap.put(path, obj);
+            paths.add(path);
         }
     }
 
     public static String getDir(Class<?> testObjClass, String methodName) {
-        return testObjClass.getResource("").getPath() //
-                           .concat("data").concat(File.separator) //
+        return testObjClass.getResource(StringUtils.EMPTY).getPath() //
+                           .concat(ZestGlobalConstant.FIX_SUB_DIR).concat(File.separator) //
                            .concat(testObjClass.getSimpleName()).concat(File.separator) //
                            .concat(methodName).concat(File.separator);
     }
 
     public static String getDir(TestClass testCase, FrameworkMethod frameworkMethod) {
         return getDir(testCase.getJavaClass(), frameworkMethod.getName());
+    }
+
+    public static String getPath(String parentPath, String subPath) {
+        StringBuilder sb = new StringBuilder();
+        if (StringUtils.isNotBlank(parentPath)) {
+            sb.append(parentPath);
+        }
+        if (StringUtils.isNotBlank(subPath)) {
+            if (sb.length() > 0) {
+                sb.append(ZestGlobalConstant.PATH_SEPARATOR);
+            }
+            sb.append(subPath);
+        }
+        return sb.toString();
     }
 }
