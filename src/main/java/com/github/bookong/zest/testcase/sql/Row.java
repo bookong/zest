@@ -10,6 +10,8 @@ import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestJsonUtil;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.Types;
@@ -19,6 +21,8 @@ import java.util.*;
  * @author Jiang Xu
  */
 public class Row extends AbstractRowData {
+
+    protected Logger            logger  = LoggerFactory.getLogger(getClass());
 
     private Map<String, Object> dataMap = new LinkedHashMap<>();
 
@@ -38,18 +42,22 @@ public class Row extends AbstractRowData {
     public void verify(SqlExecutor executor, Connection conn, ZestData zestData, Source source, Table table, int rowIdx,
                        Map<String, Object> actualRow) {
         try {
-            executor.verifyRow(conn, zestData, source, table, rowIdx, actualRow);
-        } catch (UnsupportedOperationException e) {
-            verify(zestData, source, table, rowIdx, actualRow);
+            try {
+                executor.verifyRow(conn, zestData, source, table, rowIdx, actualRow);
+            } catch (UnsupportedOperationException e) {
+                verify(zestData, source, table, rowIdx, actualRow);
+            }
+        } catch (Exception e) {
+            throw new ZestException(Messages.verifyRowError(source.getId(), table.getName(), rowIdx), e);
         }
     }
 
     private void verify(ZestData zestData, Source source, Table table, int rowIdx, Map<String, Object> actualRow) {
-        try {
-            for (Map.Entry<String, Object> entry : actualRow.entrySet()) {
-                String columnName = entry.getKey();
-                Object actual = entry.getValue();
+        for (Map.Entry<String, Object> entry : actualRow.entrySet()) {
+            String columnName = entry.getKey();
+            Object actual = entry.getValue();
 
+            if (getDataMap().containsKey(columnName)) {
                 Object expected = getDataMap().get(columnName);
                 AbstractRule rule = table.getRuleMap().get(columnName);
 
@@ -82,9 +90,6 @@ public class Row extends AbstractRowData {
                     }
                 }
             }
-
-        } catch (Exception e) {
-            throw new ZestException(Messages.verifyRowError(source.getId(), table.getName(), rowIdx), e);
         }
     }
 

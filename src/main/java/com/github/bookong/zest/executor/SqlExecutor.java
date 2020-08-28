@@ -33,7 +33,7 @@ public class SqlExecutor extends AbstractExecutor {
     @Override
     protected void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
         if (!(data instanceof Table)) {
-            throw new ZestException(Messages.executorMatch());
+            throw new ZestException(Messages.verifyTableExecutor(getClass().getName()));
         }
 
         Table table = (Table) data;
@@ -43,22 +43,28 @@ public class SqlExecutor extends AbstractExecutor {
 
     @Override
     protected void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
+        logger.info(Messages.verifyTableStart(source.getId(), data.getName()));
         if (!(data instanceof Table)) {
-            throw new ZestException(Messages.executorMatch());
+            throw new ZestException(Messages.verifyTableExecutor(getClass().getName()));
         }
 
         Table table = (Table) data;
         Connection conn = worker.getOperator(source.getId(), Connection.class);
         List<Map<String, Object>> actualList = ZestSqlHelper.find(conn, table);
 
-        Assert.assertEquals(Messages.checkTableSize(source.getId(), table.getName()), table.getDataList().size(),
-                            actualList.size());
+        Assert.assertEquals(Messages.verifyTableSize(source.getId(), table.getName()), //
+                            table.getDataList().size(), actualList.size());
 
         for (int i = 0; i < table.getDataList().size(); i++) {
             Row expected = table.getDataList().get(i);
             Map<String, Object> actual = actualList.get(i);
             expected.verify(this, conn, zestData, source, table, i + 1, actual);
         }
+    }
+
+    @Override
+    protected String getIgnoreTableInfo(Source source, AbstractTable data){
+        return Messages.verifyTableIgnore(source.getId(), data.getName());
     }
 
     /**

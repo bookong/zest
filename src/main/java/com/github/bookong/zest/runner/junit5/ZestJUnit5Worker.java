@@ -77,7 +77,7 @@ public class ZestJUnit5Worker extends ZestWorker {
             return list.iterator();
 
         } catch (Exception e) {
-            throw new ZestException(Messages.failRun(), e);
+            throw new ZestException(Messages.runFail(), e);
         }
     }
 
@@ -95,7 +95,7 @@ public class ZestJUnit5Worker extends ZestWorker {
             return param;
 
         } catch (Exception e) {
-            throw new ZestException(Messages.failRun(), e);
+            throw new ZestException(Messages.runFail(), e);
         }
     }
 

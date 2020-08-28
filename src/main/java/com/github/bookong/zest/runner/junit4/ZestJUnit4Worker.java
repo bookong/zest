@@ -154,7 +154,7 @@ public class ZestJUnit4Worker extends ZestWorker {
             ZestUtil.loadZestData(this, zestData);
 
         } catch (Exception e) {
-            throw new ZestException(Messages.failRun(), e);
+            throw new ZestException(Messages.runFail(), e);
         }
     }
 

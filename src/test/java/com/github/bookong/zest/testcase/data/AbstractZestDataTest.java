@@ -1,13 +1,10 @@
 package com.github.bookong.zest.testcase.data;
 
-import com.github.bookong.zest.exception.ZestException;
-import com.github.bookong.zest.executor.AbstractExecutor;
 import com.github.bookong.zest.executor.MongoExecutor;
 import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
 import com.github.bookong.zest.testcase.ZestData;
-import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.testcase.mock.MockConnection;
 import com.github.bookong.zest.testcase.mock.MockMongoOperations;
 import com.github.bookong.zest.testcase.param.Param;
@@ -48,29 +45,21 @@ public abstract class AbstractZestDataTest {
         try {
             load(filename);
             Assert.fail("Should raise an exception");
-        } catch (ZestException e) {
+        } catch (Exception e) {
             logger.info(e.getMessage());
             Assert.assertEquals(getExpectMessage(filename, errorMessages), e.getMessage());
         }
     }
 
     protected ZestData load(String filename) {
-        return load(filename, Param.class);
-    }
-
-    protected <T extends ZestParam> ZestData load(String filename, Class<T> paramClass) {
-        try {
-            String filePath = getClass().getResource(filename).getPath();
-            ZestData zestData = new ZestData(filePath);
-            T param = paramClass.newInstance();
-            zestData.setParam(param);
-            param.setZestData(zestData);
-            initZestData(filename, zestData);
-            zestData.load(worker);
-            return zestData;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String filePath = getClass().getResource(filename).getPath();
+        ZestData zestData = new ZestData(filePath);
+        Param param = new Param();
+        zestData.setParam(param);
+        param.setZestData(zestData);
+        initZestData(filename, zestData);
+        zestData.load(worker);
+        return zestData;
     }
 
     private String getExpectMessage(String filename, String... errorMessages) {

@@ -19,8 +19,16 @@ public class Messages {
         RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
     }
 
-    public static String failRun() {
-        return getString("fail.run");
+    public static String run(String desc) {
+        return getString("run", desc);
+    }
+
+    public static String runFail() {
+        return getString("run.fail");
+    }
+
+    public static String noData() {
+        return getString("no.data");
     }
 
     public static String noAnnotationZest() {
@@ -29,14 +37,6 @@ public class Messages {
 
     public static String fileNotFound(String filePath) {
         return getString("file.found", filePath);
-    }
-
-    public static String noData() {
-        return getString("no.data");
-    }
-
-    public static String run(String desc) {
-        return getString("run", desc);
     }
 
     public static String parse(String filePath) {
@@ -227,20 +227,36 @@ public class Messages {
         return getString("operator.unbound", value);
     }
 
-    public static String operatorCast(String value, String fromCalss, String toClass) {
-        return getString("operator.cast", value, fromCalss, toClass);
+    public static String operatorCast(String value, String fromClass, String toClass) {
+        return getString("operator.cast", value, fromClass, toClass);
     }
 
-    public static String verifyStart(String sourceId, String tableName) {
-        return getString("verify.start", sourceId, tableName);
+    public static String verifyIgnore(String sourceId) {
+        return getString("verify.ignore", sourceId);
+    }
+
+    public static String verifyTableIgnore(String sourceId, String tableName) {
+        return getString("verify.table.ignore", sourceId, tableName);
+    }
+
+    public static String verifyTableStart(String sourceId, String tableName) {
+        return getString("verify.table.start", sourceId, tableName);
+    }
+
+    public static String verifyTableExecutor(String executorClass) {
+        return getString("verify.table.executor", executorClass);
+    }
+
+    public static String verifyTableSize(String sourceId, String tableName) {
+        return getString("verify.table.size", sourceId, tableName);
+    }
+
+    public static String verifyRowError(String sourceId, String tableName, int rowIdx) {
+        return getString("verify.row.error", sourceId, tableName, rowIdx);
     }
 
     public static String verifyRowRuleNonuse(String rulePath, int rowIdx) {
         return getString("verify.row.rule.nonuse", rulePath, rowIdx);
-    }
-
-    public static String verifyRowError(String sourceId, String tableName, int dataLine) {
-        return getString("verify.row.error", sourceId, tableName, dataLine);
     }
 
     public static String verifyRowDataNull(String columnName) {
@@ -255,36 +271,28 @@ public class Messages {
         return getString("verify.row.data", columnName, value);
     }
 
-    public static String verifyDocSize(String sourceId, String collectionId) {
-        return getString("verify.doc.size", sourceId, collectionId);
+    public static String verifyCollectionIgnore(String sourceId, String collectionName) {
+        return getString("verify.collection.ignore", sourceId, collectionName);
     }
 
-    public static String verifyDocError(String sourceId, String collectionId, int dataLine) {
-        return getString("verify.doc.error", sourceId, collectionId, dataLine);
+    public static String verifyCollectionStart(String sourceId, String collectionName) {
+        return getString("verify.collection.start", sourceId, collectionName);
+    }
+
+    public static String verifyCollectionExecutor(String executorClass) {
+        return getString("verify.collection.executor", executorClass);
+    }
+
+    public static String verifyCollectionSize(String sourceId, String collectionId) {
+        return getString("verify.collection.size", sourceId, collectionId);
+    }
+
+    public static String verifyDocumentError(String sourceId, String collectionId, int rowIdx) {
+        return getString("verify.document.error", sourceId, collectionId, rowIdx);
     }
 
     public static String parseParamObjLoad(String fieldName) {
         return getString("parse.param.obj.load", fieldName);
-    }
-
-    public static String executorMatch() {
-        return getString("executor.match");
-    }
-
-    public static String ignoreTargetData(String id) {
-        return getString("ignore.target.data", id);
-    }
-
-    public static String ignoreTargetTable(String sourceId, String tableName) {
-        return getString("ignore.target.table", sourceId, tableName);
-    }
-
-    public static String checkDs(String value) {
-        return getString("check.ds", value);
-    }
-
-    public static String checkTableSize(String sourceId, String tableName) {
-        return getString("check.table.size", sourceId, tableName);
     }
 
     public static String checkTableColDate(String sourceId, String tableName, int rowIdx, String columnName) {
