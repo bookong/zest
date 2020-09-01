@@ -142,21 +142,21 @@ public abstract class AbstractTable<T> {
     }
 
     private void parseRule(Node node, Set<String> rulePaths) {
-        String path = null;
+        String field = null;
         try {
             XmlNode xmlNode = new XmlNode(node);
-            path = xmlNode.getAttr(Xml.PATH);
-            if (StringUtils.isBlank(path)) {
-                throw new ZestException(Messages.parseCommonAttrEmpty(Xml.PATH));
+            field = xmlNode.getAttr(Xml.FIELD);
+            if (StringUtils.isBlank(field)) {
+                throw new ZestException(Messages.parseCommonAttrEmpty(Xml.FIELD));
             }
 
-            xmlNode.checkSupportedAttrs(Xml.PATH, Xml.NULLABLE);
-            AbstractRule rule = RuleFactory.create(xmlNode, path);
-            XmlNode.duplicateCheck(Xml.PATH, rulePaths, rule.getPath());
+            xmlNode.checkSupportedAttrs(Xml.FIELD, Xml.NULLABLE);
+            AbstractRule rule = RuleFactory.create(xmlNode, field);
+            XmlNode.duplicateCheck(Xml.FIELD, rulePaths, rule.getPath());
             checkRule(rule);
             ruleMap.put(rule.getPath(), rule);
         } catch (Exception e) {
-            throw new ZestException(Messages.parseRuleError(path), e);
+            throw new ZestException(Messages.parseRuleError(field), e);
         }
     }
 

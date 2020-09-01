@@ -153,7 +153,6 @@
                 </xsd:annotation>
                 <xsd:choice>
                     <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
-                    <xsd:element ref="data:Collection" minOccurs="0" maxOccurs="unbounded"/>
                 </xsd:choice>
             </xsd:sequence>
         </xsd:complexType>
@@ -176,7 +175,6 @@
                 </xsd:annotation>
                 <xsd:choice>
                     <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
-                    <xsd:element ref="data:Collection" minOccurs="0" maxOccurs="unbounded"/>
                 </xsd:choice>
             </xsd:sequence>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
@@ -223,65 +221,18 @@
                 </xsd:element>
             </xsd:sequence>
             <xsd:attribute name="Name" type="xsd:string" use="required"/>
+            <xsd:attribute name="EntityClass" type="xsd:string" >
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Entity class name
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
                 <xsd:annotation>
                     <xsd:documentation>
                         If true, ignore the verification of this database table after the code under test is executed.
                         This attribute is only valid in the Table element under the Verify element.
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
-        </xsd:complexType>
-    </xsd:element>
-
-    <xsd:element name="Collection">
-        <xsd:annotation>
-            <xsd:documentation>
-                MongoDB Collection is valid when @ZestSource annotates the
-                org.springframework.data.mongodb.core.MongoOperations property of the test object.
-            </xsd:documentation>
-        </xsd:annotation>
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element ref="data:Sorts" minOccurs="0">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            Generally, the primary key of MongoDB is a uuid string, so you need to specify the sorting
-                            rules of the query.
-                            This attribute is only valid in the Collection element under the Verify element.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element ref="data:Rules" minOccurs="0">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            Specify data validation rules. For MongoDB Document, no matter how it is set, the entity
-                            object field marked by @Id will not be verified.
-                            This attribute is only valid in the Collection element under the Verify element.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-                <xsd:element ref="data:Data" minOccurs="0" maxOccurs="unbounded">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            MongoDB Document list.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
-            </xsd:sequence>
-            <xsd:attribute name="Name" type="xsd:string" use="required"/>
-            <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        If true, ignore the verification of this Collection after the code under test is executed.
-                        This attribute is only valid in the Table element under the Verify element.
-                    </xsd:documentation>
-                </xsd:annotation>
-            </xsd:attribute>
-            <xsd:attribute name="EntityClass" type="xsd:string" use="required">
-                <xsd:annotation>
-                    <xsd:documentation>
-                        The entity object class name of the Document. Used for conversion from JSON data to objects
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -359,10 +310,10 @@
                     <xsd:element ref="data:FromCurrentTime"/>
                 </xsd:choice>
             </xsd:sequence>
-            <xsd:attribute name="Path" type="xsd:string" use="required">
+            <xsd:attribute name="Field" type="xsd:string" use="required">
                 <xsd:annotation>
                     <xsd:documentation>
-                        A path representation of an attribute. For example: field1.field2.filed3
+                        Data field name
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>

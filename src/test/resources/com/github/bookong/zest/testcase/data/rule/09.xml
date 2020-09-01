@@ -7,7 +7,7 @@
             <Verify>
                 <Table Name="tab">
                     <Rules>
-                        <Rule Path="f_time">
+                        <Rule Field="f_time">
                             <CurrentTime>
                                 <Other/>
                             </CurrentTime>

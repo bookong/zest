@@ -38,7 +38,6 @@ public interface ZestGlobalConstant {
         String DATA              = "Data";
         String FIELD             = "Field";
         String DIRECTION         = "Direction";
-        String PATH              = "Path";
         String NULLABLE          = "Nullable";
         String REG_EXP           = "RegExp";
         String FROM_CURRENT_TIME = "FromCurrentTime";

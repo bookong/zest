@@ -7,7 +7,7 @@
             <Verify>
                 <Table Name="tab">
                     <Rules>
-                        <Rule Path="f_char"/>
+                        <Rule Field="f_char"/>
                     </Rules>
                 </Table>
             </Verify>
