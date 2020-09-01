@@ -263,10 +263,6 @@ public class Messages {
         return getString("verify.table.start", sourceId, tableName);
     }
 
-    public static String verifyTableExecutor(String executorClass) {
-        return getString("verify.table.executor", executorClass);
-    }
-
     public static String verifyTableSize(String sourceId, String tableName) {
         return getString("verify.table.size", sourceId, tableName);
     }

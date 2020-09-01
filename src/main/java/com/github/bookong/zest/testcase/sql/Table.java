@@ -3,19 +3,21 @@ package com.github.bookong.zest.testcase.sql;
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
-import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.rule.AbstractRule;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Node;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 关系型数据库的表
@@ -28,25 +30,18 @@ public class Table extends AbstractTable<Row> {
     private String               sort;
 
     /** 关系型数据库的 SqlType */
-    private Map<String, Integer> sqlTypes = Collections.synchronizedMap(new HashMap<>());
+    private Map<String, Integer> sqlTypes = new HashMap<>();
 
-    public Table(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement){
+    @Override
+    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode) {
+        xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE);
+
+        SqlExecutor executor = worker.getExecutor(sourceId, SqlExecutor.class);
+        Connection conn = worker.getOperator(sourceId, Connection.class);
         try {
-            XmlNode xmlNode = new XmlNode(node);
-            setName(xmlNode.getAttr(Xml.NAME));
-
-            SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
-            Connection conn = worker.getOperator(sourceId, Connection.class);
-            try {
-                sqlExecutor.loadSqlTypes(conn, getSqlTypes());
-            } catch (UnsupportedOperationException e) {
-                loadSqlTypes(conn);
-            }
-
-            init(worker, sourceId, xmlNode, isVerifyElement);
-
-        } catch (Exception e) {
-            throw new ZestException(Messages.parseTableError(getName()), e);
+            executor.loadSqlTypes(conn, getSqlTypes());
+        } catch (UnsupportedOperationException e) {
+            loadSqlTypes(conn);
         }
     }
 
@@ -60,7 +55,7 @@ public class Table extends AbstractTable<Row> {
         sb.append(" order by");
         for (int i = 0; i < sortList.size(); i++) {
             Sort item = sortList.get(i);
-            if (!sqlTypes.containsKey(item.getField())) {
+            if (!getSqlTypes().containsKey(item.getField())) {
                 throw new ZestException(Messages.parseTableSortExist(item.getField()));
             }
             if (i > 0) {
@@ -73,8 +68,8 @@ public class Table extends AbstractTable<Row> {
 
     @Override
     protected void checkRule(AbstractRule rule) {
-        if (!sqlTypes.containsKey(rule.getPath())) {
-            throw new ZestException(Messages.parseTableRule(rule.getPath()));
+        if (!getSqlTypes().containsKey(rule.getField())) {
+            throw new ZestException(Messages.parseTableRule(rule.getField()));
         }
     }
 
@@ -99,7 +94,7 @@ public class Table extends AbstractTable<Row> {
             for (String tableName : tableNames) {
                 rs = conn.getMetaData().getColumns(null, "%", tableName, "%");
                 while (rs.next()) {
-                    sqlTypes.put(StringUtils.lowerCase(rs.getString("column_name")), rs.getInt("data_type"));
+                    getSqlTypes().put(StringUtils.lowerCase(rs.getString("column_name")), rs.getInt("data_type"));
                 }
                 ZestSqlHelper.close(rs);
             }

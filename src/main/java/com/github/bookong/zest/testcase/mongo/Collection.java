@@ -25,22 +25,15 @@ public class Collection extends AbstractTable<Document> {
 
     private Class<?>                             entityClass;
 
-    public Collection(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement){
+    @Override
+    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode) {
+        xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE, Xml.ENTITY_CLASS);
+
+        String entityClassAttr = xmlNode.getAttrNotEmpty(Xml.ENTITY_CLASS);
         try {
-            XmlNode xmlNode = new XmlNode(node);
-            setName(xmlNode.getAttr(Xml.NAME));
-
-            String entityClassAttr = xmlNode.getAttrNotEmpty(Xml.ENTITY_CLASS);
-            try {
-                this.entityClass = Class.forName(entityClassAttr);
-            } catch (ClassNotFoundException e) {
-                throw new ZestException(Messages.parseCommonClassFound(entityClassAttr));
-            }
-
-            init(worker, sourceId, xmlNode, isVerifyElement);
-
-        } catch (Exception e) {
-            throw new ZestException(Messages.parseTableError(getName()), e);
+            this.entityClass = Class.forName(entityClassAttr);
+        } catch (ClassNotFoundException e) {
+            throw new ZestException(Messages.parseCommonClassFound(entityClassAttr));
         }
     }
 
@@ -68,9 +61,9 @@ public class Collection extends AbstractTable<Document> {
 
     @Override
     protected void checkRule(AbstractRule rule) {
-        Field field = ZestReflectHelper.getFieldByPath(this.entityClass, rule.getPath());
+        Field field = ZestReflectHelper.getField(getEntityClass(), rule.getField());
         if (field == null) {
-            throw new ZestException(Messages.parseCollectionRule(rule.getPath()));
+            throw new ZestException(Messages.parseCollectionRule(rule.getField()));
         }
     }
 

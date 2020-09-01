@@ -2,9 +2,9 @@ package com.github.bookong.zest.testcase;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.exception.ZestException;
-import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.rule.AbstractRule;
 import com.github.bookong.zest.rule.RuleFactory;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.util.Messages;
 import org.apache.commons.lang3.StringUtils;
@@ -29,51 +29,60 @@ public abstract class AbstractTable<T> {
     /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
     private boolean                   ignoreVerify;
 
+    protected abstract void init(ZestWorker worker, String sourceId, XmlNode xmlNode);
+
+    public void init(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement) {
+        try {
+            XmlNode xmlNode = new XmlNode(node);
+            setName(xmlNode.getAttr(Xml.NAME));
+
+            init(worker, sourceId, xmlNode);
+            this.ignoreVerify = xmlNode.getAttrBoolean(Xml.IGNORE, false);
+            this.dataList = new ArrayList<>(xmlNode.getChildren().size() + 1);
+
+            boolean parseSorts = false;
+            boolean parseRules = false;
+            boolean parseData = false;
+            int dataIdx = 1;
+            for (Node child : xmlNode.getChildren()) {
+                if (Xml.SORTS.equals(child.getNodeName())) {
+                    if (!isVerifyElement) {
+                        throw new ZestException(Messages.parseSortsPosition());
+                    }
+
+                    if (parseSorts || parseRules || parseData) {
+                        throw new ZestException(Messages.parseSortsOrder());
+                    }
+                    parseSorts(child);
+                    parseSorts = true;
+
+                } else if (Xml.RULES.equals(child.getNodeName())) {
+                    if (parseRules || parseData) {
+                        throw new ZestException(Messages.parseRulesPosition());
+                    }
+                    parseRules(child);
+                    parseRules = true;
+
+                } else if (Xml.DATA.equals(child.getNodeName())) {
+                    parseData(worker, sourceId, child, dataIdx++, isVerifyElement);
+                    parseData = true;
+
+                } else {
+                    throw new ZestException(Messages.parseCommonChildrenUnknown(xmlNode.getNodeName(),
+                                                                                child.getNodeName()));
+                }
+            }
+
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseTableError(getName()), e);
+        }
+    }
+
     protected abstract void loadSorts(List<Sort> sortList);
 
     protected abstract void checkRule(AbstractRule rule);
 
     protected abstract void loadData(ZestWorker worker, String sourceId, String content, boolean isVerifyElement);
-
-    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, boolean isVerifyElement) {
-        xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE, Xml.ENTITY_CLASS);
-
-        this.ignoreVerify = xmlNode.getAttrBoolean(Xml.IGNORE, false);
-        this.dataList = new ArrayList<>(xmlNode.getChildren().size() + 1);
-
-        boolean parseSorts = false;
-        boolean parseRules = false;
-        boolean parseData = false;
-        int dataIdx = 1;
-        for (Node child : xmlNode.getChildren()) {
-            if (Xml.SORTS.equals(child.getNodeName())) {
-                if (!isVerifyElement) {
-                    throw new ZestException(Messages.parseSortsPosition());
-                }
-
-                if (parseSorts || parseRules || parseData) {
-                    throw new ZestException(Messages.parseSortsOrder());
-                }
-                parseSorts(child);
-                parseSorts = true;
-
-            } else if (Xml.RULES.equals(child.getNodeName())) {
-                if (parseRules || parseData) {
-                    throw new ZestException(Messages.parseRulesPosition());
-                }
-                parseRules(child);
-                parseRules = true;
-
-            } else if (Xml.DATA.equals(child.getNodeName())) {
-                parseData(worker, sourceId, child, dataIdx++, isVerifyElement);
-                parseData = true;
-
-            } else {
-                throw new ZestException(Messages.parseCommonChildrenUnknown(xmlNode.getNodeName(),
-                                                                            child.getNodeName()));
-            }
-        }
-    }
 
     private void parseSorts(Node node) {
         try {
@@ -154,9 +163,9 @@ public abstract class AbstractTable<T> {
 
             xmlNode.checkSupportedAttrs(Xml.FIELD, Xml.NULLABLE);
             AbstractRule rule = RuleFactory.create(xmlNode, field);
-            XmlNode.duplicateCheck(Xml.FIELD, rulePaths, rule.getPath());
+            XmlNode.duplicateCheck(Xml.FIELD, rulePaths, rule.getField());
             checkRule(rule);
-            ruleMap.put(rule.getPath(), rule);
+            ruleMap.put(rule.getField(), rule);
         } catch (Exception e) {
             throw new ZestException(Messages.parseRuleError(field), e);
         }

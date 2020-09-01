@@ -15,21 +15,6 @@ import java.util.List;
  */
 public class ZestReflectHelper {
 
-    public static Field getFieldByPath(Class<?> theClass, String path) {
-        Field f = null;
-        Class<?> clazz = theClass;
-        for (String subPath : StringUtils.split(path, '.')) {
-            f = getField(clazz, subPath);
-            if (f == null) {
-                return null;
-            }
-
-            clazz = f.getType();
-        }
-
-        return f;
-    }
-
     public static Field getField(Class<?> theClass, String fieldName) {
         for (Class<?> clazz : getAllClass(theClass)) {
             for (Field f : clazz.getDeclaredFields()) {

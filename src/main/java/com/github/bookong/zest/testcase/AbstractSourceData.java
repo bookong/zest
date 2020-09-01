@@ -28,7 +28,9 @@ public abstract class AbstractSourceData {
 
         List<AbstractTable> list = new ArrayList<>();
         for (Node item : children) {
-            list.add(executor.createTable(worker, sourceId, item, isVerifyElement));
+            AbstractTable table = executor.createTable();
+            table.init(worker, sourceId, item, isVerifyElement);
+            list.add(table);
         }
 
         return list;

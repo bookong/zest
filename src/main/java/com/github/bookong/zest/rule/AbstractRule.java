@@ -11,16 +11,16 @@ import java.util.Date;
  */
 public abstract class AbstractRule {
 
-    private String  path;
+    private String  field;
 
     private boolean nullable;
 
-    AbstractRule(String path, boolean nullable){
-        this.path = path;
+    AbstractRule(String field, boolean nullable){
+        this.field = field;
         this.nullable = nullable;
     }
 
-    public abstract void verify(ZestData zestData, String path, Object actual);
+    public abstract void verify(ZestData zestData, String field, Object actual);
 
     long getActualDataTime(String path, Object actual) {
         long tmp = 0;
@@ -47,7 +47,7 @@ public abstract class AbstractRule {
         return nullable;
     }
 
-    public String getPath() {
-        return path;
+    public String getField() {
+        return field;
     }
 }

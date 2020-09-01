@@ -3,6 +3,7 @@ package com.github.bookong.zest.testcase.mongo;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.MongoExecutor;
 import com.github.bookong.zest.rule.AbstractRule;
+import com.github.bookong.zest.testcase.AbstractRow;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
@@ -21,13 +22,11 @@ import java.util.*;
 /**
  * @author Jiang Xu
  */
-public class Document {
-
-    protected Logger    logger        = LoggerFactory.getLogger(getClass());
+public class Document extends AbstractRow {
 
     private Object      data;
 
-    private Set<String> expectedPaths = Collections.emptySet();
+    private Set<String> expectedFields = new LinkedHashSet<>();
 
     public Document(MongoExecutor mongoExecutor, Class<?> entityClass, String collectionName, String xmlContent,
                     boolean isVerifyElement){
@@ -38,16 +37,11 @@ public class Document {
         }
 
         if (isVerifyElement) {
-            this.expectedPaths = ZestUtil.parsePathsFromJson(xmlContent);
+            Map map = ZestJsonUtil.fromJson(xmlContent, Map.class);
+            for (Object key : map.keySet()) {
+                expectedFields.add(String.valueOf(key));
+            }
         }
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public Set<String> getExpectedPaths() {
-        return expectedPaths;
     }
 
     public void verify(MongoExecutor executor, MongoOperations operator, ZestData zestData, Source source,
@@ -74,58 +68,20 @@ public class Document {
                 continue;
             }
 
-            Object expected = f.get(getData());
+            String fieldName = f.getName();
             Object actual = f.get(actualData);
-            verify(zestData, collection, rowIdx, expected, actual, StringUtils.EMPTY, f.getName());
+            Object expected = f.get(getData());
+
+            verify(zestData, collection, rowIdx, fieldName, expected, actual);
         }
     }
 
-    private void verify(ZestData zestData, Collection collection, int rowIdx, Object expected, Object actual,
-                        String parentPath, String subPath) {
-        String path = ZestUtil.getPath(parentPath, subPath);
+    public Object getData() {
+        return data;
+    }
 
-        if (!getExpectedPaths().contains(path)) {
-            return;
-        }
-
-        AbstractRule rule = collection.getRuleMap().get(path);
-
-        if (expected != null) {
-            if (rule != null) {
-                logger.info(Messages.verifyRuleIgnore(rule.getPath(), rowIdx));
-            }
-
-            if (expected instanceof Date) {
-                Assert.assertTrue(Messages.verifyDocumentDataDate(path), actual instanceof Date);
-                Date expectedDateInZest = ZestDateUtil.getDateInZest(zestData, (Date) expected);
-                String expectedValue = ZestDateUtil.formatDateNormal(expectedDateInZest);
-                String actualValue = ZestDateUtil.formatDateNormal((Date) actual);
-                Assert.assertEquals(Messages.verifyDocumentData(path, expectedValue), expectedValue, actualValue);
-
-            } else if (expected instanceof Map) {
-                Map map = (Map) expected;
-                for (Object key : map.keySet()) {
-                    verify(zestData, collection, rowIdx, map.get(key), actual, path, String.valueOf(key));
-                }
-
-            } else if (expected instanceof List) {
-                for (Object item : (List) expected) {
-                    verify(zestData, collection, rowIdx, item, actual, path, StringUtils.EMPTY);
-                }
-
-            } else {
-                String expectedValue = String.valueOf(expected);
-                String actualValue = String.valueOf(actual);
-                Assert.assertEquals(Messages.verifyDocumentData(path, expectedValue), expectedValue, actualValue);
-            }
-
-        } else {
-            // expected == null
-            if (rule != null) {
-                rule.verify(zestData, path, actual);
-            } else {
-                Assert.assertNull(Messages.verifyDocumentDataNull(path), actual);
-            }
-        }
+    @Override
+    protected Set<String> getExpectedFields() {
+        return expectedFields;
     }
 }

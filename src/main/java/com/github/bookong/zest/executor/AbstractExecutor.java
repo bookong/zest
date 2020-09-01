@@ -8,7 +8,6 @@ import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -24,15 +23,13 @@ public abstract class AbstractExecutor {
 
     public abstract Class<?> supportedOperatorClass();
 
-    public abstract AbstractTable createTable(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement);
+    public abstract AbstractTable createTable();
 
     public abstract void clear(ZestWorker worker, ZestData zestData, Source source);
 
-    protected abstract void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable data);
+    protected abstract void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable sourceTable);
 
-    protected abstract void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable data);
-
-    protected abstract String getIgnoreTableInfo(Source source, AbstractTable data);
+    protected abstract void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable sourceTable);
 
     public void init(ZestWorker worker, ZestData zestData, Source source) {
         for (AbstractTable table : source.getInitData().getTableList()) {
@@ -53,13 +50,14 @@ public abstract class AbstractExecutor {
             return;
         }
 
-        for (AbstractTable table : source.getVerifyData().getTableMap().values()) {
-            if (table.isIgnoreVerify()) {
-                logger.info(getIgnoreTableInfo(source, table));
+        for (AbstractTable sourceTable : source.getVerifyData().getTableMap().values()) {
+            if (sourceTable.isIgnoreVerify()) {
+                logger.info(Messages.verifyTableIgnore(source.getId(), sourceTable.getName()));
                 continue;
             }
 
-            verify(worker, zestData, source, table);
+            logger.info(Messages.verifyTableStart(source.getId(), sourceTable.getName()));
+            verify(worker, zestData, source, sourceTable);
         }
     }
 
@@ -69,5 +67,4 @@ public abstract class AbstractExecutor {
         source.getVerifyData().getTableMap().values().forEach(table -> tableNames.add(table.getName()));
         return tableNames;
     }
-
 }

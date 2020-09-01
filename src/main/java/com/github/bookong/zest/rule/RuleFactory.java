@@ -11,7 +11,7 @@ import org.w3c.dom.Node;
  */
 public class RuleFactory {
 
-    public static AbstractRule create(XmlNode xmlNode, String path) {
+    public static AbstractRule create(XmlNode xmlNode, String field) {
         if (xmlNode.getChildren().size() != 1) {
             throw new ZestException(Messages.parseRuleChoice());
         }
@@ -22,11 +22,11 @@ public class RuleFactory {
         String childName = childNode.getNodeName();
         switch (childName) {
             case Xml.REG_EXP:
-                return new RegExpRule(childNode, path, nullable);
+                return new RegExpRule(childNode, field, nullable);
             case Xml.CURRENT_TIME:
-                return new CurrentTimeRule(childNode, path, nullable);
+                return new CurrentTimeRule(childNode, field, nullable);
             case Xml.FROM_CURRENT_TIME:
-                return new FromCurrentTimeRule(childNode, path, nullable);
+                return new FromCurrentTimeRule(childNode, field, nullable);
             default:
                 throw new ZestException(Messages.parseRuleChoice());
         }

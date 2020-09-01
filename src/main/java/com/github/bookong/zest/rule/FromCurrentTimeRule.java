@@ -20,8 +20,8 @@ public class FromCurrentTimeRule extends AbstractRule {
     private int unit;
     private int offset;
 
-    FromCurrentTimeRule(Node node, String path, boolean nullable){
-        super(path, nullable);
+    FromCurrentTimeRule(Node node, String field, boolean nullable){
+        super(field, nullable);
         XmlNode xmlNode = new XmlNode(node);
         xmlNode.checkSupportedAttrs(Xml.MIN, Xml.MAX, Xml.UNIT, Xml.OFFSET);
         xmlNode.mustNoChildren();
@@ -50,8 +50,8 @@ public class FromCurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void verify(ZestData zestData, String path, Object actual) {
-        assertNullable(path, actual);
+    public void verify(ZestData zestData, String field, Object actual) {
+        assertNullable(field, actual);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(zestData.getStartTime());
@@ -64,8 +64,8 @@ public class FromCurrentTimeRule extends AbstractRule {
         cal.add(Calendar.MILLISECOND, getOffset());
         long expectedMax = cal.getTimeInMillis();
 
-        long tmp = getActualDataTime(path, actual);
-        Assert.assertTrue(Messages.verifyRuleDateFrom(path), (tmp >= expectedMin && tmp <= expectedMax));
+        long tmp = getActualDataTime(field, actual);
+        Assert.assertTrue(Messages.verifyRuleDateFrom(field), (tmp >= expectedMin && tmp <= expectedMax));
     }
 
     public int getMin() {

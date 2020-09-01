@@ -15,8 +15,8 @@ public class RegExpRule extends AbstractRule {
 
     private String regExp;
 
-    RegExpRule(Node node, String path, boolean nullable){
-        super(path, nullable);
+    RegExpRule(Node node, String field, boolean nullable){
+        super(field, nullable);
         XmlNode xmlNode = new XmlNode(node);
         xmlNode.checkSupportedAttrs();
         xmlNode.mustNoChildren();
@@ -25,10 +25,10 @@ public class RegExpRule extends AbstractRule {
     }
 
     @Override
-    public void verify(ZestData zestData, String path, Object actual) {
-        assertNullable(path, actual);
+    public void verify(ZestData zestData, String field, Object actual) {
+        assertNullable(field, actual);
 
-        Assert.assertTrue(Messages.verifyRuleRegExp(path, getRegExp()),
+        Assert.assertTrue(Messages.verifyRuleRegExp(field, getRegExp()),
                           Pattern.matches(getRegExp(), String.valueOf(actual)));
     }
 

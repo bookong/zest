@@ -1,6 +1,5 @@
 package com.github.bookong.zest.executor;
 
-import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
@@ -11,7 +10,6 @@ import com.github.bookong.zest.util.Messages;
 import org.junit.Assert;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
-import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +25,8 @@ public class MongoExecutor extends AbstractExecutor {
     }
 
     @Override
-    public AbstractTable createTable(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement) {
-        return new Collection(worker, sourceId, node, isVerifyElement);
+    public AbstractTable createTable() {
+        return new Collection();
     }
 
     @Override
@@ -40,32 +38,23 @@ public class MongoExecutor extends AbstractExecutor {
     }
 
     @Override
-    protected void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
-        if (!(data instanceof Collection)) {
-            throw new ZestException(Messages.verifyTableExecutor(getClass().getName()));
-        }
+    protected void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable sourceTable) {
+        Collection collection = (Collection) sourceTable;
 
-        Collection collection = (Collection) data;
-        List<Object> initDataList = new ArrayList<>(collection.getDataList().size());
+        List<Object> initDataList = new ArrayList<>(collection.getDataList().size() + 1);
         for (Document doc : collection.getDataList()) {
             initDataList.add(doc.getData());
         }
-        if (initDataList.isEmpty()) {
-            return;
-        }
 
-        MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
-        operator.insert(initDataList, collection.getEntityClass());
+        if (!initDataList.isEmpty()) {
+            MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
+            operator.insert(initDataList, collection.getEntityClass());
+        }
     }
 
     @Override
-    protected void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
-        logger.info(Messages.verifyTableStart(source.getId(), data.getName()));
-        if (!(data instanceof Collection)) {
-            throw new ZestException(Messages.verifyTableExecutor(getClass().getName()));
-        }
-
-        Collection collection = (Collection) data;
+    protected void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable sourceTable) {
+        Collection collection = (Collection) sourceTable;
         MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
 
         Query query = new Query();
@@ -85,11 +74,6 @@ public class MongoExecutor extends AbstractExecutor {
         }
     }
 
-    @Override
-    protected String getIgnoreTableInfo(Source source, AbstractTable data) {
-        return Messages.verifyTableIgnore(source.getId(), data.getName());
-    }
-
     /**
      * 根据测试用例中数据构建 Document 对象，子类可以覆盖
      */
@@ -105,4 +89,5 @@ public class MongoExecutor extends AbstractExecutor {
                                int rowIdx, Document expectedDocument, Object actualData) {
         throw new UnsupportedOperationException();
     }
+
 }

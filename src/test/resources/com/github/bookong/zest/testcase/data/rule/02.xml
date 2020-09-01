@@ -7,7 +7,7 @@
             <Verify>
                 <Table Name="tab" EntityClass="com.github.bookong.zest.testcase.param.Param">
                     <Rules>
-                        <Rule Field="obj.str">
+                        <Rule Field="strValue">
                             <RegExp>^[0-9]*$</RegExp>
                         </Rule>
                         <Rule Field="date1">

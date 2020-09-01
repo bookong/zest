@@ -9,10 +9,6 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 
 import java.io.File;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Jiang Xu
@@ -38,34 +34,6 @@ public class ZestUtil {
         }
     }
 
-    public static Set<String> parsePathsFromJson(String content) {
-        Set<String> paths = new LinkedHashSet<>();
-        Map map = ZestJsonUtil.fromJson(content, Map.class);
-        for (Object key : map.keySet()) {
-            parsePathsFromJson(paths, StringUtils.EMPTY, String.valueOf(key), map.get(key));
-        }
-        return paths;
-    }
-
-    private static void parsePathsFromJson(Set<String> paths, String parentPath, String subPath, Object obj) {
-        String path = ZestUtil.getPath(parentPath, subPath);
-        if (obj == null) {
-            paths.add(path);
-        } else if (obj instanceof Map) {
-            Map map = (Map) obj;
-            for (Object key : map.keySet()) {
-                parsePathsFromJson(paths, path, String.valueOf(key), map.get(key));
-            }
-        } else if (obj instanceof List) {
-            List list = (List) obj;
-            for (Object item : list) {
-                parsePathsFromJson(paths, path, StringUtils.EMPTY, item);
-            }
-        } else {
-            paths.add(path);
-        }
-    }
-
     public static String getDir(Class<?> testObjClass, String methodName) {
         return testObjClass.getResource(StringUtils.EMPTY).getPath() //
                            .concat(ZestGlobalConstant.FIX_SUB_DIR).concat(File.separator) //
@@ -77,17 +45,4 @@ public class ZestUtil {
         return getDir(testCase.getJavaClass(), frameworkMethod.getName());
     }
 
-    public static String getPath(String parentPath, String subPath) {
-        StringBuilder sb = new StringBuilder();
-        if (StringUtils.isNotBlank(parentPath)) {
-            sb.append(parentPath);
-        }
-        if (StringUtils.isNotBlank(subPath)) {
-            if (sb.length() > 0) {
-                sb.append(ZestGlobalConstant.PATH_SEPARATOR);
-            }
-            sb.append(subPath);
-        }
-        return sb.toString();
-    }
 }
