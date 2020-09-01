@@ -127,10 +127,6 @@ public class Messages {
         return getString("parse.table.rule", path);
     }
 
-    public static String parseCollectionError(String name) {
-        return getString("parse.collection.error", name);
-    }
-
     public static String parseCollectionSortExits(String fieldName) {
         return getString("parse.collection.sort.exits", fieldName);
     }
@@ -289,22 +285,6 @@ public class Messages {
 
     public static String verifyRowData(String columnName, String value) {
         return getString("verify.row.data", columnName, value);
-    }
-
-    public static String verifyCollectionIgnore(String sourceId, String collectionName) {
-        return getString("verify.collection.ignore", sourceId, collectionName);
-    }
-
-    public static String verifyCollectionStart(String sourceId, String collectionName) {
-        return getString("verify.collection.start", sourceId, collectionName);
-    }
-
-    public static String verifyCollectionExecutor(String executorClass) {
-        return getString("verify.collection.executor", executorClass);
-    }
-
-    public static String verifyCollectionSize(String sourceId, String collectionId) {
-        return getString("verify.collection.size", sourceId, collectionId);
     }
 
     public static String verifyDocumentError(String sourceId, String collectionId, int rowIdx) {

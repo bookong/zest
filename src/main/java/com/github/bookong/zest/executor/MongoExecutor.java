@@ -42,7 +42,7 @@ public class MongoExecutor extends AbstractExecutor {
     @Override
     protected void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
         if (!(data instanceof Collection)) {
-            throw new ZestException(Messages.verifyCollectionExecutor(getClass().getName()));
+            throw new ZestException(Messages.verifyTableExecutor(getClass().getName()));
         }
 
         Collection collection = (Collection) data;
@@ -60,9 +60,9 @@ public class MongoExecutor extends AbstractExecutor {
 
     @Override
     protected void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable data) {
-        logger.info(Messages.verifyCollectionStart(source.getId(), data.getName()));
+        logger.info(Messages.verifyTableStart(source.getId(), data.getName()));
         if (!(data instanceof Collection)) {
-            throw new ZestException(Messages.verifyCollectionExecutor(getClass().getName()));
+            throw new ZestException(Messages.verifyTableExecutor(getClass().getName()));
         }
 
         Collection collection = (Collection) data;
@@ -75,7 +75,7 @@ public class MongoExecutor extends AbstractExecutor {
 
         List<?> actualList = operator.find(query, collection.getEntityClass());
 
-        Assert.assertEquals(Messages.verifyCollectionSize(source.getId(), collection.getName()),
+        Assert.assertEquals(Messages.verifyTableSize(source.getId(), collection.getName()),
                             collection.getDataList().size(), actualList.size());
 
         for (int i = 0; i < collection.getDataList().size(); i++) {
@@ -87,7 +87,7 @@ public class MongoExecutor extends AbstractExecutor {
 
     @Override
     protected String getIgnoreTableInfo(Source source, AbstractTable data) {
-        return Messages.verifyCollectionIgnore(source.getId(), data.getName());
+        return Messages.verifyTableIgnore(source.getId(), data.getName());
     }
 
     /**
