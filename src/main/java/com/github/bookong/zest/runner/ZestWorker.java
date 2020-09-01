@@ -103,6 +103,14 @@ public abstract class ZestWorker {
         }
     }
 
+    public AbstractExecutor getExecutor(String sourceId) {
+        AbstractExecutor executor = executorMap.get(sourceId);
+        if (executor == null) {
+            throw new ZestException(Messages.operatorUnbound(sourceId));
+        }
+        return executor;
+    }
+
     public <E extends AbstractExecutor> E getExecutor(String sourceId, Class<E> executorClass) {
         return executorClass.cast(executorMap.get(sourceId));
     }

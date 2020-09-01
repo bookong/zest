@@ -5,7 +5,7 @@
         <Source Id="mongo">
             <Init/>
             <Verify>
-                <Collection Name="tab" EntityClass="com.github.bookong.zest.testcase.param.Param">
+                <Table Name="tab" EntityClass="com.github.bookong.zest.testcase.param.Param">
                     <Rules>
                         <Rule Field="obj.str">
                             <RegExp>^[0-9]*$</RegExp>
@@ -17,7 +17,7 @@
                             <FromCurrentTime Min="1" Max="2" Unit="day" />
                         </Rule>
                     </Rules>
-                </Collection>
+                </Table>
             </Verify>
         </Source>
     </Sources>

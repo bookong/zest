@@ -17,8 +17,8 @@ public class ZestDataTest extends AbstractZestDataTest {
         testLoadError("01.xml", Messages.parseSourcesError(), //
                       Messages.parseSourceError("mongo"), //
                       Messages.parseSourceInitError(), //
-                      Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations",
-                                                         "Init", "Collection"));
+                      Messages.parseTableError("user"), //
+                      Messages.parseCommonAttrEmpty("EntityClass"));
     }
 
     @Test
@@ -26,8 +26,8 @@ public class ZestDataTest extends AbstractZestDataTest {
         testLoadError("02.xml", Messages.parseSourcesError(), //
                       Messages.parseSourceError("mongo"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseSourceOperationMatch("org.springframework.data.mongodb.core.MongoOperations",
-                                                         "Verify", "Collection"));
+                      Messages.parseTableError("user"), //
+                      Messages.parseCommonAttrEmpty("EntityClass"));
     }
 
     @Test

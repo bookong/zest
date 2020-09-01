@@ -29,7 +29,6 @@ public interface ZestGlobalConstant {
         String VERIFY            = "Verify";
         String IGNORE            = "Ignore";
         String TABLE             = "Table";
-        String COLLECTION        = "Collection";
         String ENTITY_CLASS      = "EntityClass";
         String SORTS             = "Sorts";
         String SORT              = "Sort";

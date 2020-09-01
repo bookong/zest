@@ -10,6 +10,7 @@ import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.junit.Assert;
+import org.w3c.dom.Node;
 
 import java.sql.Connection;
 import java.util.List;
@@ -21,6 +22,16 @@ import java.util.Map;
  * @author Jiang Xu
  */
 public class SqlExecutor extends AbstractExecutor {
+
+    @Override
+    public Class<?> supportedOperatorClass() {
+        return Connection.class;
+    }
+
+    @Override
+    public AbstractTable createTable(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement) {
+        return new Table(worker, sourceId, node, isVerifyElement);
+    }
 
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
@@ -63,7 +74,7 @@ public class SqlExecutor extends AbstractExecutor {
     }
 
     @Override
-    protected String getIgnoreTableInfo(Source source, AbstractTable data){
+    protected String getIgnoreTableInfo(Source source, AbstractTable data) {
         return Messages.verifyTableIgnore(source.getId(), data.getName());
     }
 

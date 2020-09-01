@@ -97,7 +97,7 @@ public class ZestDataTest extends AbstractZestDataTest {
         testLoadError("08.xml", Messages.parseSourcesError(), //
                       Messages.parseSourceError("mongo"), //
                       Messages.parseSourceVerifyError(), //
-                      Messages.parseCollectionError("tab"), //
+                      Messages.parseTableError("tab"), //
                       Messages.parseSortsError(), //
                       Messages.parseCollectionSortExits("none"));
     }

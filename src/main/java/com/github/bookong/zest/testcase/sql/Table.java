@@ -30,13 +30,13 @@ public class Table extends AbstractTable<Row> {
     /** 关系型数据库的 SqlType */
     private Map<String, Integer> sqlTypes = Collections.synchronizedMap(new HashMap<>());
 
-    public Table(ZestWorker worker, String sourceId, Node node, Connection conn, boolean isVerifyElement){
+    public Table(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement){
         try {
             XmlNode xmlNode = new XmlNode(node);
             setName(xmlNode.getAttr(Xml.NAME));
-            xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE);
 
             SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
+            Connection conn = worker.getOperator(sourceId, Connection.class);
             try {
                 sqlExecutor.loadSqlTypes(conn, getSqlTypes());
             } catch (UnsupportedOperationException e) {

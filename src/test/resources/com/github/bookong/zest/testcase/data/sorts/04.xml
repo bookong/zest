@@ -4,9 +4,9 @@
     <Sources>
         <Source Id="mongo">
             <Init>
-                <Collection Name="tab" EntityClass="java.lang.Object">
+                <Table Name="tab" EntityClass="java.lang.Object">
                     <Sorts/>
-                </Collection>
+                </Table>
             </Init>
             <Verify/>
         </Source>

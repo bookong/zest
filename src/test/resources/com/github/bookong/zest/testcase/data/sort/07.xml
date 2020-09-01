@@ -5,13 +5,13 @@
         <Source Id="mongo">
             <Init/>
             <Verify>
-                <Collection Name="tab" EntityClass="com.github.bookong.zest.testcase.param.Param">
+                <Table Name="tab" EntityClass="com.github.bookong.zest.testcase.param.Param">
                     <Sorts>
                         <Sort Field="intObjValue" Direction="desc"/>
                         <Sort Field="longObjValue" Direction="asc"/>
                         <Sort Field="doubleObjValue"/>
                     </Sorts>
-                </Collection>
+                </Table>
             </Verify>
         </Source>
     </Sources>

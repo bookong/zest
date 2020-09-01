@@ -39,6 +39,7 @@ public abstract class AbstractZestDataTest {
         Map<String, Object> executorMap = (Map<String, Object>) ZestReflectHelper.getValue(worker, "executorMap");
         executorMap.put("mysql", new SqlExecutor());
         executorMap.put("mongo", new MongoExecutor());
+        executorMap.put("unknown", new SqlExecutor());
     }
 
     protected void testLoadError(String filename, String... errorMessages) {

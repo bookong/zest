@@ -29,7 +29,6 @@ public class Collection extends AbstractTable<Document> {
         try {
             XmlNode xmlNode = new XmlNode(node);
             setName(xmlNode.getAttr(Xml.NAME));
-            xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE, Xml.ENTITY_CLASS);
 
             String entityClassAttr = xmlNode.getAttrNotEmpty(Xml.ENTITY_CLASS);
             try {
@@ -41,7 +40,7 @@ public class Collection extends AbstractTable<Document> {
             init(worker, sourceId, xmlNode, isVerifyElement);
 
         } catch (Exception e) {
-            throw new ZestException(Messages.parseCollectionError(getName()), e);
+            throw new ZestException(Messages.parseTableError(getName()), e);
         }
     }
 

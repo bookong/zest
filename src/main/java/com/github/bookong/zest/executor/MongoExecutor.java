@@ -11,6 +11,7 @@ import com.github.bookong.zest.util.Messages;
 import org.junit.Assert;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
+import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,16 @@ import java.util.List;
  * @author Jiang Xu
  */
 public class MongoExecutor extends AbstractExecutor {
+
+    @Override
+    public Class<?> supportedOperatorClass() {
+        return MongoOperations.class;
+    }
+
+    @Override
+    public AbstractTable createTable(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement) {
+        return new Collection(worker, sourceId, node, isVerifyElement);
+    }
 
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {

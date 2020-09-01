@@ -36,6 +36,8 @@ public abstract class AbstractTable<T> {
     protected abstract void loadData(ZestWorker worker, String sourceId, String content, boolean isVerifyElement);
 
     protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, boolean isVerifyElement) {
+        xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE, Xml.ENTITY_CLASS);
+
         this.ignoreVerify = xmlNode.getAttrBoolean(Xml.IGNORE, false);
         this.dataList = new ArrayList<>(xmlNode.getChildren().size() + 1);
 

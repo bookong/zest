@@ -7,8 +7,7 @@ import org.junit.runners.Suite;
  * @author Jiang Xu
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ com.github.bookong.zest.testcase.data.collection.ZestDataTest.class, //
-                      com.github.bookong.zest.testcase.data.param.ZestDataTest.class, //
+@Suite.SuiteClasses({ com.github.bookong.zest.testcase.data.param.ZestDataTest.class, //
                       com.github.bookong.zest.testcase.data.root.ZestDataTest.class, //
                       com.github.bookong.zest.testcase.data.rule.ZestDataTest.class, //
                       com.github.bookong.zest.testcase.data.rules.ZestDataTest.class, //
