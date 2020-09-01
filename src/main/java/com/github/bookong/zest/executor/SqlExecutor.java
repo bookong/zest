@@ -61,7 +61,7 @@ public class SqlExecutor extends AbstractExecutor {
         for (int i = 0; i < table.getDataList().size(); i++) {
             Row expected = table.getDataList().get(i);
             Map<String, Object> actual = actualList.get(i);
-            expected.verify(this, conn, zestData, source, table, i + 1, actual);
+            expected.verify(worker, zestData, source, table, i + 1, actual);
         }
     }
 

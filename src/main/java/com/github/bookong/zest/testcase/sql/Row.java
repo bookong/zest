@@ -3,6 +3,7 @@ package com.github.bookong.zest.testcase.sql;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.rule.AbstractRule;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.AbstractRow;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
@@ -21,7 +22,7 @@ import java.util.*;
 /**
  * @author Jiang Xu
  */
-public class Row extends AbstractRow {
+public class Row extends AbstractRow<Map<String, Object>> {
 
     private Map<String, Object> dataMap = new LinkedHashMap<>();
 
@@ -38,11 +39,14 @@ public class Row extends AbstractRow {
         }
     }
 
-    public void verify(SqlExecutor executor, Connection conn, ZestData zestData, Source source, Table table, int rowIdx,
+    @Override
+    public void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable<?> table, int rowIdx,
                        Map<String, Object> actualRow) {
         try {
+            SqlExecutor executor = worker.getExecutor(source.getId(), SqlExecutor.class);
+            Connection conn = worker.getOperator(source.getId(), Connection.class);
             try {
-                executor.verifyRow(conn, zestData, source, table, rowIdx, actualRow);
+                executor.verifyRow(conn, zestData, source, (Table) table, rowIdx, actualRow);
             } catch (UnsupportedOperationException e) {
                 verify(zestData, table, rowIdx, actualRow);
             }
@@ -51,7 +55,7 @@ public class Row extends AbstractRow {
         }
     }
 
-    private void verify(ZestData zestData, Table table, int rowIdx, Map<String, Object> actualRow) {
+    private void verify(ZestData zestData, AbstractTable<?> table, int rowIdx, Map<String, Object> actualRow) {
         for (Map.Entry<String, Object> entry : actualRow.entrySet()) {
             String columnName = entry.getKey();
             Object actual = entry.getValue();

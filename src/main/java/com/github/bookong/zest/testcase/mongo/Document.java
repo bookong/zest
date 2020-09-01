@@ -3,7 +3,9 @@ package com.github.bookong.zest.testcase.mongo;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.MongoExecutor;
 import com.github.bookong.zest.rule.AbstractRule;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.AbstractRow;
+import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
@@ -22,7 +24,7 @@ import java.util.*;
 /**
  * @author Jiang Xu
  */
-public class Document extends AbstractRow {
+public class Document extends AbstractRow<Object> {
 
     private Object      data;
 
@@ -44,10 +46,14 @@ public class Document extends AbstractRow {
         }
     }
 
-    public void verify(MongoExecutor executor, MongoOperations operator, ZestData zestData, Source source,
-                       Collection collection, int rowIdx, Object actualData) {
+    @Override
+    public void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable<?> sourceTable, int rowIdx,
+                       Object actualData) {
+        Collection collection = (Collection) sourceTable;
         try {
             try {
+                MongoExecutor executor = worker.getExecutor(source.getId(), MongoExecutor.class);
+                MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
                 executor.verifyDocument(operator, zestData, source, collection, rowIdx, this, actualData);
             } catch (UnsupportedOperationException e) {
                 verify(zestData, collection, rowIdx, actualData);

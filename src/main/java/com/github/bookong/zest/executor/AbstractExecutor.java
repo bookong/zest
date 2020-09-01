@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public abstract class AbstractExecutor {
 
-    protected static Logger logger = LoggerFactory.getLogger(AbstractExecutor.class);
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
     public abstract Class<?> supportedOperatorClass();
 

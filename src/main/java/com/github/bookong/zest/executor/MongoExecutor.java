@@ -70,7 +70,7 @@ public class MongoExecutor extends AbstractExecutor {
         for (int i = 0; i < collection.getDataList().size(); i++) {
             Document expected = collection.getDataList().get(i);
             Object actual = actualList.get(i);
-            expected.verify(this, operator, zestData, source, collection, i + 1, actual);
+            expected.verify(worker, zestData, source, collection, i + 1, actual);
         }
     }
 

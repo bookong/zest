@@ -1,6 +1,7 @@
 package com.github.bookong.zest.testcase;
 
 import com.github.bookong.zest.rule.AbstractRule;
+import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import org.junit.Assert;
@@ -13,11 +14,14 @@ import java.util.Set;
 /**
  * @author Jiang Xu
  */
-public abstract class AbstractRow {
+public abstract class AbstractRow<T> {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     protected abstract Set<String> getExpectedFields();
+
+    public abstract void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable<?> sourceTable,
+                                int rowIdx, T actualData);
 
     protected void verify(ZestData zestData, AbstractTable<?> sourceTable, int rowIdx, String fieldName,
                           Object expected, Object actual) {

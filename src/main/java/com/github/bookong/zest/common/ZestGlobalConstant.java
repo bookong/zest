@@ -5,8 +5,7 @@ package com.github.bookong.zest.common;
  */
 public interface ZestGlobalConstant {
 
-    String FIX_SUB_DIR    = "data";
-    String PATH_SEPARATOR = ".";
+    String FIX_SUB_DIR = "data";
 
     interface Logger {
 
@@ -50,6 +49,5 @@ public interface ZestGlobalConstant {
         String HOUR              = "hour";
         String MINUTE            = "minute";
         String SECOND            = "second";
-
     }
 }
