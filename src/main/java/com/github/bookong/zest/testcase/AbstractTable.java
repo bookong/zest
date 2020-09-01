@@ -19,9 +19,9 @@ import java.util.*;
  */
 public abstract class AbstractTable<T> {
 
-    private List<T>                   dataList;
+    private List<T>                   dataList = Collections.emptyList();
 
-    private Map<String, AbstractRule> ruleMap;
+    private Map<String, AbstractRule> ruleMap  = Collections.emptyMap();
 
     /** 广义的表名 */
     private String                    name;
