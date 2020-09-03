@@ -35,18 +35,16 @@ public class Document extends AbstractRow<Object> {
                                                          isVerifyElement);
         } catch (UnsupportedOperationException e) {
             this.data = ZestJsonUtil.fromJson(xmlContent, entityClass);
-        }
+            for (Field f : getData().getClass().getDeclaredFields()) {
+                Object value = ZestReflectHelper.getValue(getData(), f);
+                if (value == null) {
+                    continue;
+                }
 
-        for (Field f : getData().getClass().getDeclaredFields()) {
-            Object value = ZestReflectHelper.getValue(getData(), f);
-            if (value == null) {
-                continue;
-            }
-
-            if (value instanceof Date) {
-                Date valueInZest = ZestDateUtil.getDateInZest(zestData, (Date) value);
-                ZestReflectHelper.setValue(getData(), f.getName(), valueInZest);
-
+                if (value instanceof Date) {
+                    Date valueInZest = ZestDateUtil.getDateInZest(zestData, (Date) value);
+                    ZestReflectHelper.setValue(getData(), f.getName(), valueInZest);
+                }
             }
         }
 
