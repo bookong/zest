@@ -14,7 +14,12 @@ public class CurrentTimeRule extends AbstractRule {
 
     private int offset;
 
-    CurrentTimeRule(Node node, String field, boolean nullable){
+    public CurrentTimeRule(String field, boolean nullable, int offset){
+        super(field, nullable);
+        this.offset = offset;
+    }
+
+    public CurrentTimeRule(Node node, String field, boolean nullable){
         super(field, nullable);
         XmlNode xmlNode = new XmlNode(node);
         xmlNode.checkSupportedAttrs(Xml.OFFSET);

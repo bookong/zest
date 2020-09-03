@@ -20,7 +20,15 @@ public class FromCurrentTimeRule extends AbstractRule {
     private int unit;
     private int offset;
 
-    FromCurrentTimeRule(Node node, String field, boolean nullable){
+    public FromCurrentTimeRule(String field, boolean nullable, int min, int max, int unit, int offset){
+        super(field, nullable);
+        this.min = min;
+        this.max = max;
+        this.unit = unit;
+        this.offset = offset;
+    }
+
+    public FromCurrentTimeRule(Node node, String field, boolean nullable){
         super(field, nullable);
         XmlNode xmlNode = new XmlNode(node);
         xmlNode.checkSupportedAttrs(Xml.MIN, Xml.MAX, Xml.UNIT, Xml.OFFSET);
