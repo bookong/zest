@@ -61,10 +61,10 @@ public abstract class AbstractExecutor {
         }
     }
 
-    protected Set<String> findAllTableNames(Source source) {
-        Set<String> tableNames = new LinkedHashSet<>();
-        source.getInitData().getTableList().forEach(table -> tableNames.add(table.getName()));
-        source.getVerifyData().getTableMap().values().forEach(table -> tableNames.add(table.getName()));
-        return tableNames;
+    protected Set<AbstractTable<?>> findAllTables(Source source) {
+        Set<AbstractTable<?>> tables = new LinkedHashSet<>();
+        source.getInitData().getTableList().forEach(table -> tables.add(table));
+        source.getVerifyData().getTableMap().values().forEach(table -> tables.add(table));
+        return tables;
     }
 }

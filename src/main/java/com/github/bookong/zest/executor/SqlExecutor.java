@@ -34,8 +34,8 @@ public class SqlExecutor extends AbstractExecutor {
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
         Connection conn = worker.getOperator(source.getId(), Connection.class);
-        for (String tableName : findAllTableNames(source)) {
-            ZestSqlHelper.execute(conn, String.format("truncate table `%s`", tableName));
+        for (AbstractTable<?> table : findAllTables(source)) {
+            ZestSqlHelper.execute(conn, String.format("truncate table `%s`", table.getName()));
         }
     }
 

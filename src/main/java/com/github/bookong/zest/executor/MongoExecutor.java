@@ -32,8 +32,9 @@ public class MongoExecutor extends AbstractExecutor {
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
         MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
-        for (String tableName : findAllTableNames(source)) {
-            operator.dropCollection(tableName);
+        for (AbstractTable<?> table : findAllTables(source)) {
+            Collection collection = (Collection) table;
+            operator.remove(new Query(), collection.getEntityClass());
         }
     }
 
