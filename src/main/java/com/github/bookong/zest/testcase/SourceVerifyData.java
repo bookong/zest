@@ -20,14 +20,15 @@ public class SourceVerifyData extends AbstractSourceData {
     /** 执行完，检测数据源的数据 */
     private Map<String, AbstractTable> tableMap = new LinkedHashMap<>();
 
-    public SourceVerifyData(ZestWorker worker, String sourceId, Node node, Map<String, String> tableEntityClassMap){
+    public SourceVerifyData(ZestWorker worker, ZestData zestData, String sourceId, Node node,
+                            Map<String, String> tableEntityClassMap){
         try {
             XmlNode xmlNode = new XmlNode(node);
             xmlNode.checkSupportedAttrs(Xml.IGNORE);
 
             this.ignoreVerify = xmlNode.getAttrBoolean(Xml.IGNORE, false);
 
-            for (AbstractTable table : createTables(worker, sourceId, node, true, tableEntityClassMap)) {
+            for (AbstractTable table : createTables(worker, zestData, sourceId, node, true, tableEntityClassMap)) {
                 tableMap.put(table.getName(), table);
             }
 

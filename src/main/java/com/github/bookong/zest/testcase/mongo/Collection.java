@@ -7,6 +7,7 @@ import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.rule.AbstractRule;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.AbstractTable;
+import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -77,9 +78,10 @@ public class Collection extends AbstractTable<Document> {
     }
 
     @Override
-    protected void loadData(ZestWorker worker, String sourceId, String content, boolean isVerifyElement) {
+    protected void loadData(ZestWorker worker, ZestData zestData, String sourceId, String content,
+                            boolean isVerifyElement) {
         MongoExecutor mongoExecutor = worker.getExecutor(sourceId, MongoExecutor.class);
-        getDataList().add(new Document(mongoExecutor, entityClass, getName(), content, isVerifyElement));
+        getDataList().add(new Document(zestData, mongoExecutor, entityClass, getName(), content, isVerifyElement));
     }
 
     private Order getOrder(Sort item) {

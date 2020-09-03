@@ -26,7 +26,8 @@ public class Row extends AbstractRow<Map<String, Object>> {
 
     private Map<String, Object> dataMap = new LinkedHashMap<>();
 
-    public Row(SqlExecutor sqlExecutor, Map<String, Integer> sqlTypes, String tableName, String xmlContent){
+    public Row(ZestData zestData, SqlExecutor sqlExecutor, Map<String, Integer> sqlTypes, String tableName,
+               String xmlContent){
         Map xmlDataMap = ZestJsonUtil.fromJson(xmlContent, HashMap.class);
         for (Object key : xmlDataMap.keySet()) {
             String columnName = String.valueOf(key);
@@ -35,7 +36,8 @@ public class Row extends AbstractRow<Map<String, Object>> {
                 throw new ZestException(Messages.parseDataTableRowExist(columnName, tableName));
             }
 
-            getDataMap().put(columnName, parseValue(sqlExecutor, sqlType, tableName, columnName, xmlDataMap.get(key)));
+            getDataMap().put(columnName,
+                             parseValue(zestData, sqlExecutor, sqlType, tableName, columnName, xmlDataMap.get(key)));
         }
     }
 
@@ -65,8 +67,8 @@ public class Row extends AbstractRow<Map<String, Object>> {
         }
     }
 
-    private Object parseValue(SqlExecutor sqlExecutor, Integer fieldSqlType, String tableName, String columnName,
-                              Object value) {
+    private Object parseValue(ZestData zestData, SqlExecutor sqlExecutor, Integer fieldSqlType, String tableName,
+                              String columnName, Object value) {
         if (value == null) {
             return null;
         }
@@ -78,7 +80,7 @@ public class Row extends AbstractRow<Map<String, Object>> {
                 case Types.DATE:
                 case Types.TIME:
                 case Types.TIMESTAMP:
-                    return ZestDateUtil.parseDate(String.valueOf(value));
+                    return ZestDateUtil.getDateInZest(zestData, ZestDateUtil.parseDate(String.valueOf(value)));
                 default:
                     return value;
             }

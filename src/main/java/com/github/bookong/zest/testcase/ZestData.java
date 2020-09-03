@@ -102,7 +102,7 @@ public class ZestData {
                                                            Xml.SOURCE);
             Set<String> sourceIds = new HashSet<>(children.size() + 1);
             for (Node child : children) {
-                getSourceList().add(new Source(worker, child, sourceIds));
+                getSourceList().add(new Source(worker, this, child, sourceIds));
             }
 
         } catch (Exception e) {

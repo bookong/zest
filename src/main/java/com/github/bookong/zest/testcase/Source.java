@@ -24,7 +24,7 @@ public class Source {
 
     private SourceVerifyData verifyData;
 
-    public Source(ZestWorker worker, Node node, Set<String> sourceIds){
+    public Source(ZestWorker worker, ZestData zestData, Node node, Set<String> sourceIds){
         try {
             XmlNode xmlNode = new XmlNode(node);
             this.id = xmlNode.getAttr(Xml.ID);
@@ -38,8 +38,8 @@ public class Source {
             List<Node> children = xmlNode.getSpecifiedNodes(Messages.parseSourceNecessary(), Xml.INIT, Xml.VERIFY);
 
             Map<String, String> tableEntityClassMap = new HashMap<>();
-            this.initData = new SourceInitData(worker, getId(), children.get(0), tableEntityClassMap);
-            this.verifyData = new SourceVerifyData(worker, getId(), children.get(1), tableEntityClassMap);
+            this.initData = new SourceInitData(worker, zestData, getId(), children.get(0), tableEntityClassMap);
+            this.verifyData = new SourceVerifyData(worker, zestData, getId(), children.get(1), tableEntityClassMap);
 
         } catch (Exception e) {
             throw new ZestException(Messages.parseSourceError(getId()), e);

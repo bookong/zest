@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public abstract class AbstractSourceData {
 
-    protected List<AbstractTable> createTables(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement,
-                                               Map<String, String> tableEntityClassMap) {
+    protected List<AbstractTable> createTables(ZestWorker worker, ZestData zestData, String sourceId, Node node,
+                                               boolean isVerifyElement, Map<String, String> tableEntityClassMap) {
         XmlNode xmlNode = new XmlNode(node);
         String nodeName = node.getNodeName();
         AbstractExecutor executor = worker.getExecutor(sourceId);
@@ -32,7 +32,7 @@ public abstract class AbstractSourceData {
         List<AbstractTable> list = new ArrayList<>();
         for (Node item : children) {
             AbstractTable table = executor.createTable();
-            table.init(worker, sourceId, item, isVerifyElement, tableEntityClassMap);
+            table.init(worker, zestData, sourceId, item, isVerifyElement, tableEntityClassMap);
             list.add(table);
         }
 

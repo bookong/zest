@@ -7,6 +7,7 @@ import com.github.bookong.zest.rule.AbstractRule;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.AbstractTable;
+import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -74,9 +75,10 @@ public class Table extends AbstractTable<Row> {
     }
 
     @Override
-    protected void loadData(ZestWorker worker, String sourceId, String xmlContent, boolean isVerifyElement) {
+    protected void loadData(ZestWorker worker, ZestData zestData, String sourceId, String xmlContent,
+                            boolean isVerifyElement) {
         SqlExecutor sqlExecutor = worker.getExecutor(sourceId, SqlExecutor.class);
-        getDataList().add(new Row(sqlExecutor, getSqlTypes(), getName(), xmlContent));
+        getDataList().add(new Row(zestData, sqlExecutor, getSqlTypes(), getName(), xmlContent));
     }
 
     private void loadSqlTypes(Connection conn) {

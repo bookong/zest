@@ -32,7 +32,7 @@ public abstract class AbstractTable<T> {
     protected abstract void init(ZestWorker worker, String sourceId, XmlNode xmlNode,
                                  Map<String, String> tableEntityClassMap);
 
-    public void init(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement,
+    public void init(ZestWorker worker, ZestData zestData, String sourceId, Node node, boolean isVerifyElement,
                      Map<String, String> tableEntityClassMap) {
         try {
             XmlNode xmlNode = new XmlNode(node);
@@ -66,7 +66,7 @@ public abstract class AbstractTable<T> {
                     parseRules = true;
 
                 } else if (Xml.DATA.equals(child.getNodeName())) {
-                    parseData(worker, sourceId, child, dataIdx++, isVerifyElement);
+                    parseData(worker, zestData, sourceId, child, dataIdx++, isVerifyElement);
                     parseData = true;
 
                 } else {
@@ -84,7 +84,8 @@ public abstract class AbstractTable<T> {
 
     protected abstract void checkRule(AbstractRule rule);
 
-    protected abstract void loadData(ZestWorker worker, String sourceId, String content, boolean isVerifyElement);
+    protected abstract void loadData(ZestWorker worker, ZestData zestData, String sourceId, String content,
+                                     boolean isVerifyElement);
 
     private void parseSorts(Node node) {
         try {
@@ -121,10 +122,11 @@ public abstract class AbstractTable<T> {
         }
     }
 
-    private void parseData(ZestWorker worker, String sourceId, Node node, int dataIdx, boolean isVerifyElement) {
+    private void parseData(ZestWorker worker, ZestData zestData, String sourceId, Node node, int dataIdx,
+                           boolean isVerifyElement) {
         try {
             XmlNode xmlNode = new XmlNode(node);
-            loadData(worker, sourceId, xmlNode.getNodeValue(), isVerifyElement);
+            loadData(worker, zestData, sourceId, xmlNode.getNodeValue(), isVerifyElement);
         } catch (Exception e) {
             throw new ZestException(Messages.parseDataError(dataIdx), e);
         }
