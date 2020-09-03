@@ -8,10 +8,7 @@ import com.github.bookong.zest.testcase.AbstractRow;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
 import com.github.bookong.zest.testcase.ZestData;
-import com.github.bookong.zest.util.Messages;
-import com.github.bookong.zest.util.ZestDateUtil;
-import com.github.bookong.zest.util.ZestJsonUtil;
-import com.github.bookong.zest.util.ZestUtil;
+import com.github.bookong.zest.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -70,13 +67,9 @@ public class Document extends AbstractRow<Object> {
         }
 
         for (Field f : collection.getEntityClass().getDeclaredFields()) {
-            if (!f.isAccessible()) {
-                continue;
-            }
-
             String fieldName = f.getName();
-            Object actual = f.get(actualData);
-            Object expected = f.get(getData());
+            Object actual = ZestReflectHelper.getValue(actualData, f);
+            Object expected = ZestReflectHelper.getValue(getData(), f);
 
             verify(zestData, collection, rowIdx, fieldName, expected, actual);
         }
