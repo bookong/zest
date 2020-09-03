@@ -315,7 +315,7 @@
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
-            <xsd:attribute name="Nullable" type="xsd:boolean" default="true">
+            <xsd:attribute name="Nullable" type="xsd:boolean" default="false">
                 <xsd:annotation>
                     <xsd:documentation>
                         Whether to allow null values

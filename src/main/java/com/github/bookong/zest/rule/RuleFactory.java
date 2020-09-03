@@ -16,7 +16,7 @@ public class RuleFactory {
             throw new ZestException(Messages.parseRuleChoice());
         }
 
-        boolean nullable = xmlNode.getAttrBoolean(Xml.NULLABLE, true);
+        boolean nullable = xmlNode.getAttrBoolean(Xml.NULLABLE, false);
 
         Node childNode = xmlNode.getChildren().get(0);
         String childName = childNode.getNodeName();
