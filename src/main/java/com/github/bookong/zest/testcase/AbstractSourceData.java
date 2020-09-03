@@ -32,10 +32,7 @@ public abstract class AbstractSourceData {
         List<AbstractTable> list = new ArrayList<>();
         for (Node item : children) {
             AbstractTable table = executor.createTable();
-            table.init(worker, sourceId, item, isVerifyElement, tableEntityClassMap.get(table.getName()));
-            if (!tableEntityClassMap.containsKey(table.getName()) && table instanceof Collection) {
-                tableEntityClassMap.put(table.getName(), ((Collection) table).getEntityClass().getName());
-            }
+            table.init(worker, sourceId, item, isVerifyElement, tableEntityClassMap);
             list.add(table);
         }
 

@@ -27,10 +27,10 @@ public class Collection extends AbstractTable<Document> {
     private Class<?>                             entityClass;
 
     @Override
-    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, String defEntityClass) {
+    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, Map<String, String> tableEntityClassMap) {
         xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE, Xml.ENTITY_CLASS);
 
-        String entityClassAttr = defEntityClass;
+        String entityClassAttr = tableEntityClassMap.get(getName());
         if (StringUtils.isBlank(entityClassAttr)) {
             entityClassAttr = xmlNode.getAttrNotEmpty(Xml.ENTITY_CLASS);
         }
@@ -39,6 +39,10 @@ public class Collection extends AbstractTable<Document> {
             this.entityClass = Class.forName(entityClassAttr);
         } catch (ClassNotFoundException e) {
             throw new ZestException(Messages.parseCommonClassFound(entityClassAttr));
+        }
+
+        if (!tableEntityClassMap.containsKey(getName())) {
+            tableEntityClassMap.put(getName(), entityClassAttr);
         }
     }
 
