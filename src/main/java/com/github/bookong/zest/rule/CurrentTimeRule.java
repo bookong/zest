@@ -44,7 +44,8 @@ public class CurrentTimeRule extends AbstractRule {
             Date endTime = new Date(zestData.getEndTime() + getOffset());
 
             Assert.assertTrue(Messages.verifyRuleDateCurrent(getField(), ZestDateUtil.formatDateNormal(startTime),
-                                                             ZestDateUtil.formatDateNormal(endTime)),
+                                                             ZestDateUtil.formatDateNormal(endTime),
+                                                             ZestDateUtil.formatDateNormal(actualDate)),
                               (actualDate.getTime() >= startTime.getTime()
                                && actualDate.getTime() <= endTime.getTime()));
         }

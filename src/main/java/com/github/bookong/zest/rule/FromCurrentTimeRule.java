@@ -81,7 +81,8 @@ public class FromCurrentTimeRule extends AbstractRule {
             Date endTime = cal.getTime();
 
             Assert.assertTrue(Messages.verifyRuleDateFrom(getField(), ZestDateUtil.formatDateNormal(startTime),
-                                                          ZestDateUtil.formatDateNormal(endTime)),
+                                                          ZestDateUtil.formatDateNormal(endTime),
+                                                          ZestDateUtil.formatDateNormal(actualDate)),
                               (actualDate.getTime() >= startTime.getTime()
                                && actualDate.getTime() <= endTime.getTime()));
         }
