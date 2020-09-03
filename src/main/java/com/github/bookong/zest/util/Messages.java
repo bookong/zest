@@ -167,6 +167,10 @@ public class Messages {
         return getString("parse.rule.from.unit.unknown", unit);
     }
 
+    public static String parseRuleManualFromUnitUnknown(int unit) {
+        return getString("parse.rule.manual.from.unit.unknown", unit);
+    }
+
     public static String parseOperator(String value) {
         return getString("parse.operator", value);
     }

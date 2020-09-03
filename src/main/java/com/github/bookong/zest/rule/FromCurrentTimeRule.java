@@ -26,7 +26,28 @@ public class FromCurrentTimeRule extends AbstractRule {
         super(field, nullable);
         this.min = min;
         this.max = max;
-        this.unit = unit;
+
+        switch (unit) {
+            case Calendar.DAY_OF_YEAR:
+            case Calendar.DAY_OF_MONTH:
+            case Calendar.DAY_OF_WEEK:
+            case Calendar.DAY_OF_WEEK_IN_MONTH:
+                this.unit = Calendar.DAY_OF_YEAR;
+                break;
+            case Calendar.HOUR_OF_DAY:
+            case Calendar.HOUR:
+                this.unit = Calendar.HOUR_OF_DAY;
+                break;
+            case Calendar.MINUTE:
+                this.unit = Calendar.MINUTE;
+                break;
+            case Calendar.SECOND:
+                this.unit = Calendar.SECOND;
+                break;
+            default:
+                throw new ZestException(Messages.parseRuleManualFromUnitUnknown(unit));
+        }
+
         this.offset = offset;
     }
 
