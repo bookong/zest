@@ -4,8 +4,11 @@ import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestDateUtil;
 import org.junit.Assert;
 import org.w3c.dom.Node;
+
+import java.util.Date;
 
 /**
  * @author Jiang Xu
@@ -30,12 +33,21 @@ public class CurrentTimeRule extends AbstractRule {
 
     @Override
     public void verify(ZestData zestData, Object actual) {
-        assertNullable(getField(), actual);
+        if (actual == null) {
+            if (!isNullable()) {
+                Assert.fail(Messages.verifyRuleNotNull(getField()));
+            }
+        } else {
 
-        long tmp = getActualDataTime(getField(), actual);
-        Assert.assertTrue(Messages.verifyRuleDateCurrent(getField()),
-                          (tmp >= zestData.getStartTime() && tmp <= zestData.getEndTime() + getOffset()));
+            Date actualDate = getActualDataTime(getField(), actual);
+            Date startTime = new Date(zestData.getStartTime());
+            Date endTime = new Date(zestData.getEndTime() + getOffset());
 
+            Assert.assertTrue(Messages.verifyRuleDateCurrent(getField(), ZestDateUtil.formatDateNormal(startTime),
+                                                             ZestDateUtil.formatDateNormal(endTime)),
+                              (actualDate.getTime() >= startTime.getTime()
+                               && actualDate.getTime() <= endTime.getTime()));
+        }
     }
 
     public int getOffset() {

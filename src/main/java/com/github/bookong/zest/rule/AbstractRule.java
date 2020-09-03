@@ -22,25 +22,17 @@ public abstract class AbstractRule {
 
     public abstract void verify(ZestData zestData, Object actual);
 
-    long getActualDataTime(String path, Object actual) {
-        long tmp = 0;
-        if (actual instanceof Date) {
-            tmp = ((Date) actual).getTime();
+    protected Date getActualDataTime(String path, Object actual) {
+        Date tmp = null;
 
-        } else if (actual instanceof Long) {
-            tmp = (Long) actual;
+        if (actual instanceof Date) {
+            tmp = (Date) actual;
 
         } else {
             Assert.fail(Messages.verifyRuleDateType(path));
         }
 
         return tmp;
-    }
-
-    void assertNullable(String path, Object actual) {
-        if (!isNullable() && actual == null) {
-            Assert.fail(Messages.verifyRuleNotNull(path));
-        }
     }
 
     public boolean isNullable() {

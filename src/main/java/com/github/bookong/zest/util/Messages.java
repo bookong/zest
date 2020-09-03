@@ -239,16 +239,16 @@ public class Messages {
         return getString("verify.rule.date.type", path);
     }
 
-    public static String verifyRuleDateCurrent(String path) {
-        return getString("verify.rule.date.current", path);
+    public static String verifyRuleDateCurrent(String path, String start, String end) {
+        return getString("verify.rule.date.current", path, start, end);
     }
 
-    public static String verifyRuleDateFrom(String path) {
-        return getString("verify.rule.date.from", path);
+    public static String verifyRuleDateFrom(String path, String start, String end) {
+        return getString("verify.rule.date.from", path, start, end);
     }
 
-    public static String verifyRuleRegExp(String path, String regExp) {
-        return getString("verify.rule.regexp", path, regExp);
+    public static String verifyRuleRegExp(String path, String regExp, String actual) {
+        return getString("verify.rule.regexp", path, regExp, actual);
     }
 
     public static String verifyRuleIgnore(String path, int rowIdx) {

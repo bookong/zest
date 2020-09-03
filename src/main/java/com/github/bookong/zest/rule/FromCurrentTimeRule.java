@@ -5,10 +5,12 @@ import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
+import com.github.bookong.zest.util.ZestDateUtil;
 import org.junit.Assert;
 import org.w3c.dom.Node;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author Jiang Xu
@@ -59,21 +61,30 @@ public class FromCurrentTimeRule extends AbstractRule {
 
     @Override
     public void verify(ZestData zestData, Object actual) {
-        assertNullable(getField(), actual);
+        if (actual == null) {
+            if (!isNullable()) {
+                Assert.fail(Messages.verifyRuleNotNull(getField()));
+            }
+        } else {
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(zestData.getStartTime());
-        cal.add(getUnit(), getMin());
-        cal.add(Calendar.MILLISECOND, -getOffset());
-        long expectedMin = cal.getTimeInMillis();
+            Date actualDate = getActualDataTime(getField(), actual);
 
-        cal.setTimeInMillis(zestData.getEndTime());
-        cal.add(getUnit(), getMax());
-        cal.add(Calendar.MILLISECOND, getOffset());
-        long expectedMax = cal.getTimeInMillis();
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(zestData.getStartTime());
+            cal.add(getUnit(), getMin());
+            cal.add(Calendar.MILLISECOND, -getOffset());
+            Date startTime = cal.getTime();
 
-        long tmp = getActualDataTime(getField(), actual);
-        Assert.assertTrue(Messages.verifyRuleDateFrom(getField()), (tmp >= expectedMin && tmp <= expectedMax));
+            cal.setTimeInMillis(zestData.getEndTime());
+            cal.add(getUnit(), getMax());
+            cal.add(Calendar.MILLISECOND, getOffset());
+            Date endTime = cal.getTime();
+
+            Assert.assertTrue(Messages.verifyRuleDateFrom(getField(), ZestDateUtil.formatDateNormal(startTime),
+                                                          ZestDateUtil.formatDateNormal(endTime)),
+                              (actualDate.getTime() >= startTime.getTime()
+                               && actualDate.getTime() <= endTime.getTime()));
+        }
     }
 
     public int getMin() {
