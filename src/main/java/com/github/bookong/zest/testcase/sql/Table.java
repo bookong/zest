@@ -33,7 +33,7 @@ public class Table extends AbstractTable<Row> {
     private Map<String, Integer> sqlTypes = new HashMap<>();
 
     @Override
-    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode) {
+    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, String defEntityClass) {
         xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE);
 
         SqlExecutor executor = worker.getExecutor(sourceId, SqlExecutor.class);

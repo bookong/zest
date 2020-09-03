@@ -29,14 +29,14 @@ public abstract class AbstractTable<T> {
     /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
     private boolean                   ignoreVerify;
 
-    protected abstract void init(ZestWorker worker, String sourceId, XmlNode xmlNode);
+    protected abstract void init(ZestWorker worker, String sourceId, XmlNode xmlNode, String defEntityClass);
 
-    public void init(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement) {
+    public void init(ZestWorker worker, String sourceId, Node node, boolean isVerifyElement, String defEntityClass) {
         try {
             XmlNode xmlNode = new XmlNode(node);
             setName(xmlNode.getAttr(Xml.NAME));
 
-            init(worker, sourceId, xmlNode);
+            init(worker, sourceId, xmlNode, defEntityClass);
             this.ignoreVerify = xmlNode.getAttrBoolean(Xml.IGNORE, false);
             this.dataList = new ArrayList<>(xmlNode.getChildren().size() + 1);
 

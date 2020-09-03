@@ -9,6 +9,7 @@ import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestReflectHelper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.w3c.dom.Node;
@@ -26,10 +27,14 @@ public class Collection extends AbstractTable<Document> {
     private Class<?>                             entityClass;
 
     @Override
-    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode) {
+    protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, String defEntityClass) {
         xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE, Xml.ENTITY_CLASS);
 
-        String entityClassAttr = xmlNode.getAttrNotEmpty(Xml.ENTITY_CLASS);
+        String entityClassAttr = defEntityClass;
+        if (StringUtils.isBlank(entityClassAttr)) {
+            entityClassAttr = xmlNode.getAttrNotEmpty(Xml.ENTITY_CLASS);
+        }
+
         try {
             this.entityClass = Class.forName(entityClassAttr);
         } catch (ClassNotFoundException e) {

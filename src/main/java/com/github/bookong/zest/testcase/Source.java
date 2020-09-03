@@ -8,7 +8,9 @@ import com.github.bookong.zest.util.Messages;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -35,8 +37,9 @@ public class Source {
 
             List<Node> children = xmlNode.getSpecifiedNodes(Messages.parseSourceNecessary(), Xml.INIT, Xml.VERIFY);
 
-            this.initData = new SourceInitData(worker, getId(), children.get(0));
-            this.verifyData = new SourceVerifyData(worker, getId(), children.get(1));
+            Map<String, String> tableEntityClassMap = new HashMap<>();
+            this.initData = new SourceInitData(worker, getId(), children.get(0), tableEntityClassMap);
+            this.verifyData = new SourceVerifyData(worker, getId(), children.get(1), tableEntityClassMap);
 
         } catch (Exception e) {
             throw new ZestException(Messages.parseSourceError(getId()), e);
