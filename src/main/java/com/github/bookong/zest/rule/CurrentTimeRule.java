@@ -29,11 +29,11 @@ public class CurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void verify(ZestData zestData, String field, Object actual) {
-        assertNullable(field, actual);
+    public void verify(ZestData zestData, Object actual) {
+        assertNullable(getField(), actual);
 
-        long tmp = getActualDataTime(field, actual);
-        Assert.assertTrue(Messages.verifyRuleDateCurrent(field),
+        long tmp = getActualDataTime(getField(), actual);
+        Assert.assertTrue(Messages.verifyRuleDateCurrent(getField()),
                           (tmp >= zestData.getStartTime() && tmp <= zestData.getEndTime() + getOffset()));
 
     }

@@ -58,8 +58,8 @@ public class FromCurrentTimeRule extends AbstractRule {
     }
 
     @Override
-    public void verify(ZestData zestData, String field, Object actual) {
-        assertNullable(field, actual);
+    public void verify(ZestData zestData, Object actual) {
+        assertNullable(getField(), actual);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(zestData.getStartTime());
@@ -72,8 +72,8 @@ public class FromCurrentTimeRule extends AbstractRule {
         cal.add(Calendar.MILLISECOND, getOffset());
         long expectedMax = cal.getTimeInMillis();
 
-        long tmp = getActualDataTime(field, actual);
-        Assert.assertTrue(Messages.verifyRuleDateFrom(field), (tmp >= expectedMin && tmp <= expectedMax));
+        long tmp = getActualDataTime(getField(), actual);
+        Assert.assertTrue(Messages.verifyRuleDateFrom(getField()), (tmp >= expectedMin && tmp <= expectedMax));
     }
 
     public int getMin() {

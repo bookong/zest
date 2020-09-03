@@ -30,10 +30,10 @@ public class RegExpRule extends AbstractRule {
     }
 
     @Override
-    public void verify(ZestData zestData, String field, Object actual) {
-        assertNullable(field, actual);
+    public void verify(ZestData zestData, Object actual) {
+        assertNullable(getField(), actual);
 
-        Assert.assertTrue(Messages.verifyRuleRegExp(field, getRegExp()),
+        Assert.assertTrue(Messages.verifyRuleRegExp(getField(), getRegExp()),
                           Pattern.matches(getRegExp(), String.valueOf(actual)));
     }
 

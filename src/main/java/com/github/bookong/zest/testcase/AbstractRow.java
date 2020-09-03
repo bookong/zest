@@ -49,14 +49,14 @@ public abstract class AbstractRow<T> {
             } else {
                 // expected == null
                 if (rule != null) {
-                    rule.verify(zestData, rule.getField(), actual);
+                    rule.verify(zestData, actual);
                 } else {
                     Assert.assertNull(Messages.verifyRowDataNull(fieldName), actual);
                 }
             }
 
         } else if (rule != null) {
-            rule.verify(zestData, rule.getField(), actual);
+            rule.verify(zestData, actual);
         }
     }
 }

@@ -20,7 +20,7 @@ public abstract class AbstractRule {
         this.nullable = nullable;
     }
 
-    public abstract void verify(ZestData zestData, String field, Object actual);
+    public abstract void verify(ZestData zestData, Object actual);
 
     long getActualDataTime(String path, Object actual) {
         long tmp = 0;
