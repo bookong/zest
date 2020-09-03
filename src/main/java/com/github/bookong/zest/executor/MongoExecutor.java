@@ -78,7 +78,7 @@ public class MongoExecutor extends AbstractExecutor {
     /**
      * 根据测试用例中数据构建 Document 对象，子类可以覆盖
      */
-    public Object createDocumentData(Class<?> entityClass, String collectionName, String xmlContent,
+    public Object createDocumentData(ZestData zestData, Class<?> entityClass, String collectionName, String xmlContent,
                                      boolean isVerifyElement) {
         throw new UnsupportedOperationException();
     }

@@ -31,7 +31,8 @@ public class Document extends AbstractRow<Object> {
     public Document(ZestData zestData, MongoExecutor mongoExecutor, Class<?> entityClass, String collectionName,
                     String xmlContent, boolean isVerifyElement){
         try {
-            this.data = mongoExecutor.createDocumentData(entityClass, collectionName, xmlContent, isVerifyElement);
+            this.data = mongoExecutor.createDocumentData(zestData, entityClass, collectionName, xmlContent,
+                                                         isVerifyElement);
         } catch (UnsupportedOperationException e) {
             this.data = ZestJsonUtil.fromJson(xmlContent, entityClass);
         }

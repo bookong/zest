@@ -63,6 +63,10 @@ public class ZestDateUtil {
      * @return 转换后的日期对象
      */
     public static Date getDateInZest(ZestData zestData, Date date) {
+        if (date == null) {
+            return null;
+        }
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.MILLISECOND, 0);
