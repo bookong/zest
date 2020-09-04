@@ -23,7 +23,7 @@ public class FromCurrentTimeRule extends AbstractRule {
     private int offset;
 
     public FromCurrentTimeRule(String field, boolean nullable, int min, int max, int unit, int offset){
-        super(field, nullable);
+        super(field, nullable, true);
         this.min = min;
         this.max = max;
 
@@ -52,7 +52,7 @@ public class FromCurrentTimeRule extends AbstractRule {
     }
 
     public FromCurrentTimeRule(Node node, String field, boolean nullable){
-        super(field, nullable);
+        super(field, nullable, false);
         XmlNode xmlNode = new XmlNode(node);
         xmlNode.checkSupportedAttrs(Xml.MIN, Xml.MAX, Xml.UNIT, Xml.OFFSET);
         xmlNode.mustNoChildren();
@@ -87,6 +87,10 @@ public class FromCurrentTimeRule extends AbstractRule {
                 Assert.fail(Messages.verifyRuleNotNull(getField()));
             }
         } else {
+            long zestEndTime = zestData.getEndTime();
+            if (isManual()) {
+                zestEndTime = System.currentTimeMillis();
+            }
 
             Date actualDate = getActualDataTime(getField(), actual);
 
@@ -96,7 +100,7 @@ public class FromCurrentTimeRule extends AbstractRule {
             cal.add(Calendar.MILLISECOND, -getOffset());
             Date startTime = cal.getTime();
 
-            cal.setTimeInMillis(zestData.getEndTime());
+            cal.setTimeInMillis(zestEndTime);
             cal.add(getUnit(), getMax());
             cal.add(Calendar.MILLISECOND, getOffset());
             Date endTime = cal.getTime();

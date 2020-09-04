@@ -16,12 +16,12 @@ public class RegExpRule extends AbstractRule {
     private String regExp;
 
     public RegExpRule(String field, boolean nullable, String regExp){
-        super(field, nullable);
+        super(field, nullable, true);
         this.regExp = regExp;
     }
 
     public RegExpRule(Node node, String field, boolean nullable){
-        super(field, nullable);
+        super(field, nullable, false);
         XmlNode xmlNode = new XmlNode(node);
         xmlNode.checkSupportedAttrs();
         xmlNode.mustNoChildren();

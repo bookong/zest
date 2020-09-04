@@ -15,9 +15,12 @@ public abstract class AbstractRule {
 
     private boolean nullable;
 
-    AbstractRule(String field, boolean nullable){
+    private boolean manual;
+
+    AbstractRule(String field, boolean nullable, boolean manual){
         this.field = field;
         this.nullable = nullable;
+        this.manual = manual;
     }
 
     public abstract void verify(ZestData zestData, Object actual);
@@ -41,5 +44,9 @@ public abstract class AbstractRule {
 
     public String getField() {
         return field;
+    }
+
+    public boolean isManual() {
+        return manual;
     }
 }

@@ -18,12 +18,12 @@ public class CurrentTimeRule extends AbstractRule {
     private int offset;
 
     public CurrentTimeRule(String field, boolean nullable, int offset){
-        super(field, nullable);
+        super(field, nullable, true);
         this.offset = offset;
     }
 
     public CurrentTimeRule(Node node, String field, boolean nullable){
-        super(field, nullable);
+        super(field, nullable, false);
         XmlNode xmlNode = new XmlNode(node);
         xmlNode.checkSupportedAttrs(Xml.OFFSET);
         xmlNode.mustNoChildren();
@@ -38,10 +38,14 @@ public class CurrentTimeRule extends AbstractRule {
                 Assert.fail(Messages.verifyRuleNotNull(getField()));
             }
         } else {
+            long zestEndTime = zestData.getEndTime();
+            if (isManual()) {
+                zestEndTime = System.currentTimeMillis();
+            }
 
             Date actualDate = getActualDataTime(getField(), actual);
             Date startTime = new Date(zestData.getStartTime());
-            Date endTime = new Date(zestData.getEndTime() + getOffset());
+            Date endTime = new Date(zestEndTime + getOffset());
 
             Assert.assertTrue(Messages.verifyRuleDateCurrent(getField(), ZestDateUtil.formatDateNormal(startTime),
                                                              ZestDateUtil.formatDateNormal(endTime),
