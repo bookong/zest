@@ -14,43 +14,25 @@ import java.util.Date;
  */
 public class ZestDateUtil {
 
-    private static final ThreadLocal<SimpleDateFormat> TYPE_NORMAL = new ThreadLocal<>();
-    private static final ThreadLocal<SimpleDateFormat> TYPE_MINUTE = new ThreadLocal<>();
-    private static final ThreadLocal<SimpleDateFormat> TYPE_HOUR   = new ThreadLocal<>();
-    private static final ThreadLocal<SimpleDateFormat> TYPE_DAY    = new ThreadLocal<>();
+    private static final ThreadLocal<SimpleDateFormat> TYPE_FULL = new ThreadLocal<>();
 
     public static Date parseDate(String time) {
         try {
-            return getDateFormat(time).parse(time);
+            return getDateFormatFull().parse(time);
         } catch (Exception e) {
             throw new ZestException(Messages.parseDataDate(time), e);
         }
     }
 
     public static String formatDateNormal(Date time) {
-        return getDateFormat("yyyy-MM-dd HH:mm:ss").format(time);
+        return getDateFormatFull().format(time);
     }
 
-    private static SimpleDateFormat getDateFormat(String time) {
-        switch (time.length()) {
-            case 19:
-                return getDateFormat(TYPE_NORMAL, "yyyy-MM-dd HH:mm:ss");
-            case 16:
-                return getDateFormat(TYPE_MINUTE, "yyyy-MM-dd HH:mm");
-            case 13:
-                return getDateFormat(TYPE_HOUR, "yyyy-MM-dd HH");
-            case 10:
-                return getDateFormat(TYPE_DAY, "yyyy-MM-dd");
-            default:
-                throw new ZestException(Messages.parseDataDatePattern());
-        }
-    }
-
-    private static SimpleDateFormat getDateFormat(ThreadLocal<SimpleDateFormat> threadLocal, String pattern) {
-        SimpleDateFormat obj = threadLocal.get();
+    private static SimpleDateFormat getDateFormatFull() {
+        SimpleDateFormat obj = TYPE_FULL.get();
         if (obj == null) {
-            obj = new SimpleDateFormat(pattern);
-            threadLocal.set(obj);
+            obj = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            TYPE_FULL.set(obj);
         }
         return obj;
     }

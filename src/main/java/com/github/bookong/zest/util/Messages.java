@@ -219,10 +219,6 @@ public class Messages {
         return getString("parse.data.date", value);
     }
 
-    public static String parseDataDatePattern() {
-        return getString("parse.data.date.pattern");
-    }
-
     public static String operatorUnbound(String value) {
         return getString("operator.unbound", value);
     }

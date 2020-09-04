@@ -53,7 +53,7 @@ public class ZestDataTest extends AbstractZestDataTest {
         testLoadError("06.xml", Messages.parseParamError(), //
                       Messages.parseParamObjLoad("date1"), //
                       Messages.parseDataDate("str value"), //
-                      Messages.parseDataDatePattern());
+                      "Unparseable date: \"str value\"");
     }
 
     @Test
@@ -80,12 +80,6 @@ public class ZestDataTest extends AbstractZestDataTest {
         Assert.assertEquals(8.5, param.getFloatObjValue(), 0.1);
         Assert.assertEquals("hello", param.getStrValue());
         Assert.assertEquals("2020-08-10 13:14:15", DateFormatUtils.format(param.getDate1(), //
-                                                                          "yyyy-MM-dd HH:mm:ss"));
-        Assert.assertEquals("2020-08-10 13:14:00", DateFormatUtils.format(param.getDate2(), //
-                                                                          "yyyy-MM-dd HH:mm:ss"));
-        Assert.assertEquals("2020-08-10 13:00:00", DateFormatUtils.format(param.getDate3(), //
-                                                                          "yyyy-MM-dd HH:mm:ss"));
-        Assert.assertEquals("2020-08-10 00:00:00", DateFormatUtils.format(param.getDate4(), //
                                                                           "yyyy-MM-dd HH:mm:ss"));
 
         Assert.assertEquals(2, param.getListObj().size());

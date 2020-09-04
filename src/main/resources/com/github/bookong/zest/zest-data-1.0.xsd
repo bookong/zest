@@ -21,14 +21,10 @@
             attributeFormDefault="unqualified">
 
     <xsd:annotation>
-        <xsd:documentation><![CDATA[
-	In the following attributes, if the time format expressed in a string can be any of the following.
-	(The time part that is not given defaults to 0)
-			yyyy-MM-dd HH:mm:ss
-			yyyy-MM-dd HH:mm
-			yyyy-MM-dd HH
-			yyyy-MM-dd
-		]]></xsd:documentation>
+        <xsd:documentation>
+            For all times represented by strings, the pattern must be "yyyy-MM-dd'T'HH:mm:ss.SSSX" where "X" is ISO 8601 time zone. For example, Beijing time "2020-08-09 10:12:00"
+            is represented as "2020-08-09T10:12:00.000+08:00"
+        </xsd:documentation>
     </xsd:annotation>
 
     <xsd:element name="Zest">
@@ -219,7 +215,7 @@
                 </xsd:element>
             </xsd:sequence>
             <xsd:attribute name="Name" type="xsd:string" use="required"/>
-            <xsd:attribute name="EntityClass" type="xsd:string" >
+            <xsd:attribute name="EntityClass" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
                         Entity class name
