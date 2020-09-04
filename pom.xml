@@ -22,7 +22,7 @@
 
     <groupId>com.github.bookong</groupId>
     <artifactId>zest</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.0</version>
     <packaging>jar</packaging>
 
     <name>zest</name>
