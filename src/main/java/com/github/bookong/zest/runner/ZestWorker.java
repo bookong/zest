@@ -53,12 +53,9 @@ public abstract class ZestWorker {
                                                                    executor.supportedOperatorClass().getName()));
                 }
 
-                if (operatorMap.containsKey(zestSource.value())) {
-                    throw new ZestException(Messages.parseOperatorDuplicate(zestSource.value()));
+                if (!operatorMap.containsKey(zestSource.value())) {
+                    operatorMap.put(zestSource.value(), obj);
                 }
-
-                operatorMap.put(zestSource.value(), obj);
-
             }
 
             clazz = clazz.getSuperclass();
