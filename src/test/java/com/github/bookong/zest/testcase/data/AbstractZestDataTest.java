@@ -5,7 +5,7 @@ import com.github.bookong.zest.executor.SqlExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
 import com.github.bookong.zest.testcase.ZestData;
-import com.github.bookong.zest.testcase.mock.MockConnection;
+import com.github.bookong.zest.testcase.mock.MockDataSource;
 import com.github.bookong.zest.testcase.mock.MockMongoOperations;
 import com.github.bookong.zest.testcase.param.Param;
 import com.github.bookong.zest.util.Messages;
@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
 import java.util.Map;
 
 /**
@@ -28,11 +28,11 @@ public abstract class AbstractZestDataTest {
     protected ZestWorker worker = new ZestJUnit5Worker();
 
     protected void initZestData(String filename, ZestData zestData) {
-        Connection conn = new MockConnection();
+        DataSource dataSource = new MockDataSource();
         MongoOperations mongoOperations = new MockMongoOperations();
 
         Map<String, Object> operatorMap = (Map<String, Object>) ZestReflectHelper.getValue(worker, "operatorMap");
-        operatorMap.put("mysql", conn);
+        operatorMap.put("mysql", dataSource);
         operatorMap.put("mongo", mongoOperations);
         operatorMap.put("unknown", new Object());
 

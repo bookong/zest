@@ -11,7 +11,9 @@ import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -38,11 +40,14 @@ public class Table extends AbstractTable<Row> {
         xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE);
 
         SqlExecutor executor = worker.getExecutor(sourceId, SqlExecutor.class);
-        Connection conn = worker.getOperator(sourceId, Connection.class);
+        DataSource dataSource = worker.getOperator(sourceId, DataSource.class);
+        Connection conn = DataSourceUtils.getConnection(dataSource);
         try {
             executor.loadSqlTypes(conn, getSqlTypes());
         } catch (UnsupportedOperationException e) {
             loadSqlTypes(conn);
+        } finally {
+            DataSourceUtils.releaseConnection(conn, dataSource);
         }
     }
 

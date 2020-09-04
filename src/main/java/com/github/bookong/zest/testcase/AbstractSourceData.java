@@ -4,11 +4,9 @@ import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
 import com.github.bookong.zest.executor.AbstractExecutor;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.support.xml.XmlNode;
-import com.github.bookong.zest.testcase.mongo.Collection;
 import com.github.bookong.zest.util.Messages;
 import org.w3c.dom.Node;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +23,7 @@ public abstract class AbstractSourceData {
         AbstractExecutor executor = worker.getExecutor(sourceId);
         executor.checkSupportedOperatorClass(worker, sourceId);
 
-        List<Node> children = xmlNode.getFixedNodeList(Messages.parseSourceOperationMatch(Connection.class.getName(),
+        List<Node> children = xmlNode.getFixedNodeList(Messages.parseSourceOperationMatch(executor.supportedOperatorClass().getName(),
                                                                                           nodeName, Xml.TABLE),
                                                        Xml.TABLE);
 

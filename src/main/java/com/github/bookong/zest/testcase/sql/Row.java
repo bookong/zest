@@ -2,7 +2,6 @@ package com.github.bookong.zest.testcase.sql;
 
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.executor.SqlExecutor;
-import com.github.bookong.zest.rule.AbstractRule;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.AbstractRow;
 import com.github.bookong.zest.testcase.AbstractTable;
@@ -11,13 +10,15 @@ import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestDateUtil;
 import com.github.bookong.zest.util.ZestJsonUtil;
-import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.Types;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Jiang Xu
@@ -46,11 +47,14 @@ public class Row extends AbstractRow<Map<String, Object>> {
                        Map<String, Object> actualRow) {
         try {
             SqlExecutor executor = worker.getExecutor(source.getId(), SqlExecutor.class);
-            Connection conn = worker.getOperator(source.getId(), Connection.class);
+            DataSource dataSource = worker.getOperator(source.getId(), DataSource.class);
+            Connection conn = DataSourceUtils.getConnection(dataSource);
             try {
                 executor.verifyRow(conn, zestData, source, (Table) table, rowIdx, actualRow);
             } catch (UnsupportedOperationException e) {
                 verify(zestData, table, rowIdx, actualRow);
+            } finally {
+                DataSourceUtils.releaseConnection(conn, dataSource);
             }
         } catch (Exception e) {
             throw new ZestException(Messages.verifyRowError(source.getId(), table.getName(), rowIdx), e);

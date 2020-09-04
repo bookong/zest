@@ -174,7 +174,12 @@ public class ZestSqlHelper {
     }
 
     public static String query(DataSource dataSource, String sql) {
-        return query(DataSourceUtils.getConnection(dataSource), sql);
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        try {
+            return query(conn, sql);
+        } finally {
+            DataSourceUtils.releaseConnection(conn, dataSource);
+        }
     }
 
     public static String query(Connection conn, String sql) {

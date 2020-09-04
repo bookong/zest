@@ -25,11 +25,7 @@ public abstract class ZestWorker {
     protected static Logger               logger      = LoggerFactory.getLogger(ZestWorker.class);
 
     private Map<String, AbstractExecutor> executorMap = new HashMap<>();
-    /**
-     * value 放两种东西: <br>
-     * javax.sql.DataSource <br>
-     * org.springframework.data.mongodb.core.MongoOperations
-     */
+
     private Map<String, Object>           operatorMap = new HashMap<>();
 
     protected void loadAnnotation(Object test) {
@@ -41,28 +37,28 @@ public abstract class ZestWorker {
                     continue;
                 }
 
-                Object value;
+                AbstractExecutor executor;
+                try {
+                    executor = zestSource.executorClass().newInstance();
+                    executorMap.put(zestSource.value(), executor);
+                } catch (Exception e) {
+                    throw new ZestException(Messages.parseExecutor(zestSource.value(),
+                                                                   zestSource.executorClass().getName()),
+                                            e);
+                }
+
                 Object obj = ZestReflectHelper.getValue(test, f.getName());
-                if (obj instanceof DataSource) {
-                    value = DataSourceUtils.getConnection((DataSource) obj);
-                } else if (obj instanceof MongoOperations) {
-                    value = obj;
-                } else {
-                    throw new ZestException(Messages.parseOperator(zestSource.value()));
+                if (!executor.supportedOperatorClass().isAssignableFrom(obj.getClass())) {
+                    throw new ZestException(Messages.parseOperator(zestSource.value(),
+                                                                   executor.supportedOperatorClass().getName()));
                 }
 
                 if (operatorMap.containsKey(zestSource.value())) {
                     throw new ZestException(Messages.parseOperatorDuplicate(zestSource.value()));
                 }
 
-                operatorMap.put(zestSource.value(), value);
-                try {
-                    executorMap.put(zestSource.value(), zestSource.executorClass().newInstance());
-                } catch (Exception e) {
-                    throw new ZestException(Messages.parseExecutor(zestSource.value(),
-                                                                   zestSource.executorClass().getName()),
-                                            e);
-                }
+                operatorMap.put(zestSource.value(), obj);
+
             }
 
             clazz = clazz.getSuperclass();

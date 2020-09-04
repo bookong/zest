@@ -171,8 +171,8 @@ public class Messages {
         return getString("parse.rule.manual.from.unit.unknown", unit);
     }
 
-    public static String parseOperator(String value) {
-        return getString("parse.operator", value);
+    public static String parseOperator(String sourceId, String className) {
+        return getString("parse.operator", sourceId, className);
     }
 
     public static String parseOperatorDuplicate(String value) {

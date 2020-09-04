@@ -9,8 +9,11 @@ import com.github.bookong.zest.testcase.sql.Table;
 import com.github.bookong.zest.util.Messages;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.junit.Assert;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +26,7 @@ public class SqlExecutor extends AbstractExecutor {
 
     @Override
     public Class<?> supportedOperatorClass() {
-        return Connection.class;
+        return DataSource.class;
     }
 
     @Override
@@ -33,9 +36,14 @@ public class SqlExecutor extends AbstractExecutor {
 
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
-        Connection conn = worker.getOperator(source.getId(), Connection.class);
-        for (AbstractTable<?> table : findAllTables(source)) {
-            ZestSqlHelper.execute(conn, String.format("truncate table `%s`", table.getName()));
+        DataSource dataSource = worker.getOperator(source.getId(), DataSource.class);
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        try {
+            for (AbstractTable<?> table : findAllTables(source)) {
+                ZestSqlHelper.execute(conn, String.format("truncate table `%s`", table.getName()));
+            }
+        } finally {
+            DataSourceUtils.releaseConnection(conn, dataSource);
         }
     }
 
@@ -44,16 +52,27 @@ public class SqlExecutor extends AbstractExecutor {
         Table table = (Table) sourceTable;
 
         if (!table.getDataList().isEmpty()) {
-            Connection conn = worker.getOperator(source.getId(), Connection.class);
-            ZestSqlHelper.insert(conn, table);
+            DataSource dataSource = worker.getOperator(source.getId(), DataSource.class);
+            Connection conn = DataSourceUtils.getConnection(dataSource);
+            try {
+                ZestSqlHelper.insert(conn, table);
+            } finally {
+                DataSourceUtils.releaseConnection(conn, dataSource);
+            }
         }
     }
 
     @Override
     protected void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable sourceTable) {
         Table table = (Table) sourceTable;
-        Connection conn = worker.getOperator(source.getId(), Connection.class);
-        List<Map<String, Object>> actualList = ZestSqlHelper.find(conn, table);
+        DataSource dataSource = worker.getOperator(source.getId(), DataSource.class);
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        List<Map<String, Object>> actualList;
+        try {
+            actualList = ZestSqlHelper.find(conn, table);
+        } finally {
+            DataSourceUtils.releaseConnection(conn, dataSource);
+        }
 
         Assert.assertEquals(Messages.verifyTableSize(source.getId(), table.getName()), //
                             table.getDataList().size(), actualList.size());
