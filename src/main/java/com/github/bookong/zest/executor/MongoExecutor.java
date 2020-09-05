@@ -31,10 +31,9 @@ public class MongoExecutor extends AbstractExecutor {
 
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
-        MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
         for (AbstractTable<?> table : findAllTables(source)) {
             Collection collection = (Collection) table;
-            operator.remove(new Query(), collection.getEntityClass());
+            removeAll(worker, source, collection);
         }
     }
 
@@ -48,8 +47,7 @@ public class MongoExecutor extends AbstractExecutor {
         }
 
         if (!initDataList.isEmpty()) {
-            MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
-            operator.insert(initDataList, collection.getEntityClass());
+            insertDataList(worker, source, collection.getEntityClass(), initDataList);
         }
     }
 
@@ -63,10 +61,9 @@ public class MongoExecutor extends AbstractExecutor {
             query.with(collection.getSort());
         }
 
-        List<?> actualList = operator.find(query, collection.getEntityClass());
+        List<?> actualList = findData(worker, source, collection);
 
-        Assert.assertEquals(Messages.verifyTableSize(source.getId(), collection.getName()),
-                            collection.getDataList().size(), actualList.size());
+        Assert.assertEquals(Messages.verifyTableSize(source.getId(), collection.getName()), collection.getDataList().size(), actualList.size());
 
         for (int i = 0; i < collection.getDataList().size(); i++) {
             Document expected = collection.getDataList().get(i);
@@ -75,19 +72,39 @@ public class MongoExecutor extends AbstractExecutor {
         }
     }
 
+    /** 由于 Zest 编译时依赖 spring-data-mongodb 版本可能与实际使用版本不一致，如果具体的 MongoOperations 类变更需要覆盖此文件 */
+    protected void removeAll(ZestWorker worker, Source source, Collection collection) {
+        MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
+        operator.remove(new Query(), collection.getEntityClass());
+    }
+
+    /** 由于 Zest 编译时依赖 spring-data-mongodb 版本可能与实际使用版本不一致，如果具体的 MongoOperations 类变更需要覆盖此文件 */
+    protected void insertDataList(ZestWorker worker, Source source, Class<?> entityClass, List<Object> initDataList) {
+        MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
+        operator.insert(initDataList, entityClass);
+    }
+
+    /** 由于 Zest 编译时依赖 spring-data-mongodb 版本可能与实际使用版本不一致，如果具体的 MongoOperations 类变更需要覆盖此文件 */
+    protected List<?> findData(ZestWorker worker, Source source, Collection collection) {
+        Query query = new Query();
+        if (collection.getSort() != null) {
+            query.with(collection.getSort());
+        }
+        MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
+        return operator.find(query, collection.getEntityClass());
+    }
+
     /**
      * 根据测试用例中数据构建 Document 对象，子类可以覆盖
      */
-    public Object createDocumentData(ZestData zestData, Class<?> entityClass, String collectionName, String xmlContent,
-                                     boolean isVerifyElement) {
+    public Object createDocumentData(ZestData zestData, Class<?> entityClass, String collectionName, String xmlContent, boolean isVerifyElement) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * 自定义验证 Document 对象，子类可以覆盖
      */
-    public void verifyDocument(MongoOperations operator, ZestData zestData, Source source, Collection collection,
-                               int rowIdx, Document expectedDocument, Object actualData) {
+    public void verifyDocument(MongoOperations operator, ZestData zestData, Source source, Collection collection, int rowIdx, Document expectedDocument, Object actualData) {
         throw new UnsupportedOperationException();
     }
 
