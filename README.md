@@ -8,10 +8,17 @@ Zest
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.bookong/zest.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/github/bookong/zest/)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
+Zest is an easy-to-use unit testing tool based on the Spring framework. It separates test data and test code, and automatically verifies the results of RMDB (SQL) and MongoDB
 
-http://central.sonatype.org/pages/apache-maven.html
+Supported Versions
+------------------
 
-If your version is a release version (does not end in -SNAPSHOT) and with this setup in place, you can run a deployment to OSSRH and an automated release to the Central Repository with the usual:
-```
-mvn clean deploy
-```
+- Support for 
+    - Java 8
+    - Spring 4 plus
+    - JUnit 4 plus
+
+Documentation
+----------
+
+- [Documentation Home](hhttps://github.com/bookong/zest/wiki)
