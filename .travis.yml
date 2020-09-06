@@ -4,3 +4,6 @@ jdk:
   - openjdk8
 
 install: mvn clean verify -Dgpg.skip=true
+
+after_success:
+  - mvn clean test jacoco:report coveralls:report
