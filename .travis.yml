@@ -3,4 +3,4 @@ jdk:
   - openjdk8
 install: true
 script:
-  - mvn install
+  - mvn install -Dgpg.skip
