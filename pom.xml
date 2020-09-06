@@ -22,12 +22,20 @@
 
     <groupId>com.github.bookong</groupId>
     <artifactId>zest</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.3.1</version>
     <packaging>jar</packaging>
 
     <name>zest</name>
     <description>An easy-to-use unit testing tool based on Spring Framework. Support SQL type database and MongoDB</description>
     <url>https://github.com/bookong/zest</url>
+
+    <developers>
+        <developer>
+            <id>jiangxu</id>
+            <name>Xu Jiang</name>
+            <email>bookong@gmail.com</email>
+        </developer>
+    </developers>
 
     <contributors>
         <contributor>
