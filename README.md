@@ -1,6 +1,7 @@
 Zest
 ======================
 
+[![Build Status](https://travis-ci.org/bookong/zest.svg?branch=master)](https://travis-ci.org/bookong/zest)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.github.bookong/zest/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.bookong/zest)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
