@@ -8,6 +8,9 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 /**
  * @author Jiang Xu
  */
@@ -79,8 +82,9 @@ public class ZestDataTest extends AbstractZestDataTest {
         Assert.assertEquals(7.5, param.getFloatValue(), 0.1);
         Assert.assertEquals(8.5, param.getFloatObjValue(), 0.1);
         Assert.assertEquals("hello", param.getStrValue());
-        Assert.assertEquals("2020-08-10 13:14:15", DateFormatUtils.format(param.getDate1(), //
-                                                                          "yyyy-MM-dd HH:mm:ss"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        Assert.assertEquals("2020-08-10 13:14:15", dateFormat.format(param.getDate1()));
 
         Assert.assertEquals(2, param.getListObj().size());
         Assert.assertEquals("1: param1 str", param.getListObj().get(0).getStr());
