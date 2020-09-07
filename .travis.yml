@@ -8,4 +8,10 @@ install: true
 script: mvn clean verify -Dgpg.skip=true
 
 after_success:
-  - mvn clean test jacoco:report coveralls:report
+  - mvn clean test
+  - mvn jacoco:report
+  - mvn coveralls:report -DrepoToken="${COVERALLS_TOKEN}"
+
+env:
+  global:
+    - secure: "MKoeAMmecbn0mf+Us3zxn2BE8/Ihc/7cieOdpKhwjy/85qfi+jSfGPgZVN4TEk5I7OQFew5SRH5zbV9H6kygQ4nfsE2Y8ozDg+5lMRMW6IC9/mrLZvHvAJbULLhrMaXmcX2/1Kr/xDr+C9i0P3YmK0l7g26iJlsLYPSem8I17gYV2avwG0qcX3BP1iMijPiRSVt3+VZ195wGYzMbU5QTmJpYyceb8ZoLVeTF8myllpyWuA/WaHcrxRUz9yUOofiWPGzp+cz6N9gQ9jAeXenLmt7E3+C2J23JH6iQnKeTXKYoMUDTNqGeJU6Yci3baFrAkzZxY3rHokOwf9+U72TQ2tnuTNuJ0Q2nzNd7SbyFPvMiGQBOJGJD50Petf2kdzyyiInS1ENflGNIToArcxtrurgK8kksLtdjAvMVFAUFRU69ZA8OlMzhawj51XWK6U0inLYIlgS0WwnlDP5TkOTNC98pvXETUE5dzCucYygtF7/LRNBiIQib/1oTPNVoR1zOULlkAoPOS50QzsBJySLeFiRC3Yg72twLksNRcN/vc4DYryv9DYTbjXzF13SEJGr3l1MniWPiYTsYMYSWAilIF6bOwdNu76rJLJ1CEdo/wfswmgA3zsksVs9Uzb8NE2NWfJAHjljbrW8GVgAambfWKPHK5fSjpQeLFPjkY41tg9M="
