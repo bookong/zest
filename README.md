@@ -16,7 +16,7 @@ Supported Versions
 - Support for 
     - Java 8
     - Spring 4 plus
-    - JUnit 4 plus
+    - JUnit 4 and 5
 
 Documentation
 ----------
