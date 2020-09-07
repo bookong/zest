@@ -21,4 +21,4 @@ Supported Versions
 Documentation
 ----------
 
-- [Documentation Home](hhttps://github.com/bookong/zest/wiki)
+- [Documentation Home](https://github.com/bookong/zest/wiki)
