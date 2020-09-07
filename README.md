@@ -22,5 +22,5 @@ Documentation
 ----------
 
 - [Documentation Home](https://github.com/bookong/zest/wiki)
-* [See the snapshot docs](src/site/markdown) (Note: may contain explanation of unreleased features)
-* [查看快照文档](src/site/zh/markdown) (注意：可能包含未发布功能的说明)
+* [See the snapshot docs](src/site/markdown/index.md) (Note: may contain explanation of unreleased features)
+* [查看快照文档](src/site/zh/markdown/index.md) (注意：可能包含未发布功能的说明)
