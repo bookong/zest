@@ -9,11 +9,30 @@
 
 Zest is an easy-to-use unit testing tool based on Spring. It separates test data and test code, and automatically verifies the results of RMDB (SQL) and MongoDB.
 
-Quick start
-----------
-
-Documentation
-----------
+# Documentation
 
 - [Documentation Home](https://github.com/bookong/zest/wiki)
+- [文档首页](https://github.com/bookong/zest/wiki/Home_zh_CN)
 
+# Download
+
+- [maven][1]
+- [the latest JAR][2]
+
+[1]: https://repo1.maven.org/maven2/com/github/bookong/zest/
+[2]: https://search.maven.org/remote_content?g=com.github.bookong&a=zest&v=LATEST
+
+# Maven
+
+```xml
+<dependency>
+    <groupId>com.github.bookong</groupId>
+    <artifactId>zest</artifactId>
+    <version>0.3.1</version>
+    <scope>test</scope>
+</dependency>
+```
+
+# License
+
+Zest is released under the [Apache 2.0 license](license.txt).
