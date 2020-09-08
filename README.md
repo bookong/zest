@@ -1,5 +1,4 @@
-Zest
-======================
+![zest](http://bookong.github.io/zest/images/logo.png)
 
 [![Build Status](https://travis-ci.org/bookong/zest.svg?branch=master)](https://travis-ci.org/bookong/zest)
 [![Coverage Status](https://coveralls.io/repos/github/bookong/zest/badge.svg?branch=master)](https://coveralls.io/github/bookong/zest?branch=master)
@@ -7,8 +6,6 @@ Zest
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.github.bookong/zest/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.bookong/zest)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.bookong/zest.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/github/bookong/zest/)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-
-![zest](http://bookong.github.io/zest/images/logo.png)
 
 Zest is an easy-to-use unit testing tool based on Spring. It separates test data and test code, and automatically verifies the results of RMDB (SQL) and MongoDB.
 
