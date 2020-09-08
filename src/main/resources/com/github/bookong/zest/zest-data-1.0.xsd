@@ -139,9 +139,7 @@
                         The data content in the data source is mutually exclusive. Which one to use must match the object bound by the @ZestSource annotation.
                     </xsd:documentation>
                 </xsd:annotation>
-                <xsd:choice>
-                    <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
-                </xsd:choice>
+                <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
