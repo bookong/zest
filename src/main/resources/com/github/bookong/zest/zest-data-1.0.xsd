@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+ Copyright 2014-2020 the original author or authors.
 
-    Copyright 2010-2020 the original author or authors.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
 
-       http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 -->
-<xsd:schema targetNamespace="https://www.bookong.net/schema/zest/data" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns:data="https://www.bookong.net/schema/zest/data" elementFormDefault="qualified"
-            attributeFormDefault="unqualified">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:data="https://www.bookong.net/schema/zest/data"
+            targetNamespace="https://www.bookong.net/schema/zest/data"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
 
     <xsd:annotation>
         <xsd:documentation>
-            For all times represented by strings, the pattern must be "yyyy-MM-dd'T'HH:mm:ss.SSSX" where "X" is ISO 8601 time zone. For example, Beijing time "2020-08-09 10:12:00"
-            is represented as "2020-08-09T10:12:00.000+08:00"
+            For all times represented by strings, the pattern must be "yyyy-MM-dd'T'HH:mm:ss.SSSX" where "X" is ISO 8601 time zone.
+            For example, Beijing time "2020-08-09 10:12:00" is represented as "2020-08-09T10:12:00.000+08:00"
         </xsd:documentation>
     </xsd:annotation>
 
@@ -44,8 +43,8 @@
             <xsd:attribute name="CurrentTime" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                        Optional current data source time. If this value is set, all time type content will undergo a
-                        conversion during the initialization and automatic verification of the data source.
+                        Optional current data source time.
+                        If this value is set, all time type content will undergo a conversion during the initialization and automatic verification of the data source.
                         This is done to be able to test the logic related to the current time.
                     </xsd:documentation>
                 </xsd:annotation>
@@ -64,8 +63,7 @@
     <xsd:element name="Param">
         <xsd:annotation>
             <xsd:documentation>
-                Used to construct the test method parameters, the program is responsible for automatically loading the
-                data onto them.
+                Used to construct the test method parameters, the program is responsible for automatically loading the data onto them.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -79,7 +77,7 @@
         <xsd:annotation>
             <xsd:documentation>
                 Data sources that can be automatically verified. Currently, two data sources are supported:
-                1. Relational database supporting SQL.
+                1. RMDB (SQL).
                 2. MongoDB database.
             </xsd:documentation>
         </xsd:annotation>
@@ -91,9 +89,8 @@
             <xsd:attribute name="Id" type="xsd:NMTOKEN" use="required">
                 <xsd:annotation>
                     <xsd:documentation>
-                        The Id of the data source should be bound to the specific javax.sql.DataSource or
-                        org.springframework.data.mongodb.core.MongoOperations type attribute on the test object through
-                        the @ZestSource annotation
+                        The Id of the data source should be bound to the specific javax.sql.DataSource or org.springframework.data.mongodb.core.MongoOperations
+                        type attribute on the test object through the @ZestSource annotation
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
@@ -112,12 +109,9 @@
                     <xsd:annotation>
                         <xsd:documentation>
                             Assign values to specific test parameter attribute objects.
-                            If the attribute type of the test parameter is basic type, Integer, Long, Boolean, Double,
-                            Float, String, then assign value directly.
-                            If it is a Date type, it will determine whether to perform the assignment after conversion
-                            according to whether the CurrentTime property is set before.
-                            In other cases, treat the content here as a JSON string and use it to construct the property
-                            object.
+                            If the attribute type of the test parameter is basic type, Integer, Long, Boolean, Double, Float, String, then assign value directly.
+                            If it is a Date type, it will determine whether to perform the assignment after conversion according to whether the CurrentTime property is set before.
+                            In other cases, treat the content here as a JSON string and use it to construct the property object.
                         </xsd:documentation>
                     </xsd:annotation>
                     <xsd:attribute name="Name" type="xsd:string" use="required">
@@ -135,16 +129,14 @@
     <xsd:element name="Init">
         <xsd:annotation>
             <xsd:documentation>
-                The initial state of the data source: the program will automatically use the following data to
-                initialize the data source.
+                The initial state of the data source: the program will automatically use the following data to initialize the data source.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:annotation>
                     <xsd:documentation>
-                        The data content in the data source is mutually exclusive. Which one to use must match the
-                        object bound by the @ZestSource annotation.
+                        The data content in the data source is mutually exclusive. Which one to use must match the object bound by the @ZestSource annotation.
                     </xsd:documentation>
                 </xsd:annotation>
                 <xsd:choice>
@@ -157,16 +149,14 @@
     <xsd:element name="Verify">
         <xsd:annotation>
             <xsd:documentation>
-                The data source is to be verified after executing the code to be tested: the program will automatically
-                verify the data source with the following data.
+                The data source is to be verified after executing the code to be tested: the program will automatically verify the data source with the following data.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:annotation>
                     <xsd:documentation>
-                        The data content in the data source is mutually exclusive. Which one to use must match the
-                        object bound by the @ZestSource annotation.
+                        The data content in the data source is mutually exclusive. Which one to use must match the object bound by the @ZestSource annotation.
                     </xsd:documentation>
                 </xsd:annotation>
                 <xsd:element ref="data:Table" minOccurs="0" maxOccurs="unbounded"/>
@@ -184,50 +174,43 @@
     <xsd:element name="Table">
         <xsd:annotation>
             <xsd:documentation>
-                SQL Table is valid when @ZestSource annotates the javax.sql.DataSource property of the test object.
+                May be a RMDB (SQL) table, or MongoDB Collection.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element ref="data:Sorts" minOccurs="0">
                     <xsd:annotation>
-                        <xsd:documentation>
-                            Because the primary key of the table to be verified is not necessarily in order, you need to
-                            specify the collation of the query.
-                            This attribute is only valid in the Table element under the Verify element.
-                        </xsd:documentation>
+                        <xsd:documentation><![CDATA[
+                            Because the primary key of the table to be verified is not necessarily in order, you need to specify the collation of the query.
+                            This attribute is only valid in the <Table> element under the <Verify> element.
+                        ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element ref="data:Rules" minOccurs="0">
                     <xsd:annotation>
-                        <xsd:documentation>
+                        <xsd:documentation><![CDATA[
                             Specify data validation rules.
-                            This attribute is only valid in the Table element under the Verify element.
-                        </xsd:documentation>
+                            This attribute is only valid in the <Table> element under the <Verify> element.
+                        ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
-                <xsd:element ref="data:Data" minOccurs="0" maxOccurs="unbounded">
-                    <xsd:annotation>
-                        <xsd:documentation>
-                            Table record list of relational database supporting SQL.
-                        </xsd:documentation>
-                    </xsd:annotation>
-                </xsd:element>
+                <xsd:element ref="data:Data" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attribute name="Name" type="xsd:string" use="required"/>
             <xsd:attribute name="EntityClass" type="xsd:string">
                 <xsd:annotation>
                     <xsd:documentation>
-                        Entity class name
+                        If MongoDB, here is the entity class name。
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
             <xsd:attribute name="Ignore" type="xsd:boolean" default="false">
                 <xsd:annotation>
-                    <xsd:documentation>
+                    <xsd:documentation><![CDATA[
                         If true, ignore the verification of this database table after the code under test is executed.
-                        This attribute is only valid in the Table element under the Verify element.
-                    </xsd:documentation>
+                        This attribute is only valid in the <Table> element under the <Verify> element.
+                    ]]></xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
         </xsd:complexType>
@@ -274,10 +257,9 @@
     <xsd:element name="Data" type="xsd:string">
         <xsd:annotation>
             <xsd:documentation>
-                It can be a table record in a relational database that supports SQL, or a Document in MongoDB. It
-                depends on the definition of the superior node.
-                The specific value represented by the JSON content. If the content contains the Date type, it will determine whether to perform the assignment after conversion
-                according to whether the CurrentTime property is set before.
+                It can be a table record in a RMDB (SQL), or a Document in MongoDB.
+                It depends on the definition of the superior node. The specific value represented by the JSON content.
+                If the content contains the Date type, it will determine whether to perform the assignment after conversion according to whether the CurrentTime property is set before.
             </xsd:documentation>
         </xsd:annotation>
     </xsd:element>
