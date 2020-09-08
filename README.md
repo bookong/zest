@@ -8,19 +8,15 @@ Zest
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.bookong/zest.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/github/bookong/zest/)
 [![License](http://img.shields.io/:license-apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-Zest is an easy-to-use unit testing tool based on the Spring framework. It separates test data and test code, and automatically verifies the results of RMDB (SQL) and MongoDB
+![zest](http://bookong.github.io/zest/images/logo.png)
 
-Supported Versions
-------------------
+Zest is an easy-to-use unit testing tool based on Spring. It separates test data and test code, and automatically verifies the results of RMDB (SQL) and MongoDB.
 
-- Support for 
-    - Java 8
-    - Spring 4 plus
-    - JUnit 4 and 5
+Quick start
+----------
 
 Documentation
 ----------
 
 - [Documentation Home](https://github.com/bookong/zest/wiki)
-* [See the snapshot docs](src/site/markdown/index.md) (Note: may contain explanation of unreleased features)
-* [查看快照文档](src/site/zh/markdown/index.md) (注意：可能包含未发布功能的说明)
+
