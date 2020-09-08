@@ -21,18 +21,14 @@ import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
 
 /**
- * <p>
  * Use this annotation to mark a method, which means that the method uses <em>Zest</em> for testing.
- * </p>
  * <p>
  * In the case of combining <em>Spring MVC</em> and <em>JUnit 4</em> for testing, you first need to specify the runner
  * class as {@link ZestSpringJUnit4ClassRunner} through @RunWith. Then replace @Test with @ZestTest.
- * </p>
  * <p>
  * The method annotated by @ZestTest must have one and only one parameter, which must be a subclass of
  * {@link ZestParam}. for example:
- * </p>
- * 
+ *
  * <pre class="code">
  * &#064;RunWith(ZestSpringJUnit4ClassRunner.class)
  * &#064;WebAppConfiguration
@@ -48,11 +44,10 @@ import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
  *   }
  * }
  * </pre>
- * <p>
+ *
  * In the case of combining <em>Spring Boot</em> and <em>JUnit 5</em> for testing, you first need to create a
  * {@link ZestJUnit5Worker} object. Then use @ZestTest to annotate the same method in @TestFactory, for example:
- * </p>
- * 
+ *
  * <pre class="code">
  * &#064;ActiveProfiles("test")
  * &#064;SpringBootTest
@@ -72,18 +67,16 @@ import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
  *   }
  * }
  * </pre>
- * <p>
+ *
  * When the test case name is specified by {@link #value}, the test data file will be searched in the default path (use
  * {@link #extName} to specify the extension). If {@link #value} is not specified, all files matching the extension of
  * {@link #extName} under the default path will be used
- * </p>
  * <p>
- * The default path for searching test data files is defined as follows: If your test class is <em>com.abc.ZestTest</em>
- * and the test method is <em>testXXX()</em>, then the default path is <em >com/abc/data/ZestTest/testXXX</em>. A word
- * <em>data</em> is added between the package name and the class name to avoid warnings (The type ZestTest collides with
- * a package).
- * </p>
- * 
+ * The default path for searching test data files is defined as follows: If your test class is {@code com.abc.ZestTest}
+ * and the test method is {@code testXXX()}, then the default path is {@code com/abc/data/ZestTest/testXXX}. A word
+ * <em>data</em> is added between the package name and the class name to avoid warnings (The type {@code ZestTest} collides
+ * with a package).
+ *
  * @author Jiang Xu
  */
 @Target({ ElementType.METHOD })

@@ -50,7 +50,7 @@ public class Row extends AbstractRow<Map<String, Object>> {
             DataSource dataSource = worker.getOperator(source.getId(), DataSource.class);
             Connection conn = DataSourceUtils.getConnection(dataSource);
             try {
-                executor.verifyRow(conn, zestData, source, (Table) table, rowIdx, actualRow);
+                executor.verifyRow(conn, zestData, source, (Table) table, rowIdx, getDataMap(), actualRow);
             } catch (UnsupportedOperationException e) {
                 verify(zestData, table, rowIdx, actualRow);
             } finally {

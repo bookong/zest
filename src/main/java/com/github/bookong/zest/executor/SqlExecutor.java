@@ -1,5 +1,6 @@
 package com.github.bookong.zest.executor;
 
+import com.github.bookong.zest.annotation.ZestSource;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
@@ -13,27 +14,36 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.util.Collections;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 简单的 Sql 的执行器
+ * Operator for <em>SQL</em>.
  *
  * @author Jiang Xu
  */
 public class SqlExecutor extends AbstractExecutor {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<?> supportedOperatorClass() {
         return DataSource.class;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AbstractTable createTable() {
         return new Table();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear(ZestWorker worker, ZestData zestData, Source source) {
         DataSource dataSource = worker.getOperator(source.getId(), DataSource.class);
@@ -47,6 +57,9 @@ public class SqlExecutor extends AbstractExecutor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void init(ZestWorker worker, ZestData zestData, Source source, AbstractTable sourceTable) {
         Table table = (Table) sourceTable;
@@ -62,6 +75,9 @@ public class SqlExecutor extends AbstractExecutor {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable sourceTable) {
         Table table = (Table) sourceTable;
@@ -85,7 +101,19 @@ public class SqlExecutor extends AbstractExecutor {
     }
 
     /**
-     * 自定义的数据转换
+     * Custom data parser
+     *
+     * @param tableName
+     *          Database table name.
+     * @param fieldName
+     *          Field name of the database table.
+     * @param fieldSqlType
+     *          {@link Types} of the field of the database table.
+     * @param value
+     *          Actual data value.
+     * @return value after data conversion.
+     * @throws UnsupportedOperationException
+     *          This method is not implemented by default.
      */
     public Object parseRowValue(String tableName, String fieldName, Integer fieldSqlType,
                                 Object value) throws UnsupportedOperationException {
@@ -93,17 +121,42 @@ public class SqlExecutor extends AbstractExecutor {
     }
 
     /**
-     * 自定义加载数据库的 SqlType
+     * Custom load {@link Types} value.
+     *
+     * @param conn
+     *          Database connection object.
+     * @param sqlTypes
+     *          {@link Types} map.
+     * @throws UnsupportedOperationException
+     *          This method is not implemented by default.
      */
-    public void loadSqlTypes(Connection conn, Map<String, Integer> sqlTypes) {
+    public void loadSqlTypes(Connection conn, Map<String, Integer> sqlTypes) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
-
+    
     /**
-     * 自定义验证 Row ，子类可以覆盖
+     * Custom validation data row.
+     *
+     * @param conn
+     *          Database connection object.
+     * @param zestData
+     *          An object containing unit test case data.
+     * @param source
+     *          An object containing information about the current {@link ZestSource}.
+     * @param table
+     *          Database table.
+     * @param rowIdx
+     *          The number of the data.
+     * @param expectedRow
+     *          Expected row data.
+     * @param actualRow
+     *          Actual row data.
+     * @throws UnsupportedOperationException
+     *          This method is not implemented by default.
      */
     public void verifyRow(Connection conn, ZestData zestData, Source source, Table table, int rowIdx,
-                          Map<String, Object> actualRow) {
+                          Map<String, Object> expectedRow,
+                          Map<String, Object> actualRow) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 }

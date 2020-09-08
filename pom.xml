@@ -235,7 +235,7 @@ limitations under the License.
                 <version>3.2.0</version>
                 <configuration>
                     <locale>en_US</locale>
-                    <show>public</show>
+                    <show>protected</show>
                     <doclint>none</doclint>
                     <charset>UTF-8</charset>
                     <encoding>UTF-8</encoding>
@@ -330,7 +330,7 @@ limitations under the License.
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <locale>en_US</locale>
-                    <show>public</show>
+                    <show>protected</show>
                     <doclint>none</doclint>
                     <charset>UTF-8</charset>
                     <encoding>UTF-8</encoding>

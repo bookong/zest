@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains Zest annotations
+ * Contains Zest logic executors
  */
-package com.github.bookong.zest.annotation;
+package com.github.bookong.zest.executor;
