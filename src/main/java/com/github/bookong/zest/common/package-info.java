@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains Zest common code
+ * Contains <em>Zest</em> common code
  */
 package com.github.bookong.zest.common;

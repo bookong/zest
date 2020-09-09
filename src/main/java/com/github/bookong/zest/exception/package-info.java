@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains Zest custom exceptions
+ * Contains <em>Zest</em> custom exceptions
  */
 package com.github.bookong.zest.exception;

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains <em>Zest</em> executors
+ * Contains <em>Zest</em> verification rules
  */
-package com.github.bookong.zest.executor;
+package com.github.bookong.zest.rule;
