@@ -22,6 +22,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.DynamicTest.stream;
 
 /**
+ * Customized class runner for JUnit 5.
+ *
  * @author Jiang Xu
  */
 public class ZestJUnit5Worker extends ZestWorker {

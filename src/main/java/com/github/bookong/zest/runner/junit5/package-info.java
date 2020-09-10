@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains customized class runner and worker for unit tests.
+ * Contains customized class runner and worker for JUnit 5.
  */
-package com.github.bookong.zest.runner;
+package com.github.bookong.zest.runner.junit5;

@@ -13,7 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.github.bookong.zest.runner.junit4;
+
+import com.github.bookong.zest.runner.ZestWorker;
+
 /**
- * Contains customized class runner and worker for unit tests.
+ * In order to bridge {@link ZestWorker} code with {@link ZestSpringJUnit4ClassRunner} code.
+ *
+ * @author Jiang Xu
  */
-package com.github.bookong.zest.runner;
+public interface ZestClassRunner {
+
+    /**
+     * Delegate to the parent implementation for creating the test instance.
+     *
+     * @return a test instance.
+     * @throws Exception
+     *          When creating the instance any exception occurs.
+     */
+    Object createTest() throws Exception;
+}
