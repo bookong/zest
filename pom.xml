@@ -30,17 +30,10 @@ limitations under the License.
     <developers>
         <developer>
             <id>jiangxu</id>
-            <name>Xu Jiang</name>
+            <name>Jiang Xu</name>
             <email>bookong@gmail.com</email>
         </developer>
     </developers>
-
-    <contributors>
-        <contributor>
-            <name>Jiang Xu</name>
-            <email>bookong@gmail.com</email>
-        </contributor>
-    </contributors>
 
     <scm>
         <url>https://github.com/bookong/zest</url>
