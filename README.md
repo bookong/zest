@@ -16,8 +16,8 @@ Zest is an easy-to-use unit testing tool based on Spring. It separates test data
 
 # Demo
 
--[With Spring Boot 2.X](https://github.com/bookong/zest-example/tree/master/spring-boot)
--[With Spring MVC](https://github.com/bookong/zest-example/tree/master/spring-mvc)
+- [With Spring Boot 2.X](https://github.com/bookong/zest-example/tree/master/spring-boot)
+- [With Spring MVC](https://github.com/bookong/zest-example/tree/master/spring-mvc)
 
 # Download
 
