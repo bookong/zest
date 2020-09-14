@@ -92,7 +92,7 @@ public class ZestJUnit5Worker extends ZestWorker {
 
             logger.info(Messages.run(zestData.getDescription()));
             logger.info(zestData.getFilePath());
-            initDataSource(zestData);
+            initSource(zestData);
             zestData.setStartTime(System.currentTimeMillis());
             return param;
 
@@ -103,6 +103,6 @@ public class ZestJUnit5Worker extends ZestWorker {
 
     private void after(ZestData zestData) {
         zestData.setEndTime(System.currentTimeMillis());
-        verifyDataSource(zestData);
+        verifySource(zestData);
     }
 }

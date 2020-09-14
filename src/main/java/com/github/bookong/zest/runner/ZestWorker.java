@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Abstract <em>Zest</em> worker.
+ *
  * @author Jiang Xu
  */
 public abstract class ZestWorker {
@@ -43,6 +45,12 @@ public abstract class ZestWorker {
 
     private Map<String, Object>           operatorMap = new HashMap<>();
 
+    /**
+     * Load the annotation class from the test object.
+     *
+     * @param test
+     *          A test object.
+     */
     protected void loadAnnotation(Object test) {
         Class<?> clazz = test.getClass();
         while (!Object.class.getName().equals(clazz.getName())) {
@@ -77,7 +85,13 @@ public abstract class ZestWorker {
         }
     }
 
-    public void initDataSource(ZestData zestData) {
+    /**
+     * Use the data in the test case to initialize the database to be tested.
+     *
+     * @param zestData
+     *          An object containing unit test case data.
+     */
+    public void initSource(ZestData zestData) {
         for (Source source : zestData.getSourceList()) {
             AbstractExecutor executor = executorMap.get(source.getId());
 
@@ -86,12 +100,25 @@ public abstract class ZestWorker {
         }
     }
 
-    public void verifyDataSource(ZestData zestData) {
+    /**
+     * Use the data in the test case to automatically verify the database.
+     *
+     * @param zestData
+     *          An object containing unit test case data.
+     */
+    public void verifySource(ZestData zestData) {
         for (Source source : zestData.getSourceList()) {
             executorMap.get(source.getId()).verify(this, zestData, source);
         }
     }
 
+    /**
+     * Get the operator bound to the specified source.
+     *
+     * @param sourceId
+     *          An object containing information about the current {@link ZestSource}.
+     * @return an operator.
+     */
     public Object getOperator(String sourceId) {
         Object operation = operatorMap.get(sourceId);
         if (operation == null) {
@@ -100,6 +127,17 @@ public abstract class ZestWorker {
         return operation;
     }
 
+    /**
+     * Get the operator bound to the specified source.
+     *
+     * @param sourceId
+     *          An object containing information about the current {@link ZestSource}.
+     * @param operatorClass
+     *          Class object corresponding to the operator.
+     * @param <T>
+     *          Operator class.
+     * @return an operator.
+     */
     public <T> T getOperator(String sourceId, Class<T> operatorClass) {
         Object operation = getOperator(sourceId);
 
@@ -111,6 +149,13 @@ public abstract class ZestWorker {
         }
     }
 
+    /**
+     * Get the executor bound to the specified source.
+     *
+     * @param sourceId
+     *          An object containing information about the current {@link ZestSource}.
+     * @return an executor.
+     */
     public AbstractExecutor getExecutor(String sourceId) {
         AbstractExecutor executor = executorMap.get(sourceId);
         if (executor == null) {
@@ -119,6 +164,17 @@ public abstract class ZestWorker {
         return executor;
     }
 
+    /**
+     * Get the executor bound to the specified source.
+     *
+     * @param sourceId
+     *          An object containing information about the current {@link ZestSource}.
+     * @param executorClass
+     *          Class object corresponding to the executor.
+     * @param <E>
+     *          Executor class.
+     * @return an executor.
+     */
     public <E extends AbstractExecutor> E getExecutor(String sourceId, Class<E> executorClass) {
         return executorClass.cast(executorMap.get(sourceId));
     }

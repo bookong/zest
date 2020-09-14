@@ -24,11 +24,11 @@ public class ZestStatement extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
-        worker.initDataSource(zestData);
+        worker.initSource(zestData);
         zestData.setStartTime(System.currentTimeMillis());
         invokeMethod(zestMethod, zestData);
         zestData.setEndTime(System.currentTimeMillis());
-        worker.verifyDataSource(zestData);
+        worker.verifySource(zestData);
     }
 
     private void invokeMethod(FrameworkMethod method, ZestData zestData) throws Throwable {
