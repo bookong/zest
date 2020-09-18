@@ -79,6 +79,19 @@ public class ZestSqlHelper {
             sql = sql.concat(table.getSort());
         }
 
+        return find(conn, sql);
+    }
+
+    public static List<Map<String, Object>> find(DataSource dataSource, String sql) {
+        Connection conn = DataSourceUtils.getConnection(dataSource);
+        try {
+            return find(conn, sql);
+        } finally {
+            DataSourceUtils.releaseConnection(conn, dataSource);
+        }
+    }
+
+    public static List<Map<String, Object>> find(Connection conn, String sql) {
         Statement stat = null;
         ResultSet rs = null;
         try {
