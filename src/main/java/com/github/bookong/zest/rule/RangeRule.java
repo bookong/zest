@@ -52,6 +52,11 @@ public class RangeRule extends AbstractRule {
      */
     public RangeRule(String field, boolean nullable, Double from, boolean includeFrom, Double to, boolean includeTo){
         super(field, nullable, true);
+
+        this.from = from;
+        this.includeFrom = includeFrom;
+        this.to = to;
+        this.includeTo = includeTo;
     }
 
     /**
