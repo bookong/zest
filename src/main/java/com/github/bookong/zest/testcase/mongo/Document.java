@@ -68,6 +68,9 @@ public class Document extends AbstractRow<Object> {
             } catch (UnsupportedOperationException e) {
                 verify(zestData, collection, rowIdx, actualData);
             }
+        } catch (AssertionError e) {
+            logger.error(Messages.verifyDocumentError(source.getId(), collection.getName(), rowIdx));
+            throw e;
         } catch (Exception e) {
             throw new ZestException(Messages.verifyDocumentError(source.getId(), collection.getName(), rowIdx), e);
         }

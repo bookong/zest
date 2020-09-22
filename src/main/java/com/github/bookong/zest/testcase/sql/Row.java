@@ -56,6 +56,9 @@ public class Row extends AbstractRow<Map<String, Object>> {
             } finally {
                 DataSourceUtils.releaseConnection(conn, dataSource);
             }
+        } catch (AssertionError e) {
+            logger.error(Messages.verifyRowError(source.getId(), table.getName(), rowIdx));
+            throw e;
         } catch (Exception e) {
             throw new ZestException(Messages.verifyRowError(source.getId(), table.getName(), rowIdx), e);
         }
