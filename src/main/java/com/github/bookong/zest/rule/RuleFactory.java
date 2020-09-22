@@ -53,6 +53,8 @@ public class RuleFactory {
                 return new CurrentTimeRule(childNode, field, nullable);
             case Xml.FROM_CURRENT_TIME:
                 return new FromCurrentTimeRule(childNode, field, nullable);
+            case Xml.RANGE:
+                return new RangeRule(childNode, field, nullable);
             default:
                 throw new ZestException(Messages.parseRuleChoice());
         }

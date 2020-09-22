@@ -235,6 +235,26 @@ public class Messages {
         return getString("verify.rule.not.null", path);
     }
 
+    public static String verifyRuleMustNumber(String path, String value) {
+        return getString("verify.rule.must.number", path, value);
+    }
+
+    public static String verifyRuleGt(String path, String from, String value) {
+        return getString("verify.rule.gt", path, from, value);
+    }
+
+    public static String verifyRuleGte(String path, String from, String value) {
+        return getString("verify.rule.gte", path, from, value);
+    }
+
+    public static String verifyRuleLt(String path, String from, String value) {
+        return getString("verify.rule.lt", path, from, value);
+    }
+
+    public static String verifyRuleLte(String path, String from, String value) {
+        return getString("verify.rule.lte", path, from, value);
+    }
+
     public static String verifyRuleDateType(String path) {
         return getString("verify.rule.date.type", path);
     }

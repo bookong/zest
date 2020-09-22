@@ -132,6 +132,18 @@ public class XmlNode {
         }
     }
 
+    public Double getAttrDoubleObj(String name) {
+        try {
+            String str = getAttr(name);
+            if (str == null) {
+                return null;
+            }
+            return Double.parseDouble(str);
+        } catch (Exception e) {
+            throw new ZestException(Messages.parseCommonAttr(nodeName, name), e);
+        }
+    }
+
     public int getAttrInt(String name) {
         try {
             return Integer.parseInt(getAttrNotEmpty(name));

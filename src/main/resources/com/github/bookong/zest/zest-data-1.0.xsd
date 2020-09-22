@@ -282,6 +282,7 @@
                     <xsd:element ref="data:RegExp"/>
                     <xsd:element ref="data:CurrentTime"/>
                     <xsd:element ref="data:FromCurrentTime"/>
+                    <xsd:element ref="data:Range"/>
                 </xsd:choice>
             </xsd:sequence>
             <xsd:attribute name="Field" type="xsd:string" use="required">
@@ -366,6 +367,44 @@
                 <xsd:annotation>
                     <xsd:documentation>
                         How many milliseconds error may occur in time
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Range">
+        <xsd:annotation>
+            <xsd:documentation>
+                Verify within a range of values
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="From" type="xsd:double">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Start value of the numerical range
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="IncludeFrom" type="xsd:boolean" default="true">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Whether to include the start value
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="To" type="xsd:double">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        The end value of the numerical range
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="IncludeTo" type="xsd:boolean" default="true">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Whether to include the end value
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
