@@ -97,20 +97,20 @@ public class RangeRule extends AbstractRule {
             if (getFrom() != null) {
                 if (isIncludeFrom()) {
                     Assert.assertTrue(Messages.verifyRuleGte(getField(), String.valueOf(from), String.valueOf(value)),
-                                      getFrom() >= value);
+                                      value >= getFrom());
                 } else {
                     Assert.assertTrue(Messages.verifyRuleGt(getField(), String.valueOf(from), String.valueOf(value)),
-                                      getFrom() > value);
+                                      value > getFrom());
                 }
             }
 
             if (getTo() != null) {
                 if (isIncludeTo()) {
                     Assert.assertTrue(Messages.verifyRuleLte(getField(), String.valueOf(from), String.valueOf(value)),
-                                      getTo() <= value);
+                                      value <= getTo());
                 } else {
                     Assert.assertTrue(Messages.verifyRuleLt(getField(), String.valueOf(from), String.valueOf(value)),
-                                      getTo() < value);
+                                      value < getTo());
                 }
             }
         }
