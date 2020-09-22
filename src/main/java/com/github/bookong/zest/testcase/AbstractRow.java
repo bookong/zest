@@ -33,6 +33,8 @@ public abstract class AbstractRow<T> {
                     logger.info(Messages.verifyRuleIgnore(rule.getField(), rowIdx));
                 }
 
+                Assert.assertNotNull(Messages.verifyRowDataNotNull(fieldName), actual);
+
                 if (expected instanceof Date) {
                     Assert.assertTrue(Messages.verifyRowDataDate(fieldName), actual instanceof Date);
                     Date expectedDateInZest = ZestDateUtil.getDateInZest(zestData, (Date) expected);

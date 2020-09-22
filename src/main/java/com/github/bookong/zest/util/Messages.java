@@ -275,6 +275,10 @@ public class Messages {
         return getString("verify.row.data.null", columnName);
     }
 
+    public static String verifyRowDataNotNull(String columnName) {
+        return getString("verify.row.data.not.null", columnName);
+    }
+
     public static String verifyRowDataDate(String columnName) {
         return getString("verify.row.data.date", columnName);
     }
