@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.runner.junit5;
 
 import com.github.bookong.zest.annotation.ZestTest;
@@ -28,6 +43,19 @@ import static org.junit.jupiter.api.DynamicTest.stream;
  */
 public class ZestJUnit5Worker extends ZestWorker {
 
+    /**
+     * Construct dynamic test code supporting <em>Zest</em>.
+     *
+     * @param testObj
+     *          The test class to be run.
+     * @param zestParamClass
+     *          Parameters required by <em>Zest</em>, which are automatically filled in from the test case data file.
+     * @param fun
+     *          The main logic of the dynamic test method.
+     * @param <T>
+     *           <em>Zest's</em> test parameter class.
+     * @return dynamic test.
+     */
     public <T extends ZestParam> Stream<DynamicTest> test(Object testObj, Class<T> zestParamClass, Consumer<T> fun) {
         return stream(iterator(testObj), zestData -> String.format("[%s]", zestData.getFileName()), //
                       zestData -> {
