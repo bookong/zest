@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.common.ZestGlobalConstant;
@@ -11,12 +26,19 @@ import org.junit.runners.model.TestClass;
 import java.io.File;
 
 /**
+ * <em>Zest</em> tools.
+ *
  * @author Jiang Xu
  */
 public class ZestUtil {
 
     /**
-     * 从绝对路径加载 xml 文件
+     * Load unit test data from absolute path (*.xml).
+     *
+     * @param worker
+     *          An object that controls the entire <em>Zest</em> logic.
+     * @param zestData
+     *          An object containing unit test case data.
      */
     public static void loadZestData(ZestWorker worker, ZestData zestData) {
         try {
@@ -34,6 +56,15 @@ public class ZestUtil {
         }
     }
 
+    /**
+     * The path of the unit test data file.
+     *
+     * @param testObjClass
+     *          Test class.
+     * @param methodName
+     *          Test method name.
+     * @return the path.
+     */
     public static String getDir(Class<?> testObjClass, String methodName) {
         return testObjClass.getResource(StringUtils.EMPTY).getPath() //
                            .concat(ZestGlobalConstant.FIX_SUB_DIR).concat(File.separator) //
@@ -41,8 +72,16 @@ public class ZestUtil {
                            .concat(methodName).concat(File.separator);
     }
 
+    /**
+     * The path of the unit test data file.
+     *
+     * @param testCase
+     *          Test class.
+     * @param frameworkMethod
+     *          Test method.
+     * @return the path.
+     */
     public static String getDir(TestClass testCase, FrameworkMethod frameworkMethod) {
         return getDir(testCase.getJavaClass(), frameworkMethod.getName());
     }
-
 }
