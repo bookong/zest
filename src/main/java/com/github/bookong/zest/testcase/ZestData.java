@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.testcase;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
@@ -17,44 +32,40 @@ import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 /**
+ * Containing unit test case data.
+ *
  * @author Jiang Xu
  */
 public class ZestData {
 
     private float        version;
-
-    /** 测试数据文件名称 */
     private String       fileName;
-
-    /** 测试数据文件路径 */
     private String       filePath;
-
-    /** 对于日期类型，在插入数据库时是否需要做偏移处理 */
     private boolean      transferTime = false;
-
-    /** 如果日期需要偏移处理，当前时间与测试用例上描述的时间相差多少毫秒 */
     private long         currentTimeDiff;
-
-    /** 描述 */
     private String       description;
-
-    /** 测试参数 */
     private ZestParam    param;
-
-    /** 数据源描述 */
     private List<Source> sourceList   = new ArrayList<>();
-
-    /** 开始进行测试的时间 */
     private long         startTime;
-
-    /** 测试结束的时间 */
     private long         endTime;
 
+    /**
+     * Construct a new instance.
+     *
+     * @param filePath
+     *          Test case file path.
+     */
     public ZestData(String filePath){
         this.filePath = filePath;
         this.fileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
     }
 
+    /**
+     * Load data from test case file.
+     *
+     * @param worker
+     *          An object that controls the entire <em>Zest</em> logic.
+     */
     public void load(ZestWorker worker) {
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(getFilePath()));
@@ -179,62 +190,122 @@ public class ZestData {
         }
     }
 
+    /**
+     * @return file name of test case data.
+     */
     public String getFileName() {
         return fileName;
     }
 
+    /**
+     * Set file name of test case data.
+     *
+     * @param fileName
+     *          File name.
+     */
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    /**
+     * @return file path of test case data.
+     */
     public String getFilePath() {
         return filePath;
     }
 
+    /**
+     * Set file path of test case data.
+     *
+     * @param filePath
+     *          File path.
+     */
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * @return for date types, do you need to do offset processing when inserting into the database.
+     */
     public boolean isTransferTime() {
         return transferTime;
     }
 
+    /**
+     * @return if the date needs to be offset, how many milliseconds is the difference between the current time and the
+     * time described in the test case.
+     */
     public long getCurrentTimeDiff() {
         return currentTimeDiff;
     }
 
+    /**
+     * @return description of unit test.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @return test parameter. It can be automatically filled according to the content in the unit test data file.
+     */
     public ZestParam getParam() {
         return param;
     }
 
+    /**
+     * Set test parameter.
+     *
+     * @param param
+     *          Test parameter.
+     */
     public void setParam(ZestParam param) {
         this.param = param;
     }
 
+    /**
+     * @return list of data sources.
+     */
     public List<Source> getSourceList() {
         return sourceList;
     }
 
+    /**
+     * @return time to start the test, in milliseconds.
+     */
     public long getStartTime() {
         return startTime;
     }
 
+    /**
+     * Set time to start the test.
+     *
+     * @param startTime
+     *          Time to start the test.
+     */
     public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 
+    /**
+     * @return time when the main logic of the test end, in milliseconds.
+     */
     public long getEndTime() {
         return endTime;
     }
 
+    /**
+     * Set time when the main logic of the test end.
+     * @param endTime
+     *          Time when the main logic of the test end.
+     */
     public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 
+    /**
+     * @return test data file version.
+     */
     public float getVersion() {
         return version;
     }

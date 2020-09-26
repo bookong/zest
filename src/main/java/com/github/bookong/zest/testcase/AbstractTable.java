@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.testcase;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
@@ -13,25 +28,48 @@ import org.w3c.dom.Node;
 import java.util.*;
 
 /**
- * 抽象的广义数据源广义的“表”
+ * Abstract table.
  * 
  * @author Jiang Xu
  */
 public abstract class AbstractTable<T> {
 
     private List<T>                   dataList = Collections.emptyList();
-
     private Map<String, AbstractRule> ruleMap  = Collections.emptyMap();
-
-    /** 广义的表名 */
     private String                    name;
-
-    /** 是否不验证目标数据源的表，这个标识只在 Target 下的 Table 中才有效 */
     private boolean                   ignoreVerify;
 
+    /**
+     * Initialize with unit test data.
+     *
+     * @param worker
+     *          An object that controls the entire <em>Zest</em> logic.
+     * @param sourceId
+     *          Data source id.
+     * @param xmlNode
+     *          XML element.
+     * @param tableEntityClassMap
+     *          Contains the <em>EntityClass</em> attributes bound on the  &lt;Table&gt; element in XML.
+     */
     protected abstract void init(ZestWorker worker, String sourceId, XmlNode xmlNode,
                                  Map<String, String> tableEntityClassMap);
 
+    /**
+     * Initialize with unit test data.
+     *
+     * @param worker
+     *          An object that controls the entire <em>Zest</em> logic.
+     * @param zestData
+     *          An object containing unit test case data.
+     * @param sourceId
+     *          Data source id.
+     * @param node
+     *          XML element.
+     * @param isVerifyElement
+     *          Is it under {@code SourceVerifyData}.
+     * @param tableEntityClassMap
+     *          Contains the <em>EntityClass</em> attributes bound on the  &lt;Table&gt; element in XML.
+     */
     public void init(ZestWorker worker, ZestData zestData, String sourceId, Node node, boolean isVerifyElement,
                      Map<String, String> tableEntityClassMap) {
         try {
@@ -80,10 +118,36 @@ public abstract class AbstractTable<T> {
         }
     }
 
+    /**
+     * Load sorting rules from the unit test data.
+     *
+     * @param sortList
+     *          Sorting rules.
+     */
     protected abstract void loadSorts(List<Sort> sortList);
 
+    /**
+     * Check if the rules are correct.
+     *
+     * @param rule
+     *          Validation rule.
+     */
     protected abstract void checkRule(AbstractRule rule);
 
+    /**
+     * Load from unit test data.
+     *
+     * @param worker
+     *          An object that controls the entire <em>Zest</em> logic.
+     * @param zestData
+     *          An object containing unit test case data.
+     * @param sourceId
+     *          Data source id.
+     * @param content
+     *          Content in XML.
+     * @param isVerifyElement
+     *          Is it under {@code SourceVerifyData}.
+     */
     protected abstract void loadData(ZestWorker worker, ZestData zestData, String sourceId, String content,
                                      boolean isVerifyElement);
 
@@ -175,10 +239,19 @@ public abstract class AbstractTable<T> {
         }
     }
 
+    /**
+     * @return table name (if it is for <em>MongoDB/em>, this name is not bound to the <em>Collection</em> name).
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set table name.
+     *
+     * @param name
+     *          Table name.
+     */
     public void setName(String name) {
         this.name = name;
         if (StringUtils.isBlank(name)) {
@@ -186,32 +259,58 @@ public abstract class AbstractTable<T> {
         }
     }
 
+    /**
+     * @return whether to ignore the verification of this table.
+     */
     public boolean isIgnoreVerify() {
         return ignoreVerify;
     }
 
+    /**
+     * @return data in the table.
+     */
     public List<T> getDataList() {
         return dataList;
     }
 
+    /**
+     * @return rules for verification.
+     */
     public Map<String, AbstractRule> getRuleMap() {
         return ruleMap;
     }
 
+    /**
+     * Describe the sorting rules.
+     */
     protected class Sort {
 
         private String field;
         private String direction;
 
+        /**
+         * Construct a new instance.
+         *
+         * @param field
+         *          Sorted field.
+         * @param direction
+         *          Sorting direction.
+         */
         public Sort(String field, String direction){
             this.field = field;
             this.direction = direction;
         }
 
+        /**
+         * @return sorted field.
+         */
         public String getField() {
             return field;
         }
 
+        /**
+         * @return sorting direction.
+         */
         public String getDirection() {
             return direction;
         }

@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.testcase.sql;
 
 import com.github.bookong.zest.exception.ZestException;
@@ -21,12 +36,28 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * <em>Row</em> data corresponding to <em>Table</em>.
+ *
  * @author Jiang Xu
  */
 public class Row extends AbstractRow<Map<String, Object>> {
 
     private Map<String, Object> dataMap = new LinkedHashMap<>();
 
+    /**
+     * Create a new instance.
+     *
+     * @param zestData
+     *          An object containing unit test case data.
+     * @param sqlExecutor
+     *          SQL executor.
+     * @param sqlTypes
+     *          {@link Types} map.
+     * @param tableName
+     *          Table Name.
+     * @param xmlContent
+     *          XML content.
+     */
     public Row(ZestData zestData, SqlExecutor sqlExecutor, Map<String, Integer> sqlTypes, String tableName,
                String xmlContent){
         Map xmlDataMap = ZestJsonUtil.fromJson(xmlContent, HashMap.class);
@@ -42,6 +73,9 @@ public class Row extends AbstractRow<Map<String, Object>> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable<?> table, int rowIdx,
                        Map<String, Object> actualRow) {
@@ -94,10 +128,16 @@ public class Row extends AbstractRow<Map<String, Object>> {
         }
     }
 
+    /**
+     * @return data actually inserted into <em>DB</em>
+     */
     public Map<String, Object> getDataMap() {
         return dataMap;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Set<String> getExpectedFields() {
         return getDataMap().keySet();

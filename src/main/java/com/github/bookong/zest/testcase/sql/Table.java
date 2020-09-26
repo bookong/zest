@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.testcase.sql;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
@@ -17,24 +32,25 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 关系型数据库的表
+ * Database table.
  * 
  * @author Jiang Xu
  */
 public class Table extends AbstractTable<Row> {
 
-    /** 排序的依据 */
     private String               sort;
-
-    /** 关系型数据库的 SqlType */
     private Map<String, Integer> sqlTypes = new HashMap<>();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void init(ZestWorker worker, String sourceId, XmlNode xmlNode, Map<String, String> tableEntityClassMap) {
         xmlNode.checkSupportedAttrs(Xml.NAME, Xml.IGNORE);
@@ -51,6 +67,9 @@ public class Table extends AbstractTable<Row> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void loadSorts(List<Sort> sortList) {
         if (sortList.isEmpty()) {
@@ -72,6 +91,9 @@ public class Table extends AbstractTable<Row> {
         this.sort = sb.toString();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void checkRule(AbstractRule rule) {
         if (!getSqlTypes().containsKey(rule.getField())) {
@@ -79,6 +101,9 @@ public class Table extends AbstractTable<Row> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void loadData(ZestWorker worker, ZestData zestData, String sourceId, String xmlContent,
                             boolean isVerifyElement) {
@@ -113,10 +138,16 @@ public class Table extends AbstractTable<Row> {
         }
     }
 
+    /**
+     * @return {@link Types} map.
+     */
     public Map<String, Integer> getSqlTypes() {
         return sqlTypes;
     }
 
+    /**
+     * @return sort criteria for query.
+     */
     public String getSort() {
         return sort;
     }

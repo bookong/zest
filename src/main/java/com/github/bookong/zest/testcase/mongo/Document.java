@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.testcase.mongo;
 
 import com.github.bookong.zest.exception.ZestException;
@@ -20,14 +35,31 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * <em>Document</em> data corresponding to <em>MongoDB</em>.
+ *
  * @author Jiang Xu
  */
 public class Document extends AbstractRow<Object> {
 
     private Object      data;
-
     private Set<String> expectedFields = new LinkedHashSet<>();
 
+    /**
+     * Create a new instance.
+     *
+     * @param zestData
+     *          An object containing unit test case data.
+     * @param mongoExecutor
+     *          <em>MongoDB</em> executor.
+     * @param entityClass
+     *          <em>MongoDB Document</em> entity class.
+     * @param collectionName
+     *          <em>MongoDB Collection</em> name
+     * @param xmlContent
+     *          XML content.
+     * @param isVerifyElement
+     *          Is it under {@code SourceVerifyData}.
+     */
     public Document(ZestData zestData, MongoExecutor mongoExecutor, Class<?> entityClass, String collectionName,
                     String xmlContent, boolean isVerifyElement){
         try {
@@ -56,6 +88,9 @@ public class Document extends AbstractRow<Object> {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void verify(ZestWorker worker, ZestData zestData, Source source, AbstractTable<?> sourceTable, int rowIdx,
                        Object actualData) {
@@ -91,10 +126,16 @@ public class Document extends AbstractRow<Object> {
         }
     }
 
+    /**
+     * @return data actually inserted into <em>MongoDB</em>
+     */
     public Object getData() {
         return data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Set<String> getExpectedFields() {
         return expectedFields;
