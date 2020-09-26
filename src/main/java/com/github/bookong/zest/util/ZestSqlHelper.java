@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.common.ZestGlobalConstant;
@@ -16,7 +31,7 @@ import java.sql.Date;
 import java.util.*;
 
 /**
- * 辅助操作 SQL
+ * Auxiliary operation SQL.
  * 
  * @author Jiang Xu
  */
@@ -24,6 +39,12 @@ public class ZestSqlHelper {
 
     private static Logger logger = LoggerFactory.getLogger(ZestGlobalConstant.Logger.SQL);
 
+    /**
+     * Close {@link Statement}.
+     *
+     * @param stat
+     *          a {@link Statement} object.
+     */
     public static void close(Statement stat) {
         if (stat != null) {
             try {
@@ -34,6 +55,12 @@ public class ZestSqlHelper {
         }
     }
 
+    /**
+     * Close {@link ResultSet}.
+     *
+     * @param rs
+     *          a {@link ResultSet} object.
+     */
     public static void close(ResultSet rs) {
         if (rs != null) {
             try {
@@ -44,12 +71,30 @@ public class ZestSqlHelper {
         }
     }
 
+    /**
+     * Insert Table all data.
+     *
+     * @param conn
+     *          Database connection object.
+     * @param table
+     *          Table object.
+     */
     public static void insert(Connection conn, Table table) {
         for (Row row : table.getDataList()) {
             insert(conn, table, row);
         }
     }
 
+    /**
+     * Insert Table row data.
+     *
+     * @param conn
+     *          Database connection object.
+     * @param table
+     *          Table object.
+     * @param row
+     *          Table row object.
+     */
     public static void insert(Connection conn, Table table, Row row) {
         StringBuilder sqlBuff = new StringBuilder(128);
         StringBuilder valueBuff = new StringBuilder(128);
@@ -73,6 +118,15 @@ public class ZestSqlHelper {
         execute(conn, sqlBuff.toString(), params);
     }
 
+    /**
+     * All data in the query table.
+     *
+     * @param conn
+     *          Database connection object.
+     * @param table
+     *          Table object.
+     * @return all row data.
+     */
     public static List<Map<String, Object>> find(Connection conn, Table table) {
         String sql = String.format("select * from `%s`", table.getName());
         if (StringUtils.isNotBlank(table.getSort())) {
@@ -82,6 +136,15 @@ public class ZestSqlHelper {
         return find(conn, sql);
     }
 
+    /**
+     * Query all data in the table based on SQL.
+     *
+     * @param dataSource
+     *          a {@link DataSource} object.
+     * @param sql
+     *          SQL content.
+     * @return all fetch data.
+     */
     public static List<Map<String, Object>> find(DataSource dataSource, String sql) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         try {
@@ -91,6 +154,14 @@ public class ZestSqlHelper {
         }
     }
 
+    /**
+     * Query all data in the table based on SQL.
+     * @param conn
+     *          Database connection object.
+     * @param sql
+     *          SQL content.
+     * @return all fetch data.
+     */
     public static List<Map<String, Object>> find(Connection conn, String sql) {
         Statement stat = null;
         ResultSet rs = null;
@@ -134,6 +205,14 @@ public class ZestSqlHelper {
         return value;
     }
 
+    /**
+     * Execute a SQL.
+     *
+     * @param conn
+     *          Database connection object.
+     * @param sql
+     *          SQL content.
+     */
     public static void execute(Connection conn, String sql) {
         Statement stat = null;
         try {
@@ -147,6 +226,16 @@ public class ZestSqlHelper {
         }
     }
 
+    /**
+     * Execute a SQL.
+     *
+     * @param conn
+     *          Database connection object.
+     * @param sql
+     *          Pre-compiled SQL content.
+     * @param values
+     *          Parameters of pre-compiled SQL.
+     */
     public static void execute(Connection conn, String sql, Object[] values) {
         PreparedStatement stat = null;
         try {
@@ -186,6 +275,15 @@ public class ZestSqlHelper {
         }
     }
 
+    /**
+     * Query data only for display.
+     *
+     * @param dataSource
+     *          a {@link DataSource} object.
+     * @param sql
+     *          SQL content.
+     * @return text for display.
+     */
     public static String query(DataSource dataSource, String sql) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         try {
@@ -195,6 +293,15 @@ public class ZestSqlHelper {
         }
     }
 
+    /**
+     * Query data only for display.
+     *
+     * @param conn
+     *          Database connection object.
+     * @param sql
+     *          SQL content.
+     * @return text for display.
+     */
     public static String query(Connection conn, String sql) {
         Statement stat = null;
         ResultSet rs = null;

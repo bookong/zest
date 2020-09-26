@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.bookong.zest.util;
 
 import com.github.bookong.zest.exception.ZestException;
@@ -8,7 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 日期处理
+ * Date processing related functions.
  * 
  * @author Jiang Xu
  */
@@ -16,6 +31,13 @@ public class ZestDateUtil {
 
     private static final ThreadLocal<SimpleDateFormat> TYPE_FULL = new ThreadLocal<>();
 
+    /**
+     * Use "yyyy-MM-dd'T'HH:mm:ss.SSSX" to parse the string representing the time.
+     *
+     * @param time
+     *          String representing time.
+     * @return time after parse.
+     */
     public static Date parseDate(String time) {
         try {
             return getDateFormatFull().parse(time);
@@ -24,6 +46,12 @@ public class ZestDateUtil {
         }
     }
 
+    /**
+     * Format the date as "yyyy-MM-dd'T'HH:mm:ss.SSSX" .
+     * @param time
+     *          Time to format.
+     * @return formatted string.
+     */
     public static String formatDateNormal(Date time) {
         return getDateFormatFull().format(time);
     }
@@ -38,11 +66,13 @@ public class ZestDateUtil {
     }
 
     /**
-     * 计算要录入到数据库中的日期值（经过 currDbTimeDiff 修正过）
+     * Calculate the date value to be entered into the database (corrected by {@code currDbTimeDiff}).
      *
-     * @param zestData 测试用例数据
-     * @param date 待转换的日期对象
-     * @return 转换后的日期对象
+     * @param zestData
+     *          An object containing unit test case data.
+     * @param date
+     *          Date object to be converted
+     * @return date object after conversion.
      */
     public static Date getDateInZest(ZestData zestData, Date date) {
         if (date == null) {
@@ -59,5 +89,4 @@ public class ZestDateUtil {
 
         return cal.getTime();
     }
-
 }
