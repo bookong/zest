@@ -53,15 +53,29 @@ import java.util.List;
 public class ZestJUnit4Worker extends ZestWorker {
 
     private TestClass       testClass;
-
     private ZestClassRunner zestClassRunner;
 
+    /**
+     * Construct a new instance.
+     *
+     * @param testClass
+     *          The class to test.
+     * @param zestClassRunner
+     *          A class for bridging code.
+     */
     ZestJUnit4Worker(TestClass testClass, ZestClassRunner zestClassRunner){
         super();
         this.testClass = testClass;
         this.zestClassRunner = zestClassRunner;
     }
 
+    /**
+     * Compute which methods are test methods.
+     *
+     * @param testCase
+     *          The class to test.
+     * @return test methods.
+     */
     static List<FrameworkMethod> computeTestMethods(TestClass testCase) {
         List<FrameworkMethod> list = new ArrayList<>(testCase.getAnnotatedMethods(Test.class));
 
@@ -87,17 +101,22 @@ public class ZestJUnit4Worker extends ZestWorker {
         return list;
     }
 
+    /**
+     * Run unit tests.
+     *
+     * @param frameworkMethod
+     *          Test method to be executed.
+     * @param notifier
+     *          <em>JUnit</em> run notifier.
+     */
     void runChild(FrameworkMethod frameworkMethod, RunNotifier notifier) {
         Description description = Description.createTestDescription(testClass.getJavaClass(), frameworkMethod.getName(),
                                                                     frameworkMethod.getAnnotations());
 
         if (ignoreTest()) {
-            // 整个测试类忽略
             notifier.fireTestIgnored(description);
-
         } else if (frameworkMethod.getAnnotation(Ignore.class) != null) {
             notifier.fireTestIgnored(description);
-
         } else {
             runTestCase((ZestFrameworkMethod) frameworkMethod, description, notifier);
         }

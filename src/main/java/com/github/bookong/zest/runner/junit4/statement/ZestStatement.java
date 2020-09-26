@@ -6,6 +6,8 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
 /**
+ * Customized <em>Zest</em> Statement.
+ *
  * @author Jiang Xu
  */
 public class ZestStatement extends Statement {
@@ -15,6 +17,18 @@ public class ZestStatement extends Statement {
     private ZestWorker                worker;
     private ZestData                  zestData;
 
+    /**
+     * Construct a new instance.
+     *
+     * @param worker
+     *          An object that controls the entire <em>Zest</em> logic.
+     * @param zestData
+     *          An object containing unit test case data.
+     * @param target
+     *          A test instance.
+     * @param zestMethod
+     *          A method on a test class to be invoked at the appropriate point in test execution.
+     */
     public ZestStatement(ZestWorker worker, ZestData zestData, Object target, ZestFrameworkMethod zestMethod){
         this.target = target;
         this.worker = worker;
@@ -22,6 +36,9 @@ public class ZestStatement extends Statement {
         this.zestData = zestData;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void evaluate() throws Throwable {
         worker.initSource(zestData);

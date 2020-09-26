@@ -59,7 +59,7 @@ public abstract class AbstractExecutor {
      * Clear the old data of related tables in the database.
      * 
      * @param worker
-     *          An object that controls the entire Zest logic.
+     *          An object that controls the entire <em>Zest</em> logic.
      * @param zestData
      *          An object containing unit test case data.
      * @param source
@@ -71,7 +71,7 @@ public abstract class AbstractExecutor {
      * Initialize the data in the database during the <em>setup phase</em>.
      * 
      * @param worker
-     *          An object that controls the entire Zest logic.
+     *          An object that controls the entire <em>Zest</em> logic.
      * @param zestData
      *          An object containing unit test case data.
      * @param source
@@ -85,7 +85,7 @@ public abstract class AbstractExecutor {
      * Automatically verify data in the database during the the <em>verify phase</em>.
      * 
      * @param worker
-     *          An object that controls the entire Zest logic.
+     *          An object that controls the entire <em>Zest</em> logic.
      * @param zestData
      *          An object containing unit test case data.
      * @param source
@@ -99,7 +99,7 @@ public abstract class AbstractExecutor {
      * Initialize the data in the database during the <em>setup phase</em>
      * 
      * @param worker
-     *          An object that controls the entire Zest logic.
+     *          An object that controls the entire <em>Zest</em> logic.
      * @param zestData
      *          An object containing unit test case data.
      * @param source
@@ -115,7 +115,7 @@ public abstract class AbstractExecutor {
      * Check if this operator is supported
      *
      * @param worker
-     *          An object that controls the entire Zest logic.
+     *          An object that controls the entire <em>Zest</em> logic.
      * @param sourceId
      *          Current {@link ZestSource#value()}
      */
@@ -130,7 +130,7 @@ public abstract class AbstractExecutor {
      * Automatically verify data in the database during the the <em>verify phase</em>.
      *
      * @param worker
-     *          An object that controls the entire Zest logic.
+     *          An object that controls the entire <em>Zest</em> logic.
      * @param zestData
      *          An object containing unit test case data.
      * @param source
