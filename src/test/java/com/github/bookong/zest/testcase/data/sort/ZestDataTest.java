@@ -11,10 +11,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * 测试元素 Zest/Sources/Source/Verify/Sorts/Sort
+ * 
  * @author Jiang Xu
  */
 public class ZestDataTest extends AbstractZestDataTest {
 
+    /** Field 属性为空 */
     @Test
     public void testLoad01() {
         testLoadError("01.xml", Messages.parseSourcesError(), //
@@ -26,6 +29,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseCommonAttrEmpty("Field"));
     }
 
+    /** 不合法的 Direction */
     @Test
     public void testLoad02() {
         testLoadError("02.xml", Messages.parseSourcesError(), //
@@ -37,6 +41,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseSortDirection());
     }
 
+    /** 不支持的子元素 */
     @Test
     public void testLoad03() {
         testLoadError("03.xml", Messages.parseSourcesError(), //
@@ -48,6 +53,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseCommonChildren("Sort"));
     }
 
+    /** Field 属性重复 */
     @Test
     public void testLoad04() {
         testLoadError("04.xml", Messages.parseSourcesError(), //
@@ -59,6 +65,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseCommonAttrDuplicate("Field", "f_varchar"));
     }
 
+    /** mysql 类型 Field 匹配不到实际数据库中字段 */
     @Test
     public void testLoad05() {
         testLoadError("05.xml", Messages.parseSourcesError(), //
@@ -69,6 +76,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseTableSortExist("none"));
     }
 
+    /** mysql 类型正常数据，同时测试 Direction 默认值 */
     @Test
     public void testLoad06() {
         logger.info("Normal data");
@@ -81,6 +89,7 @@ public class ZestDataTest extends AbstractZestDataTest {
         Assert.assertEquals(" order by f_varchar desc, f_double asc, f_bigint asc", table.getSort());
     }
 
+    /** mongo 类型正常数据，同时测试 Direction 默认值 */
     @Test
     public void testLoad07() {
         logger.info("Normal data");
@@ -92,6 +101,7 @@ public class ZestDataTest extends AbstractZestDataTest {
         Assert.assertEquals("intObjValue: DESC,longObjValue: ASC,doubleObjValue: ASC", tab.getSort().toString());
     }
 
+    /** mongo 类型 Field 匹配不到 EntityClass 中字段 */
     @Test
     public void testLoad08() {
         testLoadError("08.xml", Messages.parseSourcesError(), //

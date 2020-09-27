@@ -8,13 +8,9 @@
                 <Table Name="tab">
                     <Rules>
                         <Rule Field="f_time">
-                            <CurrentTime Offset="2000"/>
-                        </Rule>
-                        <Rule Field="f_date">
-                            <FromCurrentTime Min="1" Max="2" Unit="hour" Offset="2000" />
-                        </Rule>
-                        <Rule Field="f_integer">
-                            <Range From="1" IncludeFrom="false" To="12.5" IncludeTo="false" />
+                            <Range>
+                                <Other/>
+                            </Range>
                         </Rule>
                     </Rules>
                 </Table>

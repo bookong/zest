@@ -97,8 +97,12 @@ public abstract class AbstractTable<T> {
                     parseSorts = true;
 
                 } else if (Xml.RULES.equals(child.getNodeName())) {
-                    if (parseRules || parseData) {
+                    if (!isVerifyElement) {
                         throw new ZestException(Messages.parseRulesPosition());
+                    }
+
+                    if (parseRules || parseData) {
+                        throw new ZestException(Messages.parseRulesOrder());
                     }
                     parseRules(child);
                     parseRules = true;

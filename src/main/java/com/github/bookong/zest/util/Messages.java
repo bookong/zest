@@ -177,6 +177,10 @@ public class Messages {
     public static String parseRulesPosition() {
         return getString("parse.rules.position");
     }
+    
+    public static String parseRulesOrder() {
+        return getString("parse.rules.order");
+    }
 
     public static String parseRuleError(String path) {
         return getString("parse.rule.error", path);
@@ -190,12 +194,12 @@ public class Messages {
         return getString("parse.rule.manual.from.unit.unknown", unit);
     }
 
-    public static String parseOperator(String sourceId, String className) {
-        return getString("parse.operator", sourceId, className);
+    public static String parseRuleRangeChoice() {
+        return getString("parse.rule.range.choice");
     }
 
-    public static String parseOperatorDuplicate(String value) {
-        return getString("parse.operator.duplicate", value);
+    public static String parseOperator(String sourceId, String className) {
+        return getString("parse.operator", sourceId, className);
     }
 
     public static String parseExecutor(String value, String className) {

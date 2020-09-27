@@ -16,6 +16,7 @@
 package com.github.bookong.zest.rule;
 
 import com.github.bookong.zest.common.ZestGlobalConstant.Xml;
+import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.support.xml.XmlNode;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.util.Messages;
@@ -73,11 +74,16 @@ public class RangeRule extends AbstractRule {
         super(field, nullable, false);
         XmlNode xmlNode = new XmlNode(node);
         xmlNode.checkSupportedAttrs(Xml.FROM, Xml.INCLUDE_FROM, Xml.TO, Xml.INCLUDE_TO);
+        xmlNode.mustNoChildren();
 
         this.from = xmlNode.getAttrDoubleObj(Xml.FROM);
         this.includeFrom = xmlNode.getAttrBoolean(Xml.INCLUDE_FROM, true);
         this.to = xmlNode.getAttrDoubleObj(Xml.TO);
         this.includeTo = xmlNode.getAttrBoolean(Xml.INCLUDE_TO, true);
+
+        if (getFrom() == null && getTo() == null) {
+            throw new ZestException(Messages.parseRuleRangeChoice());
+        }
     }
 
     /**

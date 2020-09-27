@@ -229,7 +229,7 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:attribute name="Field" type="xsd:string">
+            <xsd:attribute name="Field" type="xsd:string" use="required">
                 <xsd:annotation>
                     <xsd:documentation>
                         Sorted field

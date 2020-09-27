@@ -2,6 +2,7 @@ package com.github.bookong.zest.testcase.data.table;
 
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.SourceInitData;
+import com.github.bookong.zest.testcase.SourceVerifyData;
 import com.github.bookong.zest.testcase.ZestData;
 import com.github.bookong.zest.testcase.data.AbstractZestDataTest;
 import com.github.bookong.zest.testcase.mongo.Collection;
@@ -60,7 +61,7 @@ public class ZestDataTest extends AbstractZestDataTest {
         Assert.assertFalse(table.isIgnoreVerify());
     }
 
-    /** 不支持的属性 */
+    /** Init 部分不支持的属性 */
     @Test
     public void testLoad04() {
         testLoadError("04.xml", Messages.parseSourcesError(), //
@@ -88,5 +89,69 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseSourceInitError(), //
                       Messages.parseTableError("tab"), //
                       Messages.parseCommonChildrenUnknown("Table", "Other"));
+    }
+
+    /** mongo 的 Verify 部分正常数据，属性默认值 */
+    @Test
+    public void testLoad07() {
+        logger.info("Normal data");
+        ZestData zestData = load("07.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Assert.assertEquals(1, obj.getTableMap().size());
+
+        AbstractTable<?> abstractTable = obj.getTableMap().get("tab");
+        Assert.assertTrue(abstractTable instanceof Collection);
+        Collection collection = (Collection) abstractTable;
+        Assert.assertEquals("tab", collection.getName());
+        Assert.assertEquals("com.github.bookong.zest.testcase.param.Param", collection.getEntityClass().getName());
+        Assert.assertFalse(collection.isIgnoreVerify());
+    }
+
+    /** mongo 的 Verify 部分正常数据，属性给定值 */
+    @Test
+    public void testLoad08() {
+        logger.info("Normal data");
+        ZestData zestData = load("08.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Assert.assertEquals(1, obj.getTableMap().size());
+
+        AbstractTable<?> abstractTable = obj.getTableMap().get("tab");
+        Assert.assertTrue(abstractTable instanceof Collection);
+        Collection collection = (Collection) abstractTable;
+        Assert.assertTrue(collection.isIgnoreVerify());
+    }
+
+    /** mysql 的 Verify 部分正常数据，属性默认值 */
+    @Test
+    public void testLoad09() {
+        logger.info("Normal data");
+        ZestData zestData = load("09.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Assert.assertEquals(1, obj.getTableMap().size());
+
+        AbstractTable<?> abstractTable = obj.getTableMap().get("tab");
+        Assert.assertTrue(abstractTable instanceof Table);
+        Table table = (Table) abstractTable;
+        Assert.assertEquals("tab", table.getName());
+        Assert.assertFalse(table.isIgnoreVerify());
+    }
+
+    /** mysql 的 Verify 部分正常数据，属性给定值 */
+    @Test
+    public void testLoad10() {
+        logger.info("Normal data");
+        ZestData zestData = load("10.xml");
+        Assert.assertEquals(1, zestData.getSourceList().size());
+        SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
+        Assert.assertEquals(1, obj.getTableMap().size());
+
+        AbstractTable<?> abstractTable = obj.getTableMap().get("tab");
+        Assert.assertTrue(abstractTable instanceof Table);
+        Table table = (Table) abstractTable;
+        Assert.assertEquals("tab", table.getName());
+        Assert.assertTrue(table.isIgnoreVerify());
     }
 }

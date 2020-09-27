@@ -16,6 +16,9 @@
                         <Rule Field="f_date">
                             <FromCurrentTime Min="1" Max="2" Unit="day" />
                         </Rule>
+                        <Rule Field="f_integer">
+                            <Range From="1" To="12.5" />
+                        </Rule>
                     </Rules>
                 </Table>
             </Verify>
