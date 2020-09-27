@@ -22,7 +22,7 @@
     <xsd:annotation>
         <xsd:documentation>
             For all times represented by strings, the pattern must be "yyyy-MM-dd'T'HH:mm:ss.SSSX" where "X" is ISO 8601 time zone.
-            For example, Beijing time "2020-08-09 10:12:00" is represented as "2020-08-09T10:12:00.000+08:00"
+            For example, Beijing time "2020-08-09 10:12:00" is represented as "2020-08-09T10:12:00.000+08:00".
         </xsd:documentation>
     </xsd:annotation>
 
@@ -32,7 +32,7 @@
                 <xsd:element name="Description" type="xsd:string">
                     <xsd:annotation>
                         <xsd:documentation>
-                            The description information of the unit test case
+                            The description information of the unit test case.
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:element>
@@ -100,7 +100,7 @@
     <xsd:element name="ParamField">
         <xsd:annotation>
             <xsd:documentation>
-                The attribute value of the test parameter, the specific data type depends on the definition in the code
+                The attribute value of the test parameter, the specific data type depends on the definition in the code.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
@@ -117,7 +117,7 @@
                     <xsd:attribute name="Name" type="xsd:string" use="required">
                         <xsd:annotation>
                             <xsd:documentation>
-                                Field name of test parameter
+                                Field name of test parameter.
                             </xsd:documentation>
                         </xsd:annotation>
                     </xsd:attribute>

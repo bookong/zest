@@ -16,6 +16,7 @@
 package com.github.bookong.zest.runner.junit4.statement;
 
 import java.io.File;
+import java.util.Objects;
 
 import org.junit.runners.model.FrameworkMethod;
 
@@ -56,5 +57,25 @@ public class ZestFrameworkMethod extends FrameworkMethod {
      */
     public String getFilePath() {
         return filePath;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ZestFrameworkMethod that = (ZestFrameworkMethod) o;
+        return Objects.equals(filePath, that.filePath);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), filePath);
     }
 }

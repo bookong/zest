@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 /**
+ * 测试元素 Zest/Param
+ * 
  * @author Jiang Xu
  */
 public class ZestDataTest extends AbstractZestDataTest {
@@ -20,30 +22,35 @@ public class ZestDataTest extends AbstractZestDataTest {
     protected void initZestData(String filename, ZestData zestData) {
     }
 
+    /** 不支持的子元素 */
     @Test
     public void testLoad01() {
         testLoadError("01.xml", Messages.parseParamError(), //
                       Messages.parseCommonChildrenList("Param", "ParamField"));
     }
 
+    /** 属性 Name 为空 */
     @Test
     public void testLoad02() {
         testLoadError("02.xml", Messages.parseParamError(), //
                       Messages.parseCommonAttrEmpty("Name"));
     }
 
+    /** 属性 Name 重复 */
     @Test
     public void testLoad03() {
         testLoadError("03.xml", Messages.parseParamError(), //
                       Messages.parseCommonAttrDuplicate("Name", "strValue"));
     }
 
+    /** 测试参数属性中没有对应 Name 字段指定的值 */
     @Test
     public void testLoad04() {
         testLoadError("04.xml", Messages.parseParamError(), //
                       Messages.parseParamNone("none"));
     }
 
+    /** XML 给定的值无法转换成测试参数属性的类型 */
     @Test
     public void testLoad05() {
         testLoadError("05.xml", Messages.parseParamError(), //
@@ -51,6 +58,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       "For input string: \"str value\"");
     }
 
+    /** XML 给定的内容不符合规定的时间格式 */
     @Test
     public void testLoad06() {
         testLoadError("06.xml", Messages.parseParamError(), //
@@ -59,6 +67,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       "Unparseable date: \"str value\"");
     }
 
+    /** 不支持想测试参数中 map 类型的字段赋值 */
     @Test
     public void testLoad07() {
         testLoadError("07.xml", Messages.parseParamError(), //
@@ -66,6 +75,7 @@ public class ZestDataTest extends AbstractZestDataTest {
                       Messages.parseParamNonsupportMap());
     }
 
+    /** 一个正常赋值的例子 */
     @Test
     public void testLoad08() {
         logger.info("Normal data");
@@ -97,6 +107,7 @@ public class ZestDataTest extends AbstractZestDataTest {
         Assert.assertEquals("param2 str", param.getObj().getObj2().getStr());
     }
 
+    /** 不支持的属性 */
     @Test
     public void testLoad09() {
         testLoadError("09.xml", Messages.parseParamError(), //
