@@ -194,6 +194,9 @@ public abstract class AbstractTable<T> {
                            boolean isVerifyElement) {
         try {
             XmlNode xmlNode = new XmlNode(node);
+            xmlNode.checkSupportedAttrs();
+            xmlNode.mustNoChildren();
+
             loadData(worker, zestData, sourceId, xmlNode.getNodeValue(), isVerifyElement);
         } catch (Exception e) {
             throw new ZestException(Messages.parseDataError(dataIdx), e);
