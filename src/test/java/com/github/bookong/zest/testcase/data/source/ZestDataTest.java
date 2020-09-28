@@ -32,7 +32,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** 一个正确的例子 */
     @Test
     public void testLoad03() {
-        logger.info("Normal data");
         ZestData zestData = load("03.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         Assert.assertEquals("mysql", zestData.getSourceList().get(0).getId());
@@ -101,7 +100,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** 正常数据 */
     @Test
     public void testLoad11() {
-        logger.info("Normal data");
         ZestData zestData = load("11.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
@@ -111,7 +109,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** 正常数据，取属性默认值 */
     @Test
     public void testLoad12() {
-        logger.info("Normal data");
         ZestData zestData = load("12.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();

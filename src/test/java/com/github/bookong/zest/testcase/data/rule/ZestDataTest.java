@@ -25,7 +25,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mysql 类型，正常例子，默认属性 */
     @Test
     public void testLoad01() {
-        logger.info("Normal data");
         ZestData zestData = load("01.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
@@ -60,7 +59,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mongo 类型，正常例子，默认属性 */
     @Test
     public void testLoad02() {
-        logger.info("Normal data");
         ZestData zestData = load("02.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
@@ -94,7 +92,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mysql 类型，正常例子，指定属性 */
     @Test
     public void testLoad03() {
-        logger.info("Normal data");
         ZestData zestData = load("03.xml");
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
         Table table = (Table) obj.getTableMap().get("tab");

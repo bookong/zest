@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data">
+    <Description>test case description</Description>
+    <Sources>
+        <Source Id="mongo">
+            <Init>
+                <Table Name="tab" EntityClass="com.github.bookong.zest.testcase.param.Param">
+                    <Data><![CDATA[
+{
+    "intValue" : 12,
+    "strValue" : "str",
+    "date1" : "2020-09-28T11:12:13.000+08"
+}
+                    ]]></Data>
+                </Table>
+            </Init>
+            <Verify/>
+        </Source>
+    </Sources>
+    <Param/>
+</Zest>

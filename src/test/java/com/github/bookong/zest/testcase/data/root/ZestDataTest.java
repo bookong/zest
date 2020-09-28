@@ -55,7 +55,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** 最简单的正确例子，检查属性默认值 */
     @Test
     public void testLoad05() {
-        logger.info("Normal data");
         ZestData zestData = load("05.xml");
         Assert.assertFalse(zestData.isTransferTime());
         Assert.assertEquals(1.0F, zestData.getVersion(), 0.01F);
@@ -66,7 +65,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** 最简单的正确例子，不使用默认属性值 */
     @Test
     public void testLoad06() {
-        logger.info("Normal data");
         ZestData zestData = load("06.xml");
         Assert.assertEquals(3.4F, zestData.getVersion(), 0.01F);
         Assert.assertTrue(zestData.isTransferTime());

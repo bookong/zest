@@ -31,7 +31,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mongo 的 Init 部分正常数据 */
     @Test
     public void testLoad02() {
-        logger.info("Normal data");
         ZestData zestData = load("02.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceInitData obj = zestData.getSourceList().get(0).getInitData();
@@ -48,7 +47,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mysql 的 Init 部分正常数据 */
     @Test
     public void testLoad03() {
-        logger.info("Normal data");
         ZestData zestData = load("03.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceInitData obj = zestData.getSourceList().get(0).getInitData();
@@ -94,7 +92,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mongo 的 Verify 部分正常数据，属性默认值 */
     @Test
     public void testLoad07() {
-        logger.info("Normal data");
         ZestData zestData = load("07.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
@@ -111,7 +108,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mongo 的 Verify 部分正常数据，属性给定值 */
     @Test
     public void testLoad08() {
-        logger.info("Normal data");
         ZestData zestData = load("08.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
@@ -126,7 +122,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mysql 的 Verify 部分正常数据，属性默认值 */
     @Test
     public void testLoad09() {
-        logger.info("Normal data");
         ZestData zestData = load("09.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();
@@ -142,7 +137,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** mysql 的 Verify 部分正常数据，属性给定值 */
     @Test
     public void testLoad10() {
-        logger.info("Normal data");
         ZestData zestData = load("10.xml");
         Assert.assertEquals(1, zestData.getSourceList().size());
         SourceVerifyData obj = zestData.getSourceList().get(0).getVerifyData();

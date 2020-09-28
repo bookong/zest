@@ -78,7 +78,6 @@ public class ZestDataTest extends AbstractZestDataTest {
     /** 一个正常赋值的例子 */
     @Test
     public void testLoad08() {
-        logger.info("Normal data");
         ZestData zestData = load("08.xml");
         Param param = (Param) zestData.getParam();
         Assert.assertEquals(1, param.getIntValue());
