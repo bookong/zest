@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Data xmlns="zest-data.xsd">
-	<Description>不正确格式XML测试</Description>
-	<DataSources></DataSources>
-	<TestParamFail>
-	</TestParam>
-</Data>

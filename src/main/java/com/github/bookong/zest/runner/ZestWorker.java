@@ -51,7 +51,7 @@ public abstract class ZestWorker {
      * @param test
      *          A test object.
      */
-    protected void loadAnnotation(Object test) {
+    public void loadAnnotation(Object test) {
         Class<?> clazz = test.getClass();
         while (!Object.class.getName().equals(clazz.getName())) {
             for (Field f : clazz.getDeclaredFields()) {

@@ -1,5 +1,6 @@
 package com.github.bookong.zest.runner;
 
+import com.github.bookong.zest.runner.sql.def.DefaultSqlZestWorkerTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -7,7 +8,7 @@ import org.junit.runners.Suite;
  * @author Jiang Xu
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ com.github.bookong.zest.runner.sql.ZestWorkerTest.class, //
+@Suite.SuiteClasses({ DefaultSqlZestWorkerTest.class, //
 })
 public class ZestWorkerTestSuite {
 }

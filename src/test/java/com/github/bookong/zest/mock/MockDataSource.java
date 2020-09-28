@@ -12,11 +12,15 @@ import java.util.logging.Logger;
  */
 public class MockDataSource implements DataSource {
 
-    private Connection conn = new MockConnection();
+    private MockConnection conn = new MockConnection();
 
     @Override
     public Connection getConnection() throws SQLException {
         return conn;
+    }
+
+    public void setConnection(Connection conn) {
+        this.conn.setConnection(conn);
     }
 
     @Override

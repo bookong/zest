@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data">
+    <Description>test case description</Description>
+    <Sources>
+        <Source Id="mysql">
+            <Init>
+                <Table Name="tab1">
+                    <Data><![CDATA[
+{
+    "id" : 1,
+    "login_name" : "aa"
+}
+                    ]]></Data>
+                </Table>
+            </Init>
+            <Verify>
+                <Table Name="tab1">
+                    <Data><![CDATA[
+{
+    "id" : 1,
+    "login_name" : "aa"
+}
+                    ]]></Data>
+                </Table>
+            </Verify>
+        </Source>
+    </Sources>
+    <Param/>
+</Zest>

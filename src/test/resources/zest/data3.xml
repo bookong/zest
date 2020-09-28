@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Data xmlns="zest-data.xsd">
-	<Description>List 内容对象类型不支持</Description>
-	<DataSources></DataSources>
-	<TestParam>
-		<ParamField Path="list">Text 1</ParamField>
-	</TestParam>
-</Data>

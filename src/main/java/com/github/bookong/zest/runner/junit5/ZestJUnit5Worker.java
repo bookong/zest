@@ -111,7 +111,7 @@ public class ZestJUnit5Worker extends ZestWorker {
         }
     }
 
-    private <T extends ZestParam> T before(ZestData zestData, Class<T> zestParamClass) {
+    protected  <T extends ZestParam> T before(ZestData zestData, Class<T> zestParamClass) {
         try {
             T param = zestParamClass.newInstance();
             zestData.setParam(param);
@@ -129,7 +129,7 @@ public class ZestJUnit5Worker extends ZestWorker {
         }
     }
 
-    private void after(ZestData zestData) {
+    protected void after(ZestData zestData) {
         zestData.setEndTime(System.currentTimeMillis());
         verifySource(zestData);
     }
