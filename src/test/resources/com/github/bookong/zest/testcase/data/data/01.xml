@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data">
+    <Description>test case description</Description>
+    <Sources>
+        <Source Id="mysql">
+            <Init>
+                <Table Name="tab">
+                    <Data><![CDATA[
+{
+    "f_integer" : 12,
+    "f_varchar" : "str",
+    "f_date" : "2020-09-28T11:12:13.000+08",
+    "f_time" : "2020-09-29T11:12:13.000+08",
+    "f_timestamp" : "2020-09-30T11:12:13.000+08"
+}
+                    ]]></Data>
+                </Table>
+            </Init>
+            <Verify/>
+        </Source>
+    </Sources>
+    <Param/>
+</Zest>

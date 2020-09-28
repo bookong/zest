@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
                       com.github.bookong.zest.testcase.data.source.ZestDataTest.class, //
                       com.github.bookong.zest.testcase.data.sources.ZestDataTest.class, //
                       com.github.bookong.zest.testcase.data.table.ZestDataTest.class, //
+                      com.github.bookong.zest.testcase.data.data.ZestDataTest.class, //
 })
 public class ZestDataTestSuite {
 }
