@@ -1,4 +1,4 @@
-package com.github.bookong.zest.testcase.mock;
+package com.github.bookong.zest.mock;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
