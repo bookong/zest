@@ -19,15 +19,18 @@ import com.github.bookong.zest.common.ZestGlobalConstant;
 import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.testcase.sql.Row;
 import com.github.bookong.zest.testcase.sql.Table;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
+import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
+import java.sql.*;
 import java.util.*;
 
 /**
@@ -133,7 +136,7 @@ public class ZestSqlHelper {
             sql = sql.concat(table.getSort());
         }
 
-        return find(conn, sql);
+        return find(conn, sql, table.getSqlTypes());
     }
 
     /**
@@ -148,7 +151,7 @@ public class ZestSqlHelper {
     public static List<Map<String, Object>> find(DataSource dataSource, String sql) {
         Connection conn = DataSourceUtils.getConnection(dataSource);
         try {
-            return find(conn, sql);
+            return find(conn, sql, null);
         } finally {
             DataSourceUtils.releaseConnection(conn, dataSource);
         }
@@ -163,6 +166,20 @@ public class ZestSqlHelper {
      * @return all fetch data.
      */
     public static List<Map<String, Object>> find(Connection conn, String sql) {
+        return find(conn, sql, null);
+    }
+
+    /**
+     * Query all data in the table based on SQL.
+     * @param conn
+     *          Database connection object.
+     * @param sql
+     *          SQL content.
+     * @param sqlTypes
+     *          {@link Types} map.
+     * @return all fetch data.
+     */
+    public static List<Map<String, Object>> find(Connection conn, String sql, Map<String, Integer> sqlTypes) {
         Statement stat = null;
         ResultSet rs = null;
         try {
@@ -175,8 +192,25 @@ public class ZestSqlHelper {
                 list.add(obj);
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                     String name = rs.getMetaData().getColumnName(i).toLowerCase();
-                    Object value = rs.getObject(i);
-                    obj.put(name, findValue(value));
+                    Integer sqlType = null;
+                    if (sqlTypes != null) {
+                        sqlType = sqlTypes.get(name);
+                    }
+
+                    if (sqlType != null) {
+                        switch (sqlType) {
+                            case Types.BLOB:
+                                obj.put(name, findValue(readBlobContent(rs.getBlob(i))));
+                                break;
+                            case Types.CLOB:
+                                obj.put(name, findValue(readBlobContent(rs.getClob(i))));
+                                break;
+                            default:
+                                obj.put(name, findValue(rs.getObject(i)));
+                        }
+                    } else {
+                        obj.put(name, findValue(rs.getObject(i)));
+                    }
                 }
             }
 
@@ -186,6 +220,20 @@ public class ZestSqlHelper {
             ZestSqlHelper.close(stat);
             throw new ZestException(e);
         }
+    }
+
+    private static String readBlobContent(Clob clob) throws Exception {
+        if (clob == null) {
+            return null;
+        }
+        return StringUtils.join(IOUtils.readLines(clob.getCharacterStream()));
+    }
+
+    private static String readBlobContent(Blob blob) throws Exception {
+        if (blob == null) {
+            return null;
+        }
+        return StringUtils.join(IOUtils.readLines(blob.getBinaryStream(), StandardCharsets.UTF_8));
     }
 
     private static Object findValue(Object value) {

@@ -8,14 +8,10 @@
                     <Data><![CDATA[
 {
     "id" : 1,
-    "v_tinyint" : 2,
-    "v_smallint" : 3,
-    "v_mediumint" : 4,
-    "v_int" : 5,
-    "v_integer" : 6,
-    "v_float" : 7.1,
-    "v_double" : 8.1,
-    "v_decimal" : 9.1
+    "v_tinyblob" : "v_tinyblob value",
+    "v_blob" : "v_blob value",
+    "v_mediumblob" : "v_mediumblob value",
+    "v_longblob" : "v_longblob value"
 }
                     ]]></Data>
                 </Table>
@@ -25,14 +21,10 @@
                     <Data><![CDATA[
 {
     "id" : 1,
-    "v_tinyint" : 2,
-    "v_smallint" : 3,
-    "v_mediumint" : 4,
-    "v_int" : 5,
-    "v_integer" : 6,
-    "v_float" : 7.1,
-    "v_double" : 8.1,
-    "v_decimal" : 9.1
+    "v_tinyblob" : "v_tinyblob value",
+    "v_blob" : "v_blob value",
+    "v_mediumblob" : "v_mediumblob value",
+    "v_longblob" : "v_longblob value"
 }
                     ]]></Data>
                 </Table>

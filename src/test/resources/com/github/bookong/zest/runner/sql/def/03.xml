@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data">
+    <Description>test case description</Description>
+    <Sources>
+        <Source Id="mysql">
+            <Init>
+                <Table Name="tab1">
+                    <Data><![CDATA[
+{
+    "id" : 1,
+    "v_char" : "v_char value",
+    "v_varchar" : "v_varchar value1",
+    "v_tinytext" : "v_tinytext value",
+    "v_text" : "v_text value",
+    "v_mediumtext" : "v_mediumtext value",
+    "v_longtext" : "v_longtext value"
+}
+                    ]]></Data>
+                    <Data><![CDATA[
+{
+    "id" : 2,
+    "v_char" : "v_char value",
+    "v_varchar" : "v_varchar value2",
+    "v_tinytext" : "v_tinytext value",
+    "v_text" : "v_text value",
+    "v_mediumtext" : "v_mediumtext value",
+    "v_longtext" : "v_longtext value"
+}
+                    ]]></Data>
+                </Table>
+            </Init>
+            <Verify>
+                <Table Name="tab1">
+                    <Data><![CDATA[
+{
+    "id" : 1,
+    "v_char" : "v_char value",
+    "v_varchar" : "v_varchar value1",
+    "v_tinytext" : "[v_tinytext value]",
+    "v_text" : "[v_text value]",
+    "v_mediumtext" : "[v_mediumtext value]",
+    "v_longtext" : "[v_longtext value]"
+}
+                    ]]></Data>
+                    <Data><![CDATA[
+{
+    "id" : 2,
+    "v_char" : "v_char value",
+    "v_varchar" : "v_varchar value2",
+    "v_tinytext" : "[v_tinytext value]",
+    "v_text" : "[v_text value]",
+    "v_mediumtext" : "[v_mediumtext value]",
+    "v_longtext" : "[v_longtext value]"
+}
+                    ]]></Data>
+                </Table>
+            </Verify>
+        </Source>
+    </Sources>
+    <Param/>
+</Zest>

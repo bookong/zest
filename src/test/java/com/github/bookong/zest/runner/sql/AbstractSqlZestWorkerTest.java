@@ -47,6 +47,12 @@ public abstract class AbstractSqlZestWorkerTest extends AbstractZestJUnit5Worker
     protected void createTable(Connection conn, String filename) throws Exception {
         List<String> lines = IOUtils.readLines(getClass().getResource(filename).openStream(), StandardCharsets.UTF_8);
         String sql = StringUtils.join(lines, '\n');
+        int pos = sql.indexOf('`');
+        String str = sql.substring(pos + 1);
+        pos = str.indexOf('`');
+        str = String.format("DROP TABLE IF EXISTS `%s`", str.substring(0, pos));
+        logger.info(str);
+        ZestSqlHelper.execute(conn, str);
         logger.info(sql);
         ZestSqlHelper.execute(conn, sql);
     }

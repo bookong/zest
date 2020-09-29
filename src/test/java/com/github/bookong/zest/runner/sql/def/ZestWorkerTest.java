@@ -27,9 +27,34 @@ public class ZestWorkerTest extends AbstractSqlZestWorkerTest {
         createTable(conn, "tab1.sql");
     }
 
+    /** MySQL 数据类型 - 数字 */
     @Test
     public void test01() {
         run("01.xml", Param.class, param -> {
+            System.out.println(ZestSqlHelper.query(conn, "select * from tab1"));
+        });
+    }
+
+    /** MySQL 数据类型 - 日期 */
+    @Test
+    public void test02() {
+        run("02.xml", Param.class, param -> {
+            System.out.println(ZestSqlHelper.query(conn, "select * from tab1"));
+        });
+    }
+
+    /** MySQL 数据类型 - 字符串 */
+    @Test
+    public void test03() {
+        run("03.xml", Param.class, param -> {
+            System.out.println(ZestSqlHelper.query(conn, "select * from tab1"));
+        });
+    }
+
+    /** MySQL 数据类型 - 二进制内容 */
+    @Test
+    public void test04() {
+        run("04.xml", Param.class, param -> {
             System.out.println(ZestSqlHelper.query(conn, "select * from tab1"));
         });
     }
