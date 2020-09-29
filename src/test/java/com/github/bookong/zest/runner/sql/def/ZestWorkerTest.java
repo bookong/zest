@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  * @author Jiang Xu
  */
-public class DefaultSqlZestWorkerTest extends AbstractSqlZestWorkerTest {
+public class ZestWorkerTest extends AbstractSqlZestWorkerTest {
 
     @ZestSource("mysql")
     private MockDataSource mockDataSource = new MockDataSource();
