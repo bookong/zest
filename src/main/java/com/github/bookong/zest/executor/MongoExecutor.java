@@ -16,6 +16,7 @@
 package com.github.bookong.zest.executor;
 
 import com.github.bookong.zest.annotation.ZestSource;
+import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.runner.ZestWorker;
 import com.github.bookong.zest.testcase.AbstractTable;
 import com.github.bookong.zest.testcase.Source;
@@ -27,6 +28,7 @@ import org.junit.Assert;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +38,9 @@ import java.util.List;
  * @author Jiang Xu
  */
 public class MongoExecutor extends AbstractExecutor {
+
+    private static final String METHOD_INSERT = "insert";
+    private static final String METHOD_REMOVE = "remove";
 
     /**
      * {@inheritDoc}
@@ -120,7 +125,40 @@ public class MongoExecutor extends AbstractExecutor {
      */
     protected void removeAll(ZestWorker worker, Source source, Collection collection) {
         MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
-        operator.remove(new Query(), collection.getEntityClass());
+        operatorRemove(operator, new Query(), collection.getEntityClass());
+    }
+
+    /**
+     * Remove all documents that match the provided query document criteria from the the collection used to store the
+     * entityClass. The Class parameter is also used to help convert the Id of the object if it is present in the query.
+     * <p>
+     * Because the return values of some methods of {@link org.springframework.data.mongodb.core.MongoOperations} in
+     * different versions of <em>org.springframework.data:spring-data-mongodb</em> are different, the methods are called
+     * by reflection here. For example :
+     * <p>
+     * In version {@code 1.10.23.RELEASE}:
+     * <pre class="code">
+     * WriteResult remove(Query query, Class<?> entityClass);
+     * </pre>
+     * Int version {@code 3.0.2.RELEASE}:
+     * <pre class="code">
+     * DeleteResult remove(Query query, Class<?> entityClass);
+     * </pre>
+     *
+     * @param operator
+     *          <em>MongoDB's</em> operator.
+     * @param query
+     *          The query document that specifies the criteria used to remove a record.
+     * @param entityClass
+     *          Class that determines the collection to use.
+     */
+    private void operatorRemove(MongoOperations operator, Query query, Class<?> entityClass) {
+        try {
+            Method method = operator.getClass().getDeclaredMethod(METHOD_REMOVE, Query.class, Class.class);
+            method.invoke(operator, query, entityClass);
+        } catch (Exception e) {
+            throw new ZestException(Messages.operatorInvoke(METHOD_REMOVE), e);
+        }
     }
 
     /**
@@ -141,7 +179,39 @@ public class MongoExecutor extends AbstractExecutor {
      */
     protected void insertDataList(ZestWorker worker, Source source, Class<?> entityClass, List<Object> initDataList) {
         MongoOperations operator = worker.getOperator(source.getId(), MongoOperations.class);
-        operator.insert(initDataList, entityClass);
+        operatorInsert(operator, initDataList, entityClass);
+    }
+
+    /**
+     * Insert a Collection of objects into a collection in a single batch write to the database.
+     * <p>
+     * Because the return values of some methods of {@link org.springframework.data.mongodb.core.MongoOperations} in
+     * different versions of <em>org.springframework.data:spring-data-mongodb</em> are different, the methods are called
+     * by reflection here. For example :
+     * <p>
+     * In version {@code 1.10.23.RELEASE}:
+     * <pre class="code">
+     * void insert(Collection<? extends Object> batchToSave, Class<?> entityClass);
+     * </pre>
+     * Int version {@code 3.0.2.RELEASE}:
+     * <pre class="code">
+     * <T> Collection<T> insert(Collection<? extends T> batchToSave, Class<?> entityClass);
+     * </pre>
+     *
+     * @param operator
+     *          <em>MongoDB's</em> operator.
+     * @param batchToSave
+     *          The batch of objects to save. Must not be {@literal null}.
+     * @param entityClass
+     *          Class that determines the collection to use. Must not be {@literal null}.
+     */
+    private <T> void operatorInsert(MongoOperations operator, java.util.Collection<? extends T> batchToSave, Class<?> entityClass) {
+        try {
+            Method method = operator.getClass().getDeclaredMethod(METHOD_INSERT, java.util.Collection.class, Class.class);
+            method.invoke(operator, batchToSave, entityClass);
+        } catch (Exception e) {
+            throw new ZestException(Messages.operatorInvoke(METHOD_INSERT), e);
+        }
     }
 
     /**

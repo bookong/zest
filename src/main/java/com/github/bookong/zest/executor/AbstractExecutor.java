@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 import javax.sql.DataSource;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -162,8 +163,19 @@ public abstract class AbstractExecutor {
      */
     protected Set<AbstractTable<?>> findAllTables(Source source) {
         Set<AbstractTable<?>> tables = new LinkedHashSet<>();
-        source.getInitData().getTableList().forEach(table -> tables.add(table));
-        source.getVerifyData().getTableMap().values().forEach(table -> tables.add(table));
+        Set<String> set = new HashSet<>();
+        source.getInitData().getTableList().forEach(table -> {
+            if (!set.contains(table.getName())) {
+                tables.add(table);
+                set.add(table.getName());
+            }
+        });
+        source.getVerifyData().getTableMap().values().forEach(table -> {
+            if (!set.contains(table.getName())) {
+                tables.add(table);
+                set.add(table.getName());
+            }
+        });
         return tables;
     }
 }

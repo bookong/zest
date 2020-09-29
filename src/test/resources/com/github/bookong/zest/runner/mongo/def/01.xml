@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Zest xmlns="https://www.bookong.net/schema/zest/data">
+    <Description>test case description</Description>
+    <Sources>
+        <Source Id="mongo">
+            <Init>
+                <Table Name="tab1" EntityClass="com.github.bookong.zest.runner.mongo.entity.SimpleTab">
+                    <Data><![CDATA[
+{
+    "id" : 1,
+    "loginName" : "aa"
+}
+                    ]]></Data>
+                </Table>
+            </Init>
+            <Verify>
+                <Table Name="tab1">
+                    <Sorts>
+                        <Sort Field="loginName"/>
+                        <Sort Field="id" Direction="desc"/>
+                    </Sorts>
+                    <Data><![CDATA[
+{
+    "id" : 1,
+    "loginName" : "aa"
+}
+                    ]]></Data>
+                </Table>
+            </Verify>
+        </Source>
+    </Sources>
+    <Param/>
+</Zest>

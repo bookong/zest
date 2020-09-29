@@ -1,27 +1,22 @@
 package com.github.bookong.zest.runner.sql;
 
-import com.github.bookong.zest.mock.MockDataSource;
-import com.github.bookong.zest.runner.junit5.ZestJUnit5Worker;
-import com.github.bookong.zest.testcase.ZestData;
+import com.github.bookong.zest.runner.AbstractZestJUnit5WorkerTest;
 import com.github.bookong.zest.testcase.ZestParam;
 import com.github.bookong.zest.util.ZestSqlHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * @author Jiang Xu
  */
-public abstract class AbstractSqlZestWorkerTest extends ZestJUnit5Worker {
+public abstract class AbstractSqlZestWorkerTest extends AbstractZestJUnit5WorkerTest {
 
     protected static Connection conn = null;
 
@@ -56,16 +51,4 @@ public abstract class AbstractSqlZestWorkerTest extends ZestJUnit5Worker {
         ZestSqlHelper.execute(conn, sql);
     }
 
-    protected <T extends ZestParam> ZestData run(String filename, MockDataSource mockDataSource,
-                                                 Class<T> zestParamClass, Consumer<T> fun) {
-        mockDataSource.setConnection(conn);
-        loadAnnotation(this);
-        String filePath = getClass().getResource(filename).getPath();
-        ZestData zestData = new ZestData(filePath);
-
-        T param = before(zestData, zestParamClass);
-        fun.accept(param);
-        after(zestData);
-        return zestData;
-    }
 }

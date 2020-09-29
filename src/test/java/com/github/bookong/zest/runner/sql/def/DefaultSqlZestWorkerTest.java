@@ -16,6 +16,11 @@ public class DefaultSqlZestWorkerTest extends AbstractSqlZestWorkerTest {
     @ZestSource("mysql")
     private MockDataSource mockDataSource = new MockDataSource();
 
+    @Override
+    protected void before() {
+        mockDataSource.setConnection(conn);
+    }
+
     @Before
     public void setup() throws Exception {
         logger.info("setup()");
@@ -24,7 +29,7 @@ public class DefaultSqlZestWorkerTest extends AbstractSqlZestWorkerTest {
 
     @Test
     public void test01() {
-        run("01.xml", mockDataSource, Param.class, param -> {
+        run("01.xml", Param.class, param -> {
             System.out.println(ZestSqlHelper.query(conn, "select * from tab1"));
         });
     }

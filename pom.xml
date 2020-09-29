@@ -142,12 +142,6 @@ limitations under the License.
             <version>3.0.2.RELEASE</version>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-redis</artifactId>
-            <version>2.3.2.RELEASE</version>
-            <optional>true</optional>
-        </dependency>
 
         <!-- Junit 4 support -->
         <dependency>

@@ -250,6 +250,10 @@ public class Messages {
         return getString("operator.cast", value, fromClass, toClass);
     }
 
+    public static String operatorInvoke(String method) {
+        return getString("operator.invoke", method);
+    }
+
     public static String verifyIgnore(String sourceId) {
         return getString("verify.ignore", sourceId);
     }
