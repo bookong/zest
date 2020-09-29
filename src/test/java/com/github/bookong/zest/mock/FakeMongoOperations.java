@@ -1,5 +1,6 @@
 package com.github.bookong.zest.mock;
 
+import com.github.bookong.zest.util.ZestReflectHelper;
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.ReadPreference;
 import com.mongodb.client.ClientSession;
@@ -56,12 +57,49 @@ public class FakeMongoOperations implements MongoOperations {
 
     @Override
     public <T> List<T> find(Query query, Class<T> entityClass) {
-        for (Map.Entry<String, Object> entry : query.getSortObject().entrySet()) {
-            System.out.println("sort " + entry.getKey() + " (" + entry.getValue().getClass().getName() + ") = " + String.valueOf(entry.getValue()));
+        String collectionName = getCollectionName(entityClass);
+        List<T> list = (List<T>) datas.computeIfAbsent(collectionName, o -> new ArrayList<>());
+        Collections.sort(list, (o1, o2) -> {
+            for (Map.Entry<String, Object> entry : query.getSortObject().entrySet()) {
+                String fieldName = entry.getKey();
+                int direction = (Integer) entry.getValue();
+                int result = direction * comparator(o1, o2, fieldName);
+                if (result != 0) {
+                    return result;
+                }
+            }
+            return 0;
+        });
+        return list;
+    }
+
+    private int comparator(Object o1, Object o2, String fieldName) {
+        Object obj1 = ZestReflectHelper.getValue(o1, fieldName);
+        Object obj2 = ZestReflectHelper.getValue(o2, fieldName);
+
+        if (obj1 == null) {
+            if (obj2 == null) {
+                return 0;
+            } else {
+                return -1;
+            }
+        } else if (obj2 == null) {
+            return 1;
         }
 
-        String collectionName = getCollectionName(entityClass);
-        return (List<T>)datas.computeIfAbsent(collectionName, o -> new ArrayList<>());
+        if (o1.equals(o2)) {
+            return 0;
+        }
+
+        if (obj1 instanceof Number) {
+            double v1 = ((Number) obj1).doubleValue();
+            double v2 = ((Number) obj2).doubleValue();
+            return (int)(v1 - v2);
+        } else {
+            String v1 = String.valueOf(obj1);
+            String v2 = String.valueOf(obj2);
+            return v1.compareTo(v2);
+        }
     }
 
     @Override
