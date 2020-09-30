@@ -203,7 +203,7 @@ public class ZestSqlHelper {
                                 obj.put(name, findValue(readBlobContent(rs.getBlob(i))));
                                 break;
                             case Types.CLOB:
-                                obj.put(name, findValue(readBlobContent(rs.getClob(i))));
+                                obj.put(name, findValue(readClobContent(rs.getClob(i))));
                                 break;
                             default:
                                 obj.put(name, findValue(rs.getObject(i)));
@@ -222,18 +222,26 @@ public class ZestSqlHelper {
         }
     }
 
-    private static String readBlobContent(Clob clob) throws Exception {
+    private static String readClobContent(Clob clob) throws Exception {
         if (clob == null) {
             return null;
         }
-        return StringUtils.join(IOUtils.readLines(clob.getCharacterStream()));
+        return convertClobOrBlobContent(IOUtils.readLines(clob.getCharacterStream()));
     }
 
     private static String readBlobContent(Blob blob) throws Exception {
         if (blob == null) {
             return null;
         }
-        return StringUtils.join(IOUtils.readLines(blob.getBinaryStream(), StandardCharsets.UTF_8));
+        return convertClobOrBlobContent(IOUtils.readLines(blob.getBinaryStream(), StandardCharsets.UTF_8));
+    }
+
+    private static String convertClobOrBlobContent(List<String> list) {
+        String str = StringUtils.join(list);
+        if (str.startsWith("[") && str.endsWith("]")) {
+            return str.substring(1, str.length() - 1);
+        }
+        return str;
     }
 
     private static Object findValue(Object value) {

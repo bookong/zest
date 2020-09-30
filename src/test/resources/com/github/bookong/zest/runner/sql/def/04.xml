@@ -8,10 +8,10 @@
                     <Data><![CDATA[
 {
     "id" : 1,
-    "v_tinyblob" : "v_tinyblob value",
-    "v_blob" : "v_blob value",
-    "v_mediumblob" : "v_mediumblob value",
-    "v_longblob" : "v_longblob value"
+    "v_tinyblob" : "30314142",
+    "v_blob" : "4D314142",
+    "v_mediumblob" : "4E314142",
+    "v_longblob" : "4F314142"
 }
                     ]]></Data>
                 </Table>
@@ -21,10 +21,10 @@
                     <Data><![CDATA[
 {
     "id" : 1,
-    "v_tinyblob" : "v_tinyblob value",
-    "v_blob" : "v_blob value",
-    "v_mediumblob" : "v_mediumblob value",
-    "v_longblob" : "v_longblob value"
+    "v_tinyblob" : "01AB",
+    "v_blob" : "M1AB",
+    "v_mediumblob" : "N1AB",
+    "v_longblob" : "O1AB"
 }
                     ]]></Data>
                 </Table>

@@ -56,6 +56,7 @@ public class ZestWorkerTest extends AbstractSqlZestWorkerTest {
     public void test04() {
         run("04.xml", Param.class, param -> {
             System.out.println(ZestSqlHelper.query(conn, "select * from tab1"));
+
         });
     }
 
