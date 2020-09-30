@@ -60,6 +60,15 @@ public class ZestWorkerTest extends AbstractSqlZestWorkerTest {
         });
     }
 
+    /** MySQL 数据类型 - json 类型 */
+    @Test
+    public void test05() {
+        run("05.xml", Param.class, param -> {
+            System.out.println(ZestSqlHelper.query(conn, "select * from tab1"));
+
+        });
+    }
+
     public static class Param extends ZestParam {
 
     }

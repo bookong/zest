@@ -23,6 +23,7 @@ CREATE TABLE `tab1` (
   `v_mediumtext`  mediumtext       NULL ,
   `v_longblob`    longblob         NULL ,
   `v_longtext`    longtext         NULL ,
+  `v_json`        json             NULL ,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tab1_u_1` (`v_varchar`)
 ) ;

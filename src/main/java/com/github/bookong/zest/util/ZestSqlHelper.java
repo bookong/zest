@@ -197,20 +197,7 @@ public class ZestSqlHelper {
                         sqlType = sqlTypes.get(name);
                     }
 
-                    if (sqlType != null) {
-                        switch (sqlType) {
-                            case Types.BLOB:
-                                obj.put(name, findValue(readBlobContent(rs.getBlob(i))));
-                                break;
-                            case Types.CLOB:
-                                obj.put(name, findValue(readClobContent(rs.getClob(i))));
-                                break;
-                            default:
-                                obj.put(name, findValue(rs.getObject(i)));
-                        }
-                    } else {
-                        obj.put(name, findValue(rs.getObject(i)));
-                    }
+                    obj.put(name, findValue(sqlType, rs, i));
                 }
             }
 
@@ -244,7 +231,31 @@ public class ZestSqlHelper {
         return str;
     }
 
-    private static Object findValue(Object value) {
+    private static Object findValue(Integer sqlType, ResultSet rs, int columnIndex) throws Exception {
+        Object value = null;
+        if (sqlType != null) {
+            switch (sqlType) {
+                case Types.BLOB:
+                    value = readBlobContent(rs.getBlob(columnIndex));
+                    break;
+                case Types.CLOB:
+                    value = readClobContent(rs.getClob(columnIndex));
+                    break;
+                case Types.OTHER:
+                    String str = rs.getString(columnIndex);
+                    if (str != null && str.startsWith("\"") && str.endsWith("\"")) {
+                        value = str.substring(1, str.length() - 1);
+                    } else {
+                        value = str;
+                    }
+                    break;
+                default:
+                    value = rs.getObject(columnIndex);
+            }
+        } else {
+            value = rs.getObject(columnIndex);
+        }
+
         if (value == null) {
             return null;
         }
