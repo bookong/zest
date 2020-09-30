@@ -8,7 +8,7 @@
                     <Data><![CDATA[
 {
     "id" : 1,
-    "v_json" : "{}"
+    "v_json" : "{\"f1\":3,\"f2\":4}"
 }
                     ]]></Data>
                 </Table>
@@ -18,7 +18,7 @@
                     <Data><![CDATA[
 {
     "id" : 1,
-    "v_json" : "{}"
+    "v_json" : "{\"f1\":3,\"f2\":4}"
 }
                     ]]></Data>
                 </Table>

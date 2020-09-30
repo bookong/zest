@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.sql.DataSource;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
@@ -244,7 +243,10 @@ public class ZestSqlHelper {
                 case Types.OTHER:
                     String str = rs.getString(columnIndex);
                     if (str != null && str.startsWith("\"") && str.endsWith("\"")) {
-                        value = str.substring(1, str.length() - 1);
+                        str = str.substring(1, str.length() - 1);
+                        value = StringUtils.replaceEach(str, //
+                                new String[] { "\\t", "\\r", "\\n", "\\\"", "\\\\" }, //
+                                new String[] { "\t", "\r", "\n", "\"", "\\" });
                     } else {
                         value = str;
                     }
@@ -361,6 +363,40 @@ public class ZestSqlHelper {
     }
 
     /**
+     * Load table SQL types.
+     *
+     * @param conn
+     *      Database connection object.
+     * @param tableName
+     *      Table name.
+     * @param sqlTypes
+     *      {@link Types} map.
+     */
+    public static void loadSqlTypes(Connection conn, String tableName, Map<String, Integer> sqlTypes) throws Exception {
+        DatabaseMetaData dbMetaData;
+        ResultSet rs = null;
+        try {
+            String queryTableName = tableName;
+            dbMetaData = conn.getMetaData();
+            rs = dbMetaData.getTables(null, null, null, new String[] { "TABLE" });
+            while (rs.next()) {
+                queryTableName = rs.getString("TABLE_NAME");
+                if (StringUtils.equalsIgnoreCase(queryTableName, tableName)) {
+                    break;
+                }
+            }
+            ZestSqlHelper.close(rs);
+
+            rs = conn.getMetaData().getColumns(null, "%", queryTableName, "%");
+            while (rs.next()) {
+                sqlTypes.put(StringUtils.lowerCase(rs.getString("column_name")), rs.getInt("data_type"));
+            }
+        } finally {
+            ZestSqlHelper.close(rs);
+        }
+    }
+
+    /**
      * Query data only for display.
      *
      * @param conn
@@ -376,13 +412,19 @@ public class ZestSqlHelper {
         try {
             stat = conn.createStatement();
             rs = stat.executeQuery(sql);
-
+            Map<String, Map<String, Integer>> tableSqlTypes = new HashMap<>();
             while (rs.next()) {
                 sb.append("-------------------------------------------\n");
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
                     String colName = rs.getMetaData().getColumnName(i).toLowerCase();
-                    Object colValue = rs.getObject(i);
-                    String colType = (colValue == null ? "UNKNOWN" : colValue.getClass().getName());
+                    String colTableName = rs.getMetaData().getTableName(i);
+                    Map<String, Integer> sqlTypes = tableSqlTypes.computeIfAbsent(colTableName, o -> new HashMap<>());
+                    if (sqlTypes.isEmpty()) {
+                        loadSqlTypes(conn, colTableName, sqlTypes);
+                    }
+                    Integer sqlType = sqlTypes.get(colName);
+                    Object colValue = findValue(sqlType, rs, i);
+                    String colType = colValue == null ? "UNKNOWN" : rs.getObject(i).getClass().getName();
                     colValue = colValue == null ? "NULL" : parseValue(colValue);
                     sb.append(String.format("%s (%s) : %s", colName, colType, colValue)).append("\n");
                 }

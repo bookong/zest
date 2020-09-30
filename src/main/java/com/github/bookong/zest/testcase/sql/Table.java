@@ -112,29 +112,10 @@ public class Table extends AbstractTable<Row> {
     }
 
     private void loadSqlTypes(Connection conn) {
-        DatabaseMetaData dbMetaData;
-        ResultSet rs = null;
         try {
-            dbMetaData = conn.getMetaData();
-            List<String> tableNames = new ArrayList<>();
-            rs = dbMetaData.getTables(null, null, null, new String[] { "TABLE" });
-            while (rs.next()) {
-                tableNames.add(rs.getString("TABLE_NAME"));
-            }
-            ZestSqlHelper.close(rs);
-
-            for (String tableName : tableNames) {
-                rs = conn.getMetaData().getColumns(null, "%", tableName, "%");
-                while (rs.next()) {
-                    getSqlTypes().put(StringUtils.lowerCase(rs.getString("column_name")), rs.getInt("data_type"));
-                }
-                ZestSqlHelper.close(rs);
-            }
-
+            ZestSqlHelper.loadSqlTypes(conn, getName(), getSqlTypes());
         } catch (Exception e) {
             throw new ZestException(Messages.parseTableMeta(), e);
-        } finally {
-            ZestSqlHelper.close(rs);
         }
     }
 
