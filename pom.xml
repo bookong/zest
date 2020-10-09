@@ -208,7 +208,7 @@ limitations under the License.
                 <version>2.16</version>
                 <configuration>
                     <forkMode>once</forkMode>
-                    <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
+                    <argLine>${argLine} -Dfile.encoding=UTF-8 -Duser.timezone=Asia/Shanghai"</argLine>
                     <excludes>
                         <exclude>manual/**</exclude>
                     </excludes>
