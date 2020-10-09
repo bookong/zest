@@ -36,11 +36,11 @@ public class ZestDataTest extends AbstractZestDataTest {
 
         Assert.assertEquals(12, ((Integer) row.getDataMap().get("f_integer")).intValue());
         Assert.assertEquals("str", String.valueOf(row.getDataMap().get("f_varchar")));
-        Assert.assertEquals("2020-09-28T11:12:13.000+08",
+        Assert.assertEquals("2020-09-28T11:12:13.000+0800",
                             ZestDateUtil.formatDateNormal(((Date) row.getDataMap().get("f_date"))));
-        Assert.assertEquals("2020-09-29T11:12:13.000+08",
+        Assert.assertEquals("2020-09-29T11:12:13.000+0800",
                             ZestDateUtil.formatDateNormal(((Date) row.getDataMap().get("f_time"))));
-        Assert.assertEquals("2020-09-30T11:12:13.000+08",
+        Assert.assertEquals("2020-09-30T11:12:13.000+0800",
                             ZestDateUtil.formatDateNormal(((Date) row.getDataMap().get("f_timestamp"))));
     }
 
@@ -59,7 +59,7 @@ public class ZestDataTest extends AbstractZestDataTest {
 
         Assert.assertEquals(12, data.getIntValue());
         Assert.assertEquals("str", data.getStrValue());
-        Assert.assertEquals("2020-09-28T11:12:13.000+08", ZestDateUtil.formatDateNormal(data.getDate1()));
+        Assert.assertEquals("2020-09-28T11:12:13.000+0800", ZestDateUtil.formatDateNormal(data.getDate1()));
     }
 
     /** mysql 类型 Init 下，库表中没有这个字段 */
@@ -89,7 +89,7 @@ public class ZestDataTest extends AbstractZestDataTest {
 
         Assert.assertEquals(12, data.getIntValue());
         Assert.assertEquals("str", data.getStrValue());
-        Assert.assertEquals("2020-09-28T11:12:13.000+08", ZestDateUtil.formatDateNormal(data.getDate1()));
+        Assert.assertEquals("2020-09-28T11:12:13.000+0800", ZestDateUtil.formatDateNormal(data.getDate1()));
     }
 
     /** 不支持的属性 */
@@ -130,11 +130,11 @@ public class ZestDataTest extends AbstractZestDataTest {
 
         Assert.assertEquals(12, ((Integer) row.getDataMap().get("f_integer")).intValue());
         Assert.assertEquals("str", String.valueOf(row.getDataMap().get("f_varchar")));
-        Assert.assertEquals("2020-09-28T11:12:13.000+08",
+        Assert.assertEquals("2020-09-28T11:12:13.000+0800",
                             ZestDateUtil.formatDateNormal(((Date) row.getDataMap().get("f_date"))));
-        Assert.assertEquals("2020-09-29T11:12:13.000+08",
+        Assert.assertEquals("2020-09-29T11:12:13.000+0800",
                             ZestDateUtil.formatDateNormal(((Date) row.getDataMap().get("f_time"))));
-        Assert.assertEquals("2020-09-30T11:12:13.000+08",
+        Assert.assertEquals("2020-09-30T11:12:13.000+0800",
                             ZestDateUtil.formatDateNormal(((Date) row.getDataMap().get("f_timestamp"))));
     }
 
@@ -153,7 +153,7 @@ public class ZestDataTest extends AbstractZestDataTest {
 
         Assert.assertEquals(12, data.getIntValue());
         Assert.assertEquals("str", data.getStrValue());
-        Assert.assertEquals("2020-09-28T11:12:13.000+08", ZestDateUtil.formatDateNormal(data.getDate1()));
+        Assert.assertEquals("2020-09-28T11:12:13.000+0800", ZestDateUtil.formatDateNormal(data.getDate1()));
     }
 
     /** mongo 类型 Verify 下，正常数据，EntityClass 在 Init 下所以 Verify 下可以省略 */
@@ -171,7 +171,7 @@ public class ZestDataTest extends AbstractZestDataTest {
 
         Assert.assertEquals(12, data.getIntValue());
         Assert.assertEquals("str", data.getStrValue());
-        Assert.assertEquals("2020-09-28T11:12:13.000+08", ZestDateUtil.formatDateNormal(data.getDate1()));
+        Assert.assertEquals("2020-09-28T11:12:13.000+0800", ZestDateUtil.formatDateNormal(data.getDate1()));
     }
 
     /** Date 与 Rules 相对位置不对 */

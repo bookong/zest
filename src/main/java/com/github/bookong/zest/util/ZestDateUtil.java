@@ -32,7 +32,7 @@ public class ZestDateUtil {
     private static final ThreadLocal<SimpleDateFormat> TYPE_FULL = new ThreadLocal<>();
 
     /**
-     * Use "yyyy-MM-dd'T'HH:mm:ss.SSSX" to parse the string representing the time.
+     * Use "yyyy-MM-dd'T'HH:mm:ss.SSSZ" to parse the string representing the time.
      *
      * @param time
      *          String representing time.
@@ -47,7 +47,7 @@ public class ZestDateUtil {
     }
 
     /**
-     * Format the date as "yyyy-MM-dd'T'HH:mm:ss.SSSX" .
+     * Format the date as "yyyy-MM-dd'T'HH:mm:ss.SSSZ" .
      * @param time
      *          Time to format.
      * @return formatted string.
@@ -59,7 +59,7 @@ public class ZestDateUtil {
     private static SimpleDateFormat getDateFormatFull() {
         SimpleDateFormat obj = TYPE_FULL.get();
         if (obj == null) {
-            obj = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            obj = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             TYPE_FULL.set(obj);
         }
         return obj;

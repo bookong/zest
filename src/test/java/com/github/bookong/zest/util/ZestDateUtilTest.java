@@ -17,7 +17,7 @@ public class ZestDateUtilTest {
      */
     @Test
     public void testParseDate1() {
-        testParseDate("2020-08-09T07:08:09.000+08", //
+        testParseDate("2020-08-09T07:08:09.000+0800", //
                       2020, 8, 9, //
                       7, 8, 9, 0, "Asia/Shanghai");
     }
@@ -27,7 +27,7 @@ public class ZestDateUtilTest {
      */
     @Test
     public void testParseDate2() {
-        testParseDate("2020-12-25T13:14:15.016+08", //
+        testParseDate("2020-12-25T13:14:15.016+0800", //
                       2020, 12, 25, //
                       13, 14, 15, 16, "Asia/Shanghai");
     }
@@ -37,7 +37,7 @@ public class ZestDateUtilTest {
      */
     @Test
     public void testParseDate3() {
-        testParseDate("0001-01-01T00:00:00.000+08", //
+        testParseDate("0001-01-01T00:00:00.000+0800", //
                       1, 1, 1, //
                       0, 0, 0, 0, "Asia/Shanghai");
     }
@@ -49,7 +49,7 @@ public class ZestDateUtilTest {
     public void testFormatDateNormal1() {
         testFormatDateNormal(2020, 8, 9, //
                              7, 8, 9, 0, "Asia/Shanghai", //
-                             "2020-08-09T07:08:09.000+08");
+                             "2020-08-09T07:08:09.000+0800");
     }
 
     /**
@@ -59,7 +59,7 @@ public class ZestDateUtilTest {
     public void testFormatDateNormal2() {
         testFormatDateNormal(2020, 12, 25, //
                              13, 14, 15, 16, "Asia/Shanghai", //
-                             "2020-12-25T13:14:15.016+08");
+                             "2020-12-25T13:14:15.016+0800");
     }
 
     /**
@@ -69,7 +69,7 @@ public class ZestDateUtilTest {
     public void testFormatDateNormal3() {
         testFormatDateNormal(1, 1, 1, //
                              0, 0, 0, 0, "Asia/Shanghai", //
-                             "0001-01-01T00:00:00.000+08");
+                             "0001-01-01T00:00:00.000+0800");
     }
 
     private void testParseDate(String time, int year, int month, int day, int hour, int minute, int second,

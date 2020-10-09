@@ -14,7 +14,7 @@
         <ParamField Name="floatValue">7.5</ParamField>
         <ParamField Name="floatObjValue">8.5</ParamField>
         <ParamField Name="strValue">hello</ParamField>
-        <ParamField Name="date1">2020-08-10T13:14:15.000+08</ParamField>
+        <ParamField Name="date1">2020-08-10T13:14:15.000+0800</ParamField>
         <ParamField Name="listObj"><![CDATA[
 [
     {

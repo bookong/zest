@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Zest xmlns="https://www.bookong.net/schema/zest/data"
-      Version="3.4" CurrentTime="2020-08-09T10:12:00.000+08" U="x">
+      Version="3.4" CurrentTime="2020-08-09T10:12:00.000+0800" U="x">
     <Description>test case description</Description>
     <Sources/>
     <Param/>
