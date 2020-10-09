@@ -5,10 +5,10 @@ jdk:
 
 install: true
 
-script: mvn clean verify -Dsource.skip=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -Duser.timezone=Asia/Shanghai"
+script: mvn clean verify -Dsource.skip=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
 
 after_success:
-  - mvn clean test -Dsource.skip=true -Dmaven.javadoc.skip=true -Dgpg.skip=true -Duser.timezone=Asia/Shanghai"
+  - mvn clean test -Dsource.skip=true -Dmaven.javadoc.skip=true -Dgpg.skip=true
   - mvn jacoco:report
   - mvn coveralls:report -DrepoToken="${COVERALLS_TOKEN}"
 
