@@ -1,17 +1,10 @@
 /**
- * Copyright 2014-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2014-2020 the original author or authors. Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package com.github.bookong.zest.util;
 
@@ -177,7 +170,7 @@ public class Messages {
     public static String parseRulesPosition() {
         return getString("parse.rules.position");
     }
-    
+
     public static String parseRulesOrder() {
         return getString("parse.rules.order");
     }
@@ -328,6 +321,10 @@ public class Messages {
 
     public static String verifyRowDataDate(String columnName) {
         return getString("verify.row.data.date", columnName);
+    }
+
+    public static String verifyRowDataNumber(String columnName) {
+        return getString("verify.row.data.number", columnName);
     }
 
     public static String verifyRowData(String columnName, String value) {

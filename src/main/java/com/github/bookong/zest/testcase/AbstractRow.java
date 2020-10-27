@@ -92,6 +92,13 @@ public abstract class AbstractRow<T> {
                     String actualValue = ZestDateUtil.formatDateNormal((Date) actual);
                     Assert.assertEquals(Messages.verifyRowData(fieldName, expectedValue), expectedValue, actualValue);
 
+                } else if (expected instanceof Double) {
+                    Assert.assertTrue(Messages.verifyRowDataNumber(fieldName), actual instanceof Double);
+                    Double expectedValue = (Double) expected;
+                    Double actualValue = (Double) actual;
+                    Assert.assertEquals(Messages.verifyRowData(fieldName, String.valueOf(expectedValue)), expectedValue, actualValue,
+                                        0.000001D);
+
                 } else {
                     String expectedValue = String.valueOf(expected);
                     String actualValue = String.valueOf(actual);
