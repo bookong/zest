@@ -20,7 +20,7 @@ limitations under the License.
 
     <groupId>com.github.bookong</groupId>
     <artifactId>zest</artifactId>
-    <version>0.3.4-SNAPSHOT</version>
+    <version>0.3.4</version>
     <packaging>jar</packaging>
 
     <name>zest</name>
