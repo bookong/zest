@@ -59,7 +59,7 @@ public class Table extends AbstractTable<Row> {
         DataSource dataSource = worker.getOperator(sourceId, DataSource.class);
         Connection conn = DataSourceUtils.getConnection(dataSource);
         try {
-            executor.loadSqlTypes(conn, getSqlTypes());
+            executor.loadSqlTypes(conn, getName(), getSqlTypes());
         } catch (UnsupportedOperationException e) {
             loadSqlTypes(conn);
         } finally {

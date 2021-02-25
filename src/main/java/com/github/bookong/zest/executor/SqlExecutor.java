@@ -140,12 +140,14 @@ public class SqlExecutor extends AbstractExecutor {
      *
      * @param conn
      *          Database connection object.
+     * @param tableName
+     *          Database table name.
      * @param sqlTypes
      *          {@link Types} map.
      * @throws UnsupportedOperationException
      *          This method is not implemented by default.
      */
-    public void loadSqlTypes(Connection conn, Map<String, Integer> sqlTypes) throws UnsupportedOperationException {
+    public void loadSqlTypes(Connection conn, String tableName, Map<String, Integer> sqlTypes) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
     
