@@ -15,7 +15,6 @@
  */
 package com.github.bookong.zest.util;
 
-import com.github.bookong.zest.exception.ZestException;
 import com.github.bookong.zest.rule.CurrentTimeRule;
 import com.github.bookong.zest.rule.FromCurrentTimeRule;
 import com.github.bookong.zest.rule.RangeRule;
@@ -24,6 +23,7 @@ import com.github.bookong.zest.testcase.ZestData;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -45,17 +45,14 @@ public class ZestAssertUtil {
      *          Expected data.
      * @param actual
      *          Actual data.
+     * @throws ParseException
      */
-    public static void dateEquals(ZestData zestData, String msg, String dateFormat, String expected, String actual) {
-        try {
-            if (StringUtils.isBlank(expected)) {
-                Assert.assertTrue(msg, StringUtils.isBlank(actual));
-            } else {
-                SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-                dateEquals(zestData, msg, sdf.parse(expected), sdf.parse(actual));
-            }
-        } catch (Exception e) {
-            throw new ZestException(e);
+    public static void dateEquals(ZestData zestData, String msg, String dateFormat, String expected, String actual) throws ParseException {
+        if (StringUtils.isBlank(expected)) {
+            Assert.assertTrue(msg, StringUtils.isBlank(actual));
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+            dateEquals(zestData, msg, sdf.parse(expected), sdf.parse(actual));
         }
     }
 
