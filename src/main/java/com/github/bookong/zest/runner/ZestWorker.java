@@ -108,7 +108,9 @@ public abstract class ZestWorker {
      */
     public void verifySource(ZestData zestData) {
         for (Source source : zestData.getSourceList()) {
-            executorMap.get(source.getId()).verify(this, zestData, source);
+            AbstractExecutor executor = executorMap.get(source.getId());
+            executor.verify(this, zestData, source);
+            executor.clear(this, zestData, source);
         }
     }
 
