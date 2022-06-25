@@ -145,7 +145,7 @@ limitations under the License.
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
-            <version>3.0.2.RELEASE</version>
+            <version>3.3.5</version>
             <optional>true</optional>
         </dependency>
 
