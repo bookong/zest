@@ -87,8 +87,7 @@ public abstract class AbstractRow<T> {
 
                 if (expected instanceof Date) {
                     Assert.assertTrue(Messages.verifyRowDataDate(fieldName), actual instanceof Date);
-                    Date expectedDateInZest = ZestDateUtil.getDateInZest(zestData, (Date) expected);
-                    String expectedValue = ZestDateUtil.formatDateNormal(expectedDateInZest);
+                    String expectedValue = ZestDateUtil.formatDateNormal((Date) expected);
                     String actualValue = ZestDateUtil.formatDateNormal((Date) actual);
                     Assert.assertEquals(Messages.verifyRowData(fieldName, expectedValue), expectedValue, actualValue);
 
