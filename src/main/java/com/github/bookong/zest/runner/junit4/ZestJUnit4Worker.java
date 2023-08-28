@@ -43,6 +43,7 @@ import org.junit.runners.model.TestClass;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -98,6 +99,7 @@ public class ZestJUnit4Worker extends ZestWorker {
             }
         }
 
+        list.sort(Comparator.comparing(FrameworkMethod::getName));
         return list;
     }
 

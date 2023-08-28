@@ -52,7 +52,11 @@ public class ZestFilter extends Filter {
             }
 
             String expected = String.format(" %s(%s)", methodName, className);
-            return desiredDescription.indexOf(expected) > 0;
+            boolean b = desiredDescription.indexOf(expected) > 0;
+            if (b) {
+                return b;
+            }
+            return desiredDescription.startsWith(methodName.concat(" "));
         }
 
         // explicitly check if any children want to run
