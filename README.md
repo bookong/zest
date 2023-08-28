@@ -9,15 +9,6 @@
 
 Zest is an easy-to-use unit testing tool based on Spring. It separates test data and test code, and automatically verifies the results of RMDB (SQL) and MongoDB.
 
-# Notice
-
-* 在 2021.2.4 之后版本的 IntelliJ IDEA 编辑器。 如果继续使用 [JUnit4 的方式](https://github.com/bookong/zest-example/tree/master/spring-mvc) ，将无法在 IDE 环境中执行测试 ( 报错 `No tests found matching Method` )
-  * 需要改用 maven 命令执行 ( `mvn test -Dtest=testpackage.TestClass#testMethod` )
-  * 原因是从 2021.3 开始的版本 IntelliJ IDEA 编辑器强化了对 "parameterized test" 的验证，而 JUnt4 中 Zest 实现方式接近 `魔改`。但使用 [JUnit5 的方式](https://github.com/bookong/zest-example/tree/master/spring-boot) 没有问题
-* IntelliJ IDEA editor in versions after 2021.2.4. If you continue to [use junit4](https://github.com/bookong/zest-example/tree/master/spring-mvc) .The test cannot be executed in the IDE environment (error `No tests found matching Method`) 
-  * You need to use the maven command instead ( `mvn test -Dtest=testpackage.TestClass#testMethod` )
-  * The reason is that the IntelliJ IDEA editor since 2021.3 has strengthened the verification of "parameterized test", while the implementation of Zest in JUnt4 is close to the `magic change` . But there is no problem [using JUnit5](https://github.com/bookong/zest-example/tree/master/spring-boot)
-
 # Documentation
 
 - [Documentation Home](https://github.com/bookong/zest/wiki)
