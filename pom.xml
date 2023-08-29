@@ -181,7 +181,7 @@ limitations under the License.
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.0.5</version>
+            <version>4.0.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
